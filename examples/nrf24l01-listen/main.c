@@ -38,7 +38,7 @@ int p_init(int argc, char *argv[])
 	/* nrf initialization */
 	ERROR_IF_R(nrf_open(&nrf, &master, CFG_NRF_SS, CFG_NRF_CE), -1, "nrf24l01+ failed to initialize");
 	/* change channel, default is 70 */
-	nrf_set_channel(&nrf, 1);
+	nrf_set_channel(&nrf, 7);
 	/* change speed, default is 250k */
 	nrf_set_speed(&nrf, NRF_SPEED_2M);
 	/* enable radio in listen mode */	nrf_mode_rx(&nrf);
@@ -57,7 +57,11 @@ void p_exit(int retval)
 	exit(retval);
 }
 
+#ifdef TARGET_ESP32
+int app_main(int argc, char *argv[])
+#else
 int main(int argc, char *argv[])
+#endif
 {
 	/* init */
 	if (p_init(argc, argv)) {
@@ -66,7 +70,7 @@ int main(int argc, char *argv[])
 	}
 
 	/* program loop */
-	DEBUG_MSG("starting main program loop");
+	INFO_MSG("starting main program loop");
 	while (1) {
 		int i, ok;
 		uint8_t data[32];

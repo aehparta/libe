@@ -63,7 +63,11 @@ void p_exit(int retval)
 	exit(retval);
 }
 
+#ifdef TARGET_ESP32
+int app_main(int argc, char *argv[])
+#else
 int main(int argc, char *argv[])
+#endif
 {
 	os_time_t t = os_timef();
 	int replied = 0;
@@ -75,7 +79,7 @@ int main(int argc, char *argv[])
 	}
 
 	/* program loop */
-	DEBUG_MSG("starting main program loop");
+	INFO_MSG("starting main program loop");
 	while (1) {
 		int i;
 		uint8_t data[32];
@@ -117,10 +121,3 @@ int main(int argc, char *argv[])
 	p_exit(EXIT_SUCCESS);
 	return EXIT_SUCCESS;
 }
-
-#ifdef TARGET_ESP32
-int app_main(int argc, char *argv[])
-{
-	return main(argc, argv);
-}
-#endif

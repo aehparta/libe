@@ -27,7 +27,7 @@ time_t os_timei(void)
 
 os_time_t os_timef(void)
 {
-	return (os_time_t)xTaskGetTickCount() * portTICK_PERIOD_MS / 1000;
+	return (os_time_t)esp_timer_get_time() / 1e6L;
 }
 
 void os_sleepi(time_t t)
@@ -47,18 +47,15 @@ int os_gpio_enable(uint8_t pin, bool direction)
 	return 0;
 }
 
-
 int os_gpio_output(uint8_t pin)
 {
 	return os_gpio_enable(pin, OS_GPIO_OUTPUT);
 }
 
-
 int os_gpio_input(uint8_t pin)
 {
 	return os_gpio_enable(pin, OS_GPIO_INPUT);
 }
-
 
 int os_gpio_set(uint8_t pin, bool state)
 {
@@ -66,12 +63,10 @@ int os_gpio_set(uint8_t pin, bool state)
 	return 0;
 }
 
-
 int os_gpio_high(uint8_t pin)
 {
 	return os_gpio_set(pin, true);
 }
-
 
 int os_gpio_low(uint8_t pin)
 {
