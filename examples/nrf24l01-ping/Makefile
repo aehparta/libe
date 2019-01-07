@@ -8,8 +8,8 @@ endif
 include $(LIBE_PATH)/init.mk
 
 # our own sources etc
-BUILD_BINS = example_libe_nrf24l01
-example_libe_nrf24l01_SRC = main.c $(libe_SRC)
+BUILD_BINS = nrf24l01_ping
+nrf24l01_ping_SRC = main.c $(libe_SRC)
 
 # compile flags
 CFLAGS += -D_GNU_SOURCE $(libe_CFLAGS)
@@ -17,3 +17,8 @@ LDFLAGS += $(libe_LDFLAGS)
 
 # build
 include $(LIBE_PATH)/build.mk
+
+# programmable targets
+include $(LIBE_PATH)/flash/program.mk
+
+-include local.mk

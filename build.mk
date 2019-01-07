@@ -78,7 +78,7 @@ ifneq ($(NM),)
 endif
 
 # not real targets
-.PHONY: all start build clean avrcheck program fuses programmable_check reset console
+.PHONY: all start build clean program
 
 # compile binaries, this must be last because of secondary expansion
 .SECONDEXPANSION:

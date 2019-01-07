@@ -1,11 +1,11 @@
 /*
- * nrf24l01+ chip example code
+ * nrf24l01+ example listener
  */
 
 #include <libe/os.h>
 #include <libe/debug.h>
 #include <libe/nrf.h>
-#include "config.h"
+#include "../config.h"
 
 
 struct spi_master master;
@@ -37,7 +37,11 @@ int p_init(int argc, char *argv[])
 
 	/* nrf initialization */
 	ERROR_IF_R(nrf_open(&nrf, &master, CFG_NRF_SS, CFG_NRF_CE), -1, "nrf24l01+ failed to initialize");
-	nrf_mode_rx(&nrf);
+	/* change channel, default is 70 */
+	nrf_set_channel(&nrf, 7);
+	/* change speed, default is 250k */
+	// nrf_set_speed(&nrf, NRF_SPEED_2M);
+	/* enable radio in listen mode */	nrf_mode_rx(&nrf);
 	nrf_flush_rx(&nrf);
 	nrf_enable_radio(&nrf);
 
@@ -55,10 +59,6 @@ void p_exit(int retval)
 
 int main(int argc, char *argv[])
 {
-#ifdef USE_LINUX
-	os_time_t t = os_timef();
-#endif
-
 	/* init */
 	if (p_init(argc, argv)) {
 		ERROR_MSG("initialization failed");
@@ -68,10 +68,10 @@ int main(int argc, char *argv[])
 	/* program loop */
 	DEBUG_MSG("starting main program loop");
 	while (1) {
-		int i;
+		int i, ok;
 		uint8_t data[32];
 
-		int ok = nrf_recv(&nrf, data);
+		ok = nrf_recv(&nrf, data);
 		if (ok < 0) {
 			CRIT_MSG("device disconnected?");
 			break;
@@ -83,7 +83,7 @@ int main(int argc, char *argv[])
 				}
 			}
 			if (i == 32) {
-				printf("Ping packet received, replying\r\n");
+				printf("ping packet received, send reply\r\n");
 				for (i = 0; i < 32; i++) {
 					data[i] = 31 - i;
 				}
@@ -91,37 +91,14 @@ int main(int argc, char *argv[])
 				continue;
 			}
 
-			/* if packet is a "pong" packet, check time */
-#ifdef USE_LINUX
-			for (i = 0; i < 32; i++) {
-				if (data[i] != (31 - i)) {
-					break;
-				}
-			}
-			if (i == 32) {
-				printf("Pong packet received, response time: %lf ms\r\n", (double)((os_timef() - t) * 1000.0L));
-			}
-#endif
-
 			/* print info */
-			// printf("Packet received, data as ascii and hex dumps:\r\n");
-			// printf(LDC_DGRAYB);
-			// ASCII_DUMP(data, sizeof(data), 0);
-			// printf(LDC_YELLOWB);
-			// HEX_DUMP(data, sizeof(data));
-			// printf(LDC_DEFAULT);
+			printf("packet received, data as ascii and hex dumps:\r\n");
+			printf(LDC_DGRAYB);
+			ASCII_DUMP(data, sizeof(data), 0);
+			printf(LDC_YELLOWB);
+			HEX_DUMP(data, sizeof(data));
+			printf(LDC_DEFAULT);
 		}
-
-		/* send a test "ping" packet and check response time */
-#ifdef USE_LINUX
-		if ((t + 1.0) < os_timef()) {
-			for (i = 0; i < 32; i++) {
-				data[i] = i;
-			}
-			nrf_send(&nrf, data);
-			t = os_timef();
-		}
-#endif
 
 		/* lets not waste all cpu */
 		os_sleepf(0.001);

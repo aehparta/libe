@@ -136,9 +136,9 @@ void nrf_setup(struct nrf_device *nrf)
 	/* disable retransmission */
 	nrf_write_reg(nrf, NRF_REG_SETUP_RETR, 0x20);
 	/* channel 70 */
-	nrf_write_reg(nrf, NRF_REG_RF_CH, 0x46);
+	nrf_write_reg(nrf, NRF_REG_RF_CH, 70);
 	/* 250 kbps, full power */
-	nrf_write_reg(nrf, NRF_REG_RF_SETUP, 0x27);
+	nrf_write_reg(nrf, NRF_REG_RF_SETUP, 0x26);
 	/* pipe 0 size */
 	nrf_write_reg(nrf, NRF_REG_RX_PW_P0, 32);
 	/* pipe 1 size */
@@ -180,7 +180,24 @@ int nrf_flush_rx(struct nrf_device *nrf)
 
 void nrf_set_power(struct nrf_device *nrf, uint8_t power)
 {
-	nrf_write_reg(nrf, NRF_REG_RF_SETUP, 0x21 | ((power & 0x3) << 1));
+	uint8_t r = nrf_read_reg(nrf, NRF_REG_RF_SETUP, NULL) & ~0x6;
+	nrf_write_reg(nrf, NRF_REG_RF_SETUP, r | ((power & 0x3) << 1));
+}
+
+void nrf_set_channel(struct nrf_device *nrf, uint8_t channel)
+{
+	nrf_write_reg(nrf, NRF_REG_RF_CH, channel);
+}
+
+void nrf_set_speed(struct nrf_device *nrf, uint8_t speed)
+{
+	uint8_t r = nrf_read_reg(nrf, NRF_REG_RF_SETUP, NULL) & ~0x28;
+	if (speed == NRF_SPEED_250k) {
+		r |= 0x20;
+	} else if (speed == NRF_SPEED_2M) {
+		r |= 0x08;
+	}
+	nrf_write_reg(nrf, NRF_REG_RF_SETUP, r);
 }
 
 int nrf_recv(struct nrf_device *nrf, void *data)

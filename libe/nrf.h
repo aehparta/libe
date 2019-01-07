@@ -14,6 +14,17 @@
 extern "C" {
 #endif
 
+/* transmit speeds */
+#define NRF_SPEED_250k          0
+#define NRF_SPEED_1M            1
+#define NRF_SPEED_2M            2
+
+/* power */
+#define NRF_POWER_LOW           0 /* -18dBm */
+#define NRF_POWER_MEDIUM        1 /* -12dBm */
+#define NRF_POWER_HIGH          2 /* -6dBm */
+#define NRF_POWER_FULL          3 /* 0dBm */
+
 /* nRF24L01+ register addresses */
 #define NRF_REG_CONFIG          0x00
 #define NRF_REG_EN_AA           0x01
@@ -79,7 +90,11 @@ int nrf_mode_tx(struct nrf_device *nrf);
 int nrf_mode_rx(struct nrf_device *nrf);
 int nrf_flush_tx(struct nrf_device *nrf);
 int nrf_flush_rx(struct nrf_device *nrf);
+
 void nrf_set_power(struct nrf_device *nrf, uint8_t power);
+void nrf_set_channel(struct nrf_device *nrf, uint8_t channel);
+void nrf_set_speed(struct nrf_device *nrf, uint8_t speed);
+
 int nrf_recv(struct nrf_device *nrf, void *data);
 int nrf_send(struct nrf_device *nrf, void *data);
 
