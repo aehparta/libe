@@ -4,14 +4,26 @@
  * Authors: Antti Partanen <aehparta@iki.fi>
  */
 
-#ifndef __SPI_H__
-#define __SPI_H__
+#ifndef _LIBE_SPI_H_
+#define _LIBE_SPI_H_
 
 
 #include <stdint.h>
 #include <string.h>
-#ifdef TARGET_ESP32
-#include <driver/spi_master.h>
+#ifdef TARGET_AVR
+#include "target/avr/spi.h"
+#elif TARGET_PIC8
+#include "target/pic8/spi.h"
+#elif TARGET_PIC16
+#include "target/pic16/spi.h"
+#elif TARGET_PIC32
+#include "target/pic32/spi.h"
+#elif TARGET_MSP430
+#include "target/msp430/spi.h"
+#elif TARGET_X86
+#include "target/x86/spi.h"
+#elif TARGET_RPI
+#include "target/rpi/spi.h"
 #endif
 
 
@@ -19,24 +31,15 @@
 extern "C" {
 #endif
 
-typedef void * spi_master_t;
-typedef void * spi_device_t;
+int spi_master_open(struct spi_master *master, void *context, uint32_t frequency, uint8_t miso, uint8_t mosi, uint8_t sclk);
+void spi_master_close(struct spi_master *master);
 
-spi_master_t spi_master_open(void *context, uint32_t frequency, uint8_t miso, uint8_t mosi, uint8_t sclk);
-void spi_master_close(spi_master_t master);
-
-spi_device_t spi_open(spi_master_t master, uint8_t ss);
-void spi_close(spi_device_t device);
-int spi_transfer(spi_device_t device, uint8_t *data, size_t size);
-
-#ifdef TARGET_X86
-/* only when using ftdi */
-int spi_ftdi_set(spi_master_t master, uint8_t pins);
-int spi_ftdi_clr(spi_master_t master, uint8_t pins);
-#endif
+int spi_open(struct spi_device *device, struct spi_master *master, uint8_t ss);
+void spi_close(struct spi_device *device);
+int spi_transfer(struct spi_device *device, uint8_t *data, size_t size);
 
 #ifdef __cplusplus
 }
 #endif
 
-#endif /* __SPI_H__ */
+#endif /* _LIBE_SPI_H_ */

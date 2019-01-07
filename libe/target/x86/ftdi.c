@@ -30,7 +30,7 @@ struct ftdi_context *ftdi_open(uint16_t vid, uint16_t pid, int interface, const 
 	/* find first device if vid or pid is zero */
 	n = ftdi_usb_find_all(ftdi, &list, vid, pid);
 	if (n < 1) {
-		WARN_MSG("unable to find any matching device");
+		DEBUG_MSG("unable to find any matching device");
 		ftdi_free(ftdi);
 		return NULL;
 	}
@@ -56,7 +56,7 @@ struct ftdi_context *ftdi_open(uint16_t vid, uint16_t pid, int interface, const 
 			break;
 		}
 		if (i >= n) {
-			WARN_MSG("unable to find any matching device");
+			DEBUG_MSG("unable to find any matching device");
 			ftdi_list_free(&list);
 			ftdi_free(ftdi);
 			return NULL;
@@ -65,14 +65,14 @@ struct ftdi_context *ftdi_open(uint16_t vid, uint16_t pid, int interface, const 
 	err = ftdi_usb_open_dev(ftdi, list->dev);
 	ftdi_list_free(&list);
 	if (err < 0) {
-		ERROR_MSG("unable to open ftdi device: %s", ftdi_get_error_string(ftdi));
+		DEBUG_MSG("unable to open ftdi device: %s", ftdi_get_error_string(ftdi));
 		ftdi_free(ftdi);
 		return NULL;
 	}
 	/* reset chip */
 	if (reset) {
 		if (ftdi_usb_reset(ftdi)) {
-			ERROR_MSG("failed to reset device: %s", ftdi_get_error_string(ftdi));
+			DEBUG_MSG("failed to reset device: %s", ftdi_get_error_string(ftdi));
 			ftdi_free(ftdi);
 			return NULL;
 		}

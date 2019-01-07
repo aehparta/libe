@@ -5,8 +5,8 @@
  *  Antti Partanen <aehparta@iki.fi>
  */
 
-#ifndef _NVM_H_
-#define _NVM_H_
+#ifndef _LIBE_NVM_H_
+#define _LIBE_NVM_H_
 
 #include <stddef.h>
 #include <stdint.h>
@@ -31,4 +31,4 @@ void nvm_write_float(void *address, float value);
 }
 #endif
 
-#endif /* _NVM_H_ */
+#endif /* _LIBE_NVM_H_ */

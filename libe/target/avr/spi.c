@@ -12,13 +12,7 @@
 #include <libe/os.h>
 
 
-/* spi device context */
-struct spi_device {
-	int8_t ss;
-};
-
-
-spi_master_t spi_master_open(void *context, uint32_t frequency, uint8_t miso, uint8_t mosi, uint8_t sclk)
+int spi_master_open(struct spi_master *master, void *context, uint32_t frequency, uint8_t miso, uint8_t mosi, uint8_t sclk)
 {
 	/* set MOSI, SCK and SS as output and MISO as input */
 	os_gpio_output(10);
@@ -27,11 +21,13 @@ spi_master_t spi_master_open(void *context, uint32_t frequency, uint8_t miso, ui
 	os_gpio_output(13);
 	/* enable spi */
 	SPCR = (1 << SPE) | (1 << MSTR) | (0 << SPR1) | (1 << SPR0) | (0 << DORD);
-	/* avr's seem to have only one spi, no need for separate struct */
-	return (spi_master_t)1;
+
+	/* avr's seem to have only one spi btw */
+
+	return 0;
 }
 
-void spi_master_close(spi_master_t master)
+void spi_master_close(struct spi_master *master)
 {
 	SPCR = 0;
 	os_gpio_input(10);
@@ -40,32 +36,30 @@ void spi_master_close(spi_master_t master)
 	os_gpio_input(13);
 }
 
-spi_device_t spi_open(spi_master_t master, uint8_t ss)
+int spi_open(struct spi_device *device, struct spi_master *master, uint8_t ss)
 {
+	device->ss = ss;
 	os_gpio_output(ss);
 	os_gpio_high(ss);
 	/* do not return zero even if the pin is zero :P */
-	return (spi_device_t)(ss + 1);
+	return 0;
 }
 
-void spi_close(spi_device_t device)
+void spi_close(struct spi_device *device)
 {
-	uint8_t ss = ((int)device) - 1;
-	os_gpio_input(ss);
+	os_gpio_input(device->ss);
 }
 
-int spi_transfer(spi_device_t device, uint8_t *data, size_t size)
+int spi_transfer(struct spi_device *device, uint8_t *data, size_t size)
 {
-	uint8_t ss = ((int)device) - 1;
-
-	os_gpio_low(ss);
+	os_gpio_low(device->ss);
 	for ( ; size > 0; size--) {
 		SPDR = *data;
 		while (!(SPSR & (1 << SPIF)));
 		*data = SPDR;
 		data++;
 	}
-	os_gpio_high(ss);
-	
+	os_gpio_high(device->ss);
+
 	return 0;
 }

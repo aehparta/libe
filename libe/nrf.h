@@ -4,8 +4,8 @@
  * Authors: Antti Partanen <aehparta@iki.fi>
  */
 
-#ifndef __NRF_H__
-#define __NRF_H__
+#ifndef _LIBE_NRF_H_
+#define _LIBE_NRF_H_
 
 #include <stdint.h>
 #include "spi.h"
@@ -43,17 +43,21 @@ extern "C" {
 #define NRF_REG_FEATURE         0x1d
 
 
-typedef void * nrf_device_t;
+/* nrf device context */
+struct nrf_device {
+	struct spi_device spi;
+	uint8_t ce;
+};
 
 
-nrf_device_t nrf_init(spi_master_t master, int ss, int ce);
-void nrf_quit(void);
-int nrf_simple_cmd(uint8_t command);
-int nrf_read_status(void);
-int nrf_read_reg(uint8_t reg, uint8_t *status);
-int nrf_write_reg(uint8_t reg, uint8_t data);
-int nrf_enable_radio(void);
-int nrf_disable_radio(void);
+int nrf_open(struct nrf_device *nrf, struct spi_master *master, int ss, int ce);
+void nrf_close(struct nrf_device *nrf);
+int nrf_simple_cmd(struct nrf_device *nrf, uint8_t command);
+int nrf_read_status(struct nrf_device *nrf);
+int nrf_read_reg(struct nrf_device *nrf, uint8_t reg, uint8_t *status);
+int nrf_write_reg(struct nrf_device *nrf, uint8_t reg, uint8_t data);
+int nrf_enable_radio(struct nrf_device *nrf);
+int nrf_disable_radio(struct nrf_device *nrf);
 
 /**
  * Set pipe address.
@@ -68,20 +72,20 @@ int nrf_disable_radio(void);
  * @param  a4   address byte 4 (MSB)
  * @return      nrf chip status register when ok, -1 if error
  */
-int nrf_set_address(uint8_t pipe, uint8_t a0, uint8_t a1, uint8_t a2, uint8_t a3, uint8_t a4);
+int nrf_set_address(struct nrf_device *nrf, uint8_t pipe, uint8_t a0, uint8_t a1, uint8_t a2, uint8_t a3, uint8_t a4);
 
-void nrf_setup(void);
-int nrf_mode_tx(void);
-int nrf_mode_rx(void);
-int nrf_flush_tx(void);
-int nrf_flush_rx(void);
-void nrf_set_power(uint8_t power);
-int nrf_recv(void *data);
-int nrf_send(void *data);
+void nrf_setup(struct nrf_device *nrf);
+int nrf_mode_tx(struct nrf_device *nrf);
+int nrf_mode_rx(struct nrf_device *nrf);
+int nrf_flush_tx(struct nrf_device *nrf);
+int nrf_flush_rx(struct nrf_device *nrf);
+void nrf_set_power(struct nrf_device *nrf, uint8_t power);
+int nrf_recv(struct nrf_device *nrf, void *data);
+int nrf_send(struct nrf_device *nrf, void *data);
 
 
 #ifdef __cplusplus
 }
 #endif
 
-#endif /* __NRF_H__ */
+#endif /* _LIBE_NRF_H_ */

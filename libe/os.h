@@ -5,8 +5,8 @@
  *  Antti Partanen <aehparta@iki.fi>
  */
 
-#ifndef _OS_H_
-#define _OS_H_
+#ifndef _LIBE_OS_H_
+#define _LIBE_OS_H_
 
 #ifdef __cplusplus
 extern "C" {
@@ -99,4 +99,4 @@ int os_gpio_read(uint8_t pin);
 }
 #endif
 
-#endif /* _OS_H_ */
+#endif /* _LIBE_OS_H_ */

@@ -5,8 +5,8 @@
  *  Antti Partanen <aehparta@iki.fi>
  */
 
-#ifndef _LOG_H_
-#define _LOG_H_
+#ifndef _LIBE_LOG_H_
+#define _LIBE_LOG_H_
 
 #include <stdint.h>
 
@@ -61,4 +61,4 @@ void log_quit(void);
 }
 #endif
 
-#endif /* _DEBUG_H_ */
+#endif /* _LIBE_LOG_H_ */

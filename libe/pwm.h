@@ -2,8 +2,8 @@
  * PWM
  */
 
-#ifndef _PWM_H_
-#define _PWM_H_
+#ifndef _LIBE_PWM_H_
+#define _LIBE_PWM_H_
 
 #include <stdint.h>
 
@@ -20,4 +20,4 @@ void pwm_set_duty(uint8_t channel, float duty);
 }
 #endif
 
-#endif /* _PWM_H_ */
+#endif /* _LIBE_PWM_H_ */

@@ -11,8 +11,8 @@
  * Authors: Antti Partanen <aehparta@iki.fi, duge at IRCnet>
  */
 
-#ifndef LINKEDLIST_H
-#define LINKEDLIST_H
+#ifndef _LIBE_LINKEDLIST_H_
+#define _LIBE_LINKEDLIST_H_
 
 
 /**
@@ -149,5 +149,5 @@ do { \
 } while (0)
 
 
-#endif /* LINKEDLIST_H */
+#endif /* _LIBE_LINKEDLIST_H_ */
 

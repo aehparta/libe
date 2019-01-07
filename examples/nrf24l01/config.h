@@ -1,7 +1,7 @@
-
 /*
  * Platform specific configuration defaults.
  */
+
 
 #ifdef TARGET_AVR
 #define CFG_SPI_CONTEXT     NULL
@@ -13,6 +13,7 @@
 #define CFG_NRF_CE          9
 #endif
 
+
 #ifdef TARGET_PIC8
 #define CFG_SPI_CONTEXT     NULL
 #define CFG_SPI_FREQUENCY   0
@@ -22,6 +23,7 @@
 #define CFG_NRF_SS          0
 #define CFG_NRF_CE          1
 #endif
+
 
 #ifdef TARGET_PIC32
 #define CFG_SPI_CONTEXT     NULL
@@ -33,6 +35,7 @@
 #define CFG_NRF_CE          1
 #endif
 
+
 #ifdef TARGET_X86
 #define CFG_SPI_CONTEXT     NULL
 #define CFG_SPI_FREQUENCY   0
@@ -42,6 +45,7 @@
 #define CFG_NRF_SS          0x08
 #define CFG_NRF_CE          0x10
 #endif
+
 
 #ifdef TARGET_MSP430
 #define CFG_SPI_CONTEXT     NULL
@@ -53,6 +57,7 @@
 #define CFG_NRF_CE          0
 #endif
 
+
 #ifdef TARGET_RPI
 #define CFG_SPI_CONTEXT     NULL
 #define CFG_SPI_FREQUENCY   0
@@ -62,6 +67,7 @@
 #define CFG_NRF_SS          8
 #define CFG_NRF_CE          25
 #endif
+
 
 #ifdef TARGET_ESP32
 #define CFG_SPI_CONTEXT     ((void *)HSPI_HOST)

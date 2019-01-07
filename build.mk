@@ -9,6 +9,9 @@ ifeq ($(TARGET),)
     $(error TARGET not set)
 endif
 
+# include compiler stuff
+include $(LIBE_PATH)/cc.mk
+
 # build directory
 BUILDDIR ?= .build.$(TARGET)
 

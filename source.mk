@@ -6,16 +6,15 @@ endif
 
 # libe sources
 libe_SRC = \
-    $(LIBE_PATH)/libe/nrf.c \
-    $(LIBE_PATH)/libe/aes.c \
-    $(LIBE_PATH)/libe/comm.c \
-    $(LIBE_PATH)/libe/i2c.c \
     $(LIBE_PATH)/libe/target/$(TARGET)/os.c \
     $(LIBE_PATH)/libe/target/$(TARGET)/spi.c \
     $(LIBE_PATH)/libe/target/$(TARGET)/i2c.c \
     $(LIBE_PATH)/libe/target/$(TARGET)/log.c \
     $(LIBE_PATH)/libe/target/$(TARGET)/nvm.c \
-    $(LIBE_PATH)/libe/target/$(TARGET)/pwm.c
+    $(LIBE_PATH)/libe/target/$(TARGET)/pwm.c \
+    $(LIBE_PATH)/libe/nrf.c \
+    $(LIBE_PATH)/libe/aes.c \
+    $(LIBE_PATH)/libe/i2c.c
 
 # target specific stuff
 ifeq ($(TARGET),x86)
