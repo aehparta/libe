@@ -1,18 +1,17 @@
 /*
- * libe cross-platform library: device communication link
+ * libe cross-platform library: simple communication link
  *
  * Authors:
  *  Antti Partanen <aehparta@iki.fi>
  */
 
+#ifdef USE_FTDI
+#include <libftdi1/ftdi.h>
+#endif
 #include "comm.h"
 #include "debug.h"
 #include "nrf.h"
 #include "config.h"
-#ifdef USE_FTDI
-#include "cmd-common.h"
-#endif
-
 
 #ifdef USE_NRF
 static spi_master_t comm_spi_master = NULL;
@@ -65,7 +64,7 @@ int comm_init(void)
 	}
 #endif
 
-	/* check that atleast one communication channel was initialized */
+	/* check that at least one communication channel was initialized */
 	ERROR_IF_R(count < 1, -1, "no communication channel initialized, unable to communicate");
 
 	return 0;

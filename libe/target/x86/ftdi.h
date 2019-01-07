@@ -7,6 +7,7 @@
 
 #ifndef _FTDI_H_
 #define _FTDI_H_
+#ifdef USE_FTDI
 
 #ifdef __cplusplus
 extern "C" {
@@ -20,4 +21,5 @@ struct ftdi_context *ftdi_open(uint16_t vid, uint16_t pid, int interface, const 
 }
 #endif
 
+#endif
 #endif /* _FTDI_H_ */

@@ -9,7 +9,7 @@
 #ifdef TARGET_AVR
 #include <avr/io.h>
 #endif
-#ifdef TARGET_X86
+#ifdef USE_FTDI
 #include <libftdi1/ftdi.h>
 #endif
 #include "nrf.h"
@@ -17,15 +17,18 @@
 #include "os.h"
 
 
-static spi_device_t spi_handle = NULL;
-static int nrf_ce = -1;
+/* nrf device context */
+struct nrf_device {
+	struct spi_device *spi;
+	uint8_t ce;
+};
 
 
-int nrf_init(spi_master_t master, int ss, int ce)
+nrf_device_t nrf_init(spi_master_t master, int ss, int ce)
 {
-	nrf_ce = ce;
+	// struct nrf_device *nrf = malloc();
 
-#ifndef TARGET_X86
+#ifndef USE_FTDI
 	os_gpio_output(ce);
 #endif
 	nrf_disable_radio();
@@ -89,7 +92,7 @@ int nrf_write_reg(uint8_t reg, uint8_t data)
 
 int nrf_enable_radio()
 {
-#if TARGET_X86
+#ifdef USE_FTDI
 	return spi_ftdi_set(spi_handle, nrf_ce);
 #else
 	return os_gpio_high(nrf_ce);
@@ -99,7 +102,7 @@ int nrf_enable_radio()
 
 int nrf_disable_radio()
 {
-#if TARGET_X86
+#ifdef USE_FTDI
 	return spi_ftdi_clr(spi_handle, nrf_ce);
 #else
 	return os_gpio_low(nrf_ce);

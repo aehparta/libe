@@ -19,21 +19,6 @@
 extern "C" {
 #endif
 
-#ifdef TARGET_AVR
-/* avr */
-struct spi_context {
-	uint8_t ss;
-	volatile uint8_t *ss_port;
-};
-#elif TARGET_RPI
-/* raspberry */
-#define SPI_DEFAULT_FREQUENCY       10e6
-struct spi_context {
-	int fd;
-	uint32_t frequency;
-};
-#endif
-
 typedef void * spi_master_t;
 typedef void * spi_device_t;
 

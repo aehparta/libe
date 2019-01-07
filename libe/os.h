@@ -32,13 +32,11 @@ extern "C" {
 #include "target/msp430/os.h"
 #elif TARGET_X86
 #include <signal.h>
-#include "cmd-common.h"
 #ifdef USE_FTDI
 #include "target/x86/ftdi.h"
 #endif
 #elif TARGET_RPI
 #include <signal.h>
-#include "cmd-common.h"
 #endif
 
 #ifdef TARGET_AVR

@@ -14,50 +14,6 @@
 extern "C" {
 #endif
 
-// #if defined(NRF_GPIO_CSN) && defined(NRF_GPIO_CE) && defined(NRF_GPIO_CONTEXT)
-// /* defined already outside of the code */
-// #elif TARGET_AVR
-// /* avr */
-// #define NRF_GPIO_CSN            0
-// #define NRF_GPIO_CE             1
-// #define NRF_GPIO_CONTEXT        B
-// #elif TARGET_PIC8
-// /* 8-bit pic */
-// #define NRF_GPIO_CSN            0
-// #define NRF_GPIO_CE             1
-// #define NRF_GPIO_CONTEXT        C
-// #elif TARGET_PIC16
-// /* 16-bit pic */
-// #define NRF_GPIO_CSN            0
-// #define NRF_GPIO_CE             1
-// #define NRF_GPIO_CONTEXT        B
-// #elif TARGET_PIC32
-// /* 32-bit pic */
-// #define NRF_GPIO_CSN            0
-// #define NRF_GPIO_CE             1
-// #define NRF_GPIO_CONTEXT        NULL
-// #elif TARGET_MSP430
-// /* ti msp430 */
-// #define NRF_GPIO_CSN            0
-// #define NRF_GPIO_CE             1
-// #define NRF_GPIO_CONTEXT        1
-// #elif TARGET_RPI
-// /* raspberry */
-// #define NRF_GPIO_CSN            8
-// #define NRF_GPIO_CE             25
-// #define NRF_GPIO_CONTEXT        NULL
-// #elif TARGET_X86
-// /* x86 (through ftdi usb) */
-// #define NRF_GPIO_CSN            0x08
-// #define NRF_GPIO_CE             0x10
-// #define NRF_GPIO_CONTEXT        NULL
-// #elif TARGET_ESP32
-// /* esp32 */
-// #define NRF_GPIO_CSN            GPIO_NUM_15
-// #define NRF_GPIO_CE             GPIO_NUM_27
-// #define NRF_GPIO_CONTEXT        NULL
-// #endif
-
 /* nRF24L01+ register addresses */
 #define NRF_REG_CONFIG          0x00
 #define NRF_REG_EN_AA           0x01
@@ -87,7 +43,10 @@ extern "C" {
 #define NRF_REG_FEATURE         0x1d
 
 
-int nrf_init(spi_master_t master, int ss, int ce);
+typedef void * nrf_device_t;
+
+
+nrf_device_t nrf_init(spi_master_t master, int ss, int ce);
 void nrf_quit(void);
 int nrf_simple_cmd(uint8_t command);
 int nrf_read_status(void);

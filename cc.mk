@@ -49,54 +49,53 @@ else
 endif
 
 # tools
-CC          ?= $(CC_PREFIX)gcc
-OBJCOPY     ?= $(CC_PREFIX)objcopy
-OBJDUMP     ?= $(CC_PREFIX)objdump
-OBJSIZE     ?= $(CC_PREFIX)size
-AR          ?= $(CC_PREFIX)ar
-NM          ?= $(CC_PREFIX)nm
-REMOVE      ?= rm
-AR_FLAGS    ?= rcs
-OBJ_EXT     ?= .o
-LIB_EXT     ?= .a
-BIN_EXT     ?= .elf
+CC          = $(CC_PREFIX)gcc
+OBJCOPY     = $(CC_PREFIX)objcopy
+OBJDUMP     = $(CC_PREFIX)objdump
+OBJSIZE     = $(CC_PREFIX)size
+AR          = $(CC_PREFIX)ar
+NM          = $(CC_PREFIX)nm
+REMOVE      = rm
 
 # compiler options
 ifeq ($(TARGET),avr)
-    libe_DEFINES += -DF_CPU=$(F_CPU) -DAES_OPT_8_BIT
+    libe_CFLAGS  += -DF_CPU=$(F_CPU)
     libe_CFLAGS  += -mmcu=$(MCU)
     libe_CFLAGS  += -ffunction-sections -fdata-sections
     libe_LDFLAGS += -mmcu=$(MCU) -Wl,-u,vfprintf -lprintf_flt
     libe_LDFLAGS += -Wl,--gc-sections
 else ifeq ($(TARGET),pic8)
-    libe_DEFINES += -DF_CPU=$(F_CPU) -DAES_OPT_8_BIT
+    libe_CFLAGS  += -DF_CPU=$(F_CPU)
     libe_CFLAGS  += -mcpu=$(MCU)
     libe_CFLAGS  += -fno-short-float -fno-short-double
     libe_LDFLAGS += -mcpu=$(MCU) -Wl,--gc-sections
     CC       = xc8-cc
     AR       = xc8
-    AR_FLAGS = --output=lpp --chip=$(MCU)
-    OBJ_EXT  = .p1
-    LIB_EXT  = .lpp
+    AR_FLAGS ?= --output=lpp --chip=$(MCU)
+    OBJ_EXT  ?= .p1
+    LIB_EXT  ?= .lpp
     OBJCOPY  = 
     OBJDUMP  =
+    OPTIMIZATION = 1
 else ifeq ($(TARGET),pic16)
-    libe_DEFINES += -DF_CPU=$(F_CPU)
+    libe_CFLAGS  += -DF_CPU=$(F_CPU)
     libe_CFLAGS  += -mcpu=$(MCU)
     libe_CFLAGS  += -ffunction-sections -fdata-sections -fomit-frame-pointer -no-legacy-libc -mpa
     libe_LDFLAGS += -T p$(MCU).gld
     libe_LDFLAGS += -Wl,--gc-sections
     OBJCOPY  = 
     BIN2HEX  = xc16-bin2hex
+    OPTIMIZATION = 1
 else ifeq ($(TARGET),pic32)
-    libe_DEFINES += -DF_CPU=$(F_CPU)
+    libe_CFLAGS  += -DF_CPU=$(F_CPU)
     libe_CFLAGS  += -mprocessor=$(MCU)
     libe_CFLAGS  += -ffunction-sections -fdata-sections -no-legacy-libc
     libe_LDFLAGS += -mprocessor=$(MCU)
     libe_LDFLAGS += -Wl,--gc-sections -no-legacy-libc
     libe_LDFLAGS += -Wl,--defsym=_min_heap_size=0,--gc-sections,--no-code-in-dinit,--no-dinit-in-serial-mem,-Map=$(TARGET).map,--cref
+    OPTIMIZATION = 1
 else ifeq ($(TARGET),msp430)
-    libe_DEFINES += -DF_CPU=$(F_CPU)
+    libe_CFLAGS  += -DF_CPU=$(F_CPU)
     libe_CFLAGS  += -mmcu=$(MCU) -I$(MSP430_INC_DIR)
     libe_CFLAGS  += -ffunction-sections -fdata-sections
     #libe_CFLAGS  += -mlarge -mcode-region=either -mdata-region=either
@@ -104,23 +103,22 @@ else ifeq ($(TARGET),msp430)
     libe_LDFLAGS += -Wl,--gc-sections
     #libe_LDFLAGS += -mlarge -mcode-region=either -mdata-region=either
 else ifeq ($(TARGET),x86)
-    libe_DEFINES += -DUSE_LINUX
     libe_LDFLAGS += -lftdi1 -lrt -lpthread -lpcre
 else ifeq ($(TARGET),rpi)
-    libe_DEFINES += -DUSE_LINUX
     libe_LDFLAGS += -lrt -lpthread -lpcre
 endif
+
+AR_FLAGS     ?= rcs
+OBJ_EXT      ?= .o
+LIB_EXT      ?= .a
+BIN_EXT      ?= .elf
+OPTIMIZATION ?= s
+
+libe_CFLAGS += -O$(OPTIMIZATION)
 
 # ifeq ($(TARGET),pic8)
 #     libe_CFLAGS     += -std=c99 -O$(OPT)
 # else
 #     libe_CFLAGS     += -D_GNU_SOURCE -std=gnu99 -g -O$(OPT) -Wall -Wstrict-prototypes -Werror
 # endif
-libe_CFLAGS += -I$(LIBE_PATH)
 
-# debug
-DEBUG ?= 1
-ifeq ($(DEBUG),1)
-    # debug on
-    libe_DEFINES += -DDEBUG
-endif

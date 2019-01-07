@@ -161,4 +161,43 @@ int spi_ftdi_clr(spi_device_t device, uint8_t pins)
 	return 0;
 }
 
+#else
+
+/* empty spi functions */
+
+spi_master_t spi_master_open(void *context, uint32_t frequency, uint8_t miso, uint8_t mosi, uint8_t sclk)
+{
+	return NULL;
+}
+
+void spi_master_close(spi_master_t master)
+{
+
+}
+
+spi_device_t spi_open(spi_master_t master, uint8_t ss)
+{
+	return NULL;
+}
+
+void spi_close(spi_device_t device)
+{
+
+}
+
+int spi_transfer(spi_device_t device, uint8_t *data, size_t size)
+{
+	return -1;
+}
+
+int spi_ftdi_set(spi_master_t master, uint8_t pins)
+{
+	return -1;
+}
+
+int spi_ftdi_clr(spi_master_t master, uint8_t pins)
+{
+	return -1;
+}
+
 #endif
