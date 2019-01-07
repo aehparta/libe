@@ -38,9 +38,9 @@ int p_init(int argc, char *argv[])
 	/* nrf initialization */
 	ERROR_IF_R(nrf_open(&nrf, &master, CFG_NRF_SS, CFG_NRF_CE), -1, "nrf24l01+ failed to initialize");
 	/* change channel, default is 70 */
-	nrf_set_channel(&nrf, 7);
+	nrf_set_channel(&nrf, 1);
 	/* change speed, default is 250k */
-	// nrf_set_speed(&nrf, NRF_SPEED_2M);
+	nrf_set_speed(&nrf, NRF_SPEED_2M);
 	/* enable radio in listen mode */	nrf_mode_rx(&nrf);
 	nrf_flush_rx(&nrf);
 	nrf_enable_radio(&nrf);

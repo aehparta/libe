@@ -45,7 +45,7 @@ int p_init(int argc, char *argv[])
 	/* change channel, default is 70 */
 	nrf_set_channel(&nrf, 7);
 	/* change speed, default is 250k */
-	// nrf_set_speed(&nrf, NRF_SPEED_2M);
+	nrf_set_speed(&nrf, NRF_SPEED_2M);
 	/* enable radio in listen mode */
 	nrf_mode_rx(&nrf);
 	nrf_flush_rx(&nrf);
@@ -117,3 +117,10 @@ int main(int argc, char *argv[])
 	p_exit(EXIT_SUCCESS);
 	return EXIT_SUCCESS;
 }
+
+#ifdef TARGET_ESP32
+int app_main(int argc, char *argv[])
+{
+	return main(argc, argv);
+}
+#endif
