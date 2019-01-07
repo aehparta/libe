@@ -4,9 +4,6 @@ ifeq ($(LIBE_PATH),)
     $(error LIBE_PATH not set)
 endif
 
-# default target
-target ?= avr
-
 # init
 include $(LIBE_PATH)/init.mk
 

@@ -41,7 +41,8 @@ int p_init(int argc, char *argv[])
 	nrf_set_channel(&nrf, 7);
 	/* change speed, default is 250k */
 	nrf_set_speed(&nrf, NRF_SPEED_2M);
-	/* enable radio in listen mode */	nrf_mode_rx(&nrf);
+	/* enable radio in listen mode */
+	nrf_mode_rx(&nrf);
 	nrf_flush_rx(&nrf);
 	nrf_enable_radio(&nrf);
 
