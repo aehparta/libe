@@ -55,6 +55,10 @@ void p_exit(int retval)
 
 int main(int argc, char *argv[])
 {
+#ifdef USE_LINUX
+	os_time_t t = os_timef();
+#endif
+
 	/* init */
 	if (p_init(argc, argv)) {
 		ERROR_MSG("initialization failed");
@@ -64,22 +68,63 @@ int main(int argc, char *argv[])
 	/* program loop */
 	DEBUG_MSG("starting main program loop");
 	while (1) {
+		int i;
 		uint8_t data[32];
+
 		int ok = nrf_recv(&nrf, data);
 		if (ok < 0) {
 			CRIT_MSG("device disconnected?");
 			break;
 		} else if (ok > 0) {
-			printf("Packet received, data as ascii and hex dumps:\r\n");
-			printf(LDC_DGRAYB);
-			ASCII_DUMP(data, sizeof(data), 0);
-			printf(LDC_YELLOWB);
-			HEX_DUMP(data, sizeof(data));
-			printf(LDC_DEFAULT);
+			/* if packet is a "ping" packet, respond */
+			for (i = 0; i < 32; i++) {
+				if (data[i] != i) {
+					break;
+				}
+			}
+			if (i == 32) {
+				printf("Ping packet received, replying\r\n");
+				for (i = 0; i < 32; i++) {
+					data[i] = 31 - i;
+				}
+				nrf_send(&nrf, data);
+				continue;
+			}
+
+			/* if packet is a "pong" packet, check time */
+#ifdef USE_LINUX
+			for (i = 0; i < 32; i++) {
+				if (data[i] != (31 - i)) {
+					break;
+				}
+			}
+			if (i == 32) {
+				printf("Pong packet received, response time: %lf ms\r\n", (double)((os_timef() - t) * 1000.0L));
+			}
+#endif
+
+			/* print info */
+			// printf("Packet received, data as ascii and hex dumps:\r\n");
+			// printf(LDC_DGRAYB);
+			// ASCII_DUMP(data, sizeof(data), 0);
+			// printf(LDC_YELLOWB);
+			// HEX_DUMP(data, sizeof(data));
+			// printf(LDC_DEFAULT);
 		}
 
+		/* send a test "ping" packet and check response time */
+#ifdef USE_LINUX
+		if ((t + 1.0) < os_timef()) {
+			for (i = 0; i < 32; i++) {
+				data[i] = i;
+			}
+			nrf_send(&nrf, data);
+			t = os_timef();
+		}
+#endif
+
 		/* lets not waste all cpu */
-		os_sleepf(0.5);
+		os_sleepf(0.001);
 	}
 
 	p_exit(EXIT_SUCCESS);
