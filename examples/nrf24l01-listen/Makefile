@@ -4,8 +4,18 @@ ifeq ($(LIBE_PATH),)
     $(error LIBE_PATH not set)
 endif
 
-# init
-include $(LIBE_PATH)/init.mk
+# determine target
+include $(LIBE_PATH)/target.mk
+
+# enable spi
+libe_USE += SPI
+ifdef TARGET_X86
+    libe_USE += FTDI
+endif
+
+# flags and sources
+include $(LIBE_PATH)/flags.mk
+include $(LIBE_PATH)/source.mk
 
 # our own sources etc
 BUILD_BINS = nrf24l01_listen

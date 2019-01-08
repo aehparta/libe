@@ -46,7 +46,7 @@ extern "C" {
 #define LOG_MSG(level, file, line, func, msg, ...)      log_msg(level, file, line, func, PSTR(msg), ##__VA_ARGS__)
 
 
-#ifndef USE_NOT_LOG /* logging functions if not disabled specifically */
+#ifdef USE_LOG /* logging functions */
 
 /** Initialize logging. */
 int log_init(void *context, uint32_t baud);
@@ -63,7 +63,7 @@ void log_quit(void);
 #define log_msg(level, file, line, func, msg, ...)
 #define log_quit()
 
-#endif /* USE_NOT_LOG */
+#endif /* USE_LOG */
 
 
 #ifdef __cplusplus

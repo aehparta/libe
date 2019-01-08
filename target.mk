@@ -32,40 +32,34 @@ endif
 # check that target is supported
 ifeq ($(TARGET),x86)
     # pc
-    libe_DEFINES += USE_LINUX
+    TARGET_X86 = 1
+    TARGET_LINUX = 1
+    libe_DEFINES += TARGET_LINUX
 else ifeq ($(TARGET),rpi)
     # raspberry
-    libe_DEFINES += USE_LINUX
+    TARGET_RPI = 1
+    TARGET_LINUX = 1
+    libe_DEFINES += TARGET_LINUX
 else ifeq ($(TARGET),esp32)
     # esp32
+    TARGET_ESP32 = 1
 else ifeq ($(TARGET),avr)
     # microchip avr
+    TARGET_AVR = 1
     libe_DEFINES += AES_OPT_8_BIT
 else ifeq ($(TARGET),pic8)
     # microchip pic 8-bit
+    TARGET_PIC8 = 1
     libe_DEFINES += AES_OPT_8_BIT
 else ifeq ($(TARGET),pic16)
     # microchip pic 16-bit
+    TARGET_PIC16 = 1
 else ifeq ($(TARGET),pic32)
     # microchip pic 32-bit
+    TARGET_PIC32 = 1
 else ifeq ($(TARGET),msp430)
     # ti msp430
+    TARGET_MSP430 = 1
 else
     $(error libe: unsupported target or target not set)
-endif
-
-# add target definition
-libe_DEFINES += TARGET=$(shell echo $(TARGET) | tr '[:lower:]' '[:upper:]') TARGET_$(shell echo $(TARGET) | tr '[:lower:]' '[:upper:]')
-
-# unravel uses from environment
-libe_DEFINES += $(foreach use,$(USE),USE_$(use))
-
-# unravel defines from environment
-libe_DEFINES += $(foreach define,$(DEFINES),$(define))
-
-# debug
-DEBUG ?= 1
-ifeq ($(DEBUG),1)
-    # debug on
-    libe_DEFINES += DEBUG
 endif
