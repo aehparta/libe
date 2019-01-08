@@ -26,7 +26,7 @@ Generic SPI interface. Supports multiple SPI masters and multiple devices under 
 
 #### Drivers
 
-* nrf24l01+
+* NRF24L01+
 
 ### I2C
 
