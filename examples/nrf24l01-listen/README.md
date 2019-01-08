@@ -8,6 +8,15 @@
     * ADBUS2: MISO
     * ADBUS3: SS
     * ADBUS4: CE (NRF radio enable)
-* avr on atmega328
+* AVR on atmega328
     * PB0: SS
     * PB1: CE (NRF radio enable)
+* Raspberry Pi 3 Model B
+    * SPI: /dev/spidev0.0
+    * GPIO25: CE (NRF radio enable)
+* ESP32
+    * GPIO14: SCLK
+    * GPIO13: MOSI
+    * GPIO12: MISO
+    * GPIO26: SS
+    * GPIO27: CE (NRF radio enable)
