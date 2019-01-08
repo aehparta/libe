@@ -19,7 +19,7 @@ struct i2c_context *i2c_open(void *context)
 	I2C_SDA_HIGH();
 	I2C_SDA_INPUT();
 	/* this delay was in the old code for reasons unknown */
-	_delay_ms(20);
+	os_delay_ms(20);
 	return (struct i2c_context *)1;
 }
 
@@ -119,5 +119,5 @@ void i2c_stop(struct i2c_context *i2c)
 
 	I2C_SDA_INPUT();
 	I2C_SDA_HIGH();
-	_delay_us(10);
+	os_delay_us(10);
 }

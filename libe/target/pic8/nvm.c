@@ -6,6 +6,8 @@
 #include <libe/nvm.h>
 
 
+#ifdef EEADR
+
 int nvm_init(void *context, size_t size)
 {
 	return 0;
@@ -24,7 +26,9 @@ uint8_t nvm_read_byte(void *address, uint8_t default_value)
 	INTCONbits.GIE = 0;
 	/* read eeprom */
 	EEADR = (uint8_t)addr;
+#ifdef EEADRH
 	EEADRH = (uint8_t)(addr >> 8);
+#endif
 	uint8_t value = EEDATA;
 	/* restore interrupt state */
 	INTCONbits.GIE = gie;
@@ -81,3 +85,5 @@ float nvm_read_float(void *address, float default_value)
 void nvm_write_float(void *address, float value)
 {
 }
+
+#endif

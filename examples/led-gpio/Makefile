@@ -8,12 +8,12 @@ endif
 include $(LIBE_PATH)/init.mk
 
 # our own sources etc
-BUILD_BINS = nrf24l01_listen
-PROGRAM_BIN = nrf24l01_listen
-nrf24l01_listen_SRC = main.c $(libe_SRC)
+BUILD_BINS = led_gpio
+PROGRAM_BIN = led_gpio
+led_gpio_SRC = main.c $(libe_SRC)
 
 # compile flags
-CFLAGS += -D_GNU_SOURCE $(libe_CFLAGS)
+CFLAGS += $(libe_CFLAGS)
 LDFLAGS += $(libe_LDFLAGS)
 
 # build
