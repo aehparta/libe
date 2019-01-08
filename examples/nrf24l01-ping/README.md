@@ -1,6 +1,6 @@
 # NRF24L01+ ping example application
 
-This example need precise timing, so it was not tested on smaller/slower platforms.
+This example needs precise timing, so it was not tested on smaller/slower platforms.
 
 ## Tested targets
 
