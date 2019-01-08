@@ -114,7 +114,7 @@ LIB_EXT      ?= .a
 BIN_EXT      ?= .elf
 OPTIMIZATION ?= s
 
-libe_CFLAGS += -O$(OPTIMIZATION)
+libe_CFLAGS += -O$(OPTIMIZATION) -g -Wall -Wstrict-prototypes -Werror
 
 # ifeq ($(TARGET),pic8)
 #     libe_CFLAGS     += -std=c99 -O$(OPT)
