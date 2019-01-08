@@ -9,6 +9,7 @@
     * ADBUS3: SS
     * ADBUS4: CE (NRF radio enable)
 * AVR on atmega328
+    * SPI: hardware
     * PB0: SS
     * PB1: CE (NRF radio enable)
 * Raspberry Pi 3 Model B
