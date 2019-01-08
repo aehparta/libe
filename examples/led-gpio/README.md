@@ -7,6 +7,11 @@
     * PB5: Second LED
     * PD0/PD1: Serial port logging, 38400 8N1
 
+* avr on atmega8 (in emulator)
+    * PB4: First LED
+    * PB5: Second LED
+    * PD0/PD1: Serial port logging, 38400 8N1
+
 * pic8 on pic18f2410 (in emulator)
     * RB4: First LED
     * RB5: Second LED

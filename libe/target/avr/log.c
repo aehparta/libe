@@ -10,11 +10,36 @@
 #include <libe/debug.h>
 
 
+#if defined(AVR_LOG_UDR)
+/* already defined outside of this */
+#elif defined(UDR0)
+#define AVR_LOG_UCSRA  UCSR0A
+#define AVR_LOG_UCSRB  UCSR0B
+#define AVR_LOG_UCSRC  UCSR0C
+#define AVR_LOG_UDRE   UDRE0
+#define AVR_LOG_UDR    UDR0
+#define AVR_LOG_UBRR   UBRR0
+#define AVR_LOG_TXEN   TXEN0
+#define AVR_LOG_RXEN   RXEN0
+#define AVR_LOG_UCSZ   UCSZ00
+#elif defined(UDR)
+#define AVR_LOG_UCSRA  UCSRA
+#define AVR_LOG_UCSRB  UCSRB
+#define AVR_LOG_UCSRC  UCSRC
+#define AVR_LOG_UDRE   UDRE
+#define AVR_LOG_UDR    UDR
+#define AVR_LOG_UBRR   UBRRL
+#define AVR_LOG_TXEN   TXEN
+#define AVR_LOG_RXEN   RXEN
+#define AVR_LOG_UCSZ   UCSZ0
+#endif
+
+
 static int log_putchar(char c, FILE *stream)
 {
 	/* wait for empty transmit buffer and then send data */
-	while (!(UCSR0A & (1 << UDRE0)));
-	UDR0 = c;
+	while (!(AVR_LOG_UCSRA & (1 << AVR_LOG_UDRE)));
+	AVR_LOG_UDR = c;
 	return 0;
 }
 
@@ -26,16 +51,20 @@ int log_init(void *context, uint32_t baud)
 	}
 
 	/* calculate ubrr register value from baud */
-	UBRR0 = (F_CPU / (16 * baud) - 1) & 0x0fff;
+	AVR_LOG_UBRR = (F_CPU / (16 * baud) - 1) & 0x0fff;
 
 	/* disable double */
-	UCSR0A = 0;
+	AVR_LOG_UCSRA = 0;
 
 	/* enable receiver and transmitter */
-	UCSR0B = (1 << RXEN0) | (1 << TXEN0);
+	AVR_LOG_UCSRB = (1 << AVR_LOG_RXEN) | (1 << AVR_LOG_TXEN);
 
 	/* set frame format: 8N1 */
-	UCSR0C = (0x3 << UCSZ00);
+#ifdef URSEL
+	AVR_LOG_UCSRC = (1 << URSEL) | (0x3 << AVR_LOG_UCSZ);
+#else
+	AVR_LOG_UCSRC = (0x3 << AVR_LOG_UCSZ);
+#endif
 
 	static FILE log_stdout = FDEV_SETUP_STREAM(log_putchar, NULL, _FDEV_SETUP_WRITE);
 	stdout = &log_stdout;

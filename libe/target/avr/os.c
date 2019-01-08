@@ -38,6 +38,7 @@ int os_init(void)
 	CLKPR = 0x00; /* change clock divisor to one */
 #endif
 
+#ifdef REFS1
 	/* read random seed from adc channel 7 which is not connected to anything,
 	 * best that can be done atm,
 	 * should be at least somewhat random due to system noice
@@ -55,6 +56,7 @@ int os_init(void)
 	ADMUX = 0;
 	ADCSRA = 0;
 	srand(seed);
+#endif
 
 	return 0;
 }
