@@ -1,4 +1,4 @@
-# NRF24L01+ example listener application
+# NRF24L01+ listening example application
 
 ## Tested targets
 
