@@ -8,11 +8,11 @@ endif
 libe_DEFINES += TARGET=$(shell echo $(TARGET) | tr '[:lower:]' '[:upper:]') TARGET_$(shell echo $(TARGET) | tr '[:lower:]' '[:upper:]')
 
 # unravel uses from environment and libe_USE
-libe_USE += $(foreach use,$(USE),$(use))
+libe_USE += $(foreach use,$(use),$(use))
 libe_DEFINES += $(foreach use,$(libe_USE),USE_$(use))
 
 # unravel defines from environment
-libe_DEFINES += $(foreach define,$(DEFINES),$(define))
+libe_DEFINES += $(foreach define,$(defines),$(define))
 
 # debug
 DEBUG ?= 1
