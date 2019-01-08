@@ -11,13 +11,18 @@ This is achieved by mapping *PORTB* in AVR to pin numbers *8-15*, *PORTC* to *16
 Same for PIC, MSP430 and others that do this kind of thing instead of having continuous
 GPIO pin numbers.
 
+GPIO implemented this way is more and less complex thing.
+Especially 8-bit PIC with free xc8 generated code is slow since no proper optimizations can be used.
+On other platforms, like AVR, GPIO functions are inline and will often optimize as well
+as directly written native code.
+
 ### Timing and delay
 
 Generic *"time elapsed since bootup"* and *sleep/delay* functions.
 
 ### SPI
 
-Generic SPI interfacing. Supports multiple SPI masters and multiple devices under each master.
+Generic SPI interface. Supports multiple SPI masters and multiple devices under each master.
 
 #### Drivers
 
@@ -25,7 +30,7 @@ Generic SPI interfacing. Supports multiple SPI masters and multiple devices unde
 
 ### I2C
 
-Generic I2C interfacing either in bitbang mode or using native hardware.
+Generic I2C interface either in bitbang mode or using native hardware.
 
 #### Drivers
 
