@@ -12,9 +12,9 @@
 #ifdef USE_FTDI
 #include <libftdi1/ftdi.h>
 #endif
+#include <libe/debug.h>
+#include <libe/os.h>
 #include "nrf.h"
-#include "debug.h"
-#include "os.h"
 
 
 int nrf_open(struct nrf_device *nrf, struct spi_master *master, int ss, int ce)

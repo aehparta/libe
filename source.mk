@@ -23,7 +23,7 @@ endif
 ifneq ($(filter $(libe_DEFINES),USE_SPI),)
     libe_SRC += \
         $(LIBE_PATH)/libe/target/$(TARGET)/spi.c \
-        $(LIBE_PATH)/libe/nrf.c
+        $(LIBE_PATH)/libe/drivers/spi/nrf.c
 endif
 
 # add i2c and drivers for chips

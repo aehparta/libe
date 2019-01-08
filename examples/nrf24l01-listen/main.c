@@ -4,7 +4,7 @@
 
 #include <libe/os.h>
 #include <libe/debug.h>
-#include <libe/nrf.h>
+#include <libe/drivers/spi/nrf.h>
 #include "../config.h"
 
 

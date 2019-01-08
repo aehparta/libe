@@ -8,7 +8,7 @@
 #define _LIBE_NRF_H_
 
 #include <stdint.h>
-#include "spi.h"
+#include <libe/spi.h>
 
 #ifdef __cplusplus
 extern "C" {

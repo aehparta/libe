@@ -34,6 +34,7 @@ endif
 ifneq ($(MCU),)
 	@echo $(LDC_DGRAYB) "MCU: $(MCU), CLOCK: $(F_CPU)" $(LDC_DEFAULT)
 endif
+	@echo $(LDC_DGRAYB) "USE: $(libe_USE)" $(LDC_DEFAULT)
 
 build: clean $(BUILD_LIBS) $(BUILD_BINS)
 
