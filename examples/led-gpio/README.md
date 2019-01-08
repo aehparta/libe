@@ -1,0 +1,18 @@
+# LED GPIO blink example application
+
+## Tested targets
+
+* avr on atmega328
+    * PB4: First LED
+    * PB5: Second LED
+    * PD0/PD1: Serial port logging, 38400 8N1
+
+* pic8 on pic18f2410 (in emulator)
+    * RB4: First LED
+    * RB5: Second LED
+    * RC6/RC7: Serial port logging, 38400 8N1
+
+* pic8 on pic18f26k20 (in emulator)
+    * RB4: First LED
+    * RB5: Second LED
+    * RC6/RC7: Serial port logging, 38400 8N1
