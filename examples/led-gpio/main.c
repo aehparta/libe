@@ -49,9 +49,15 @@ int main(int argc, char *argv[])
 #ifdef TARGET_AVR
 		/* previous is same in AVR as writing this */
 		PORTB &= ~(1 << 5);
+#elif defined(LATB) && defined(TARGET_PIC8)
+		/* or in PIC with LATB */
+		LATB &= ~(1 << 5);
+#elif defined(PORTA) && defined(TARGET_PIC8)
+		/* or in older PIC with PORTB */
+		PORTB &= ~(1 << 5);
 #endif
 
-		/* this will call _delay_ms() in AVR, something else in other platforms */
+		/* this will call _delay_ms() in AVR, __delay_ms() in PIC, something else in other platforms */
 		os_delay_ms(500);
 
 		/* toggle pins on the other direction */

@@ -115,7 +115,7 @@ BIN_EXT      ?= .elf
 OPTIMIZATION ?= s
 
 ifeq ($(TARGET),pic8)
-    libe_CFLAGS += -std=c99 -O$(OPTIMIZATION)
+    libe_CFLAGS += -O$(OPTIMIZATION)
 else
     libe_CFLAGS += -D_GNU_SOURCE -O$(OPTIMIZATION) -std=gnu99 -g -Wall -Wstrict-prototypes -Werror
 endif

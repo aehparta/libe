@@ -45,16 +45,25 @@ extern "C" {
 
 #define LOG_MSG(level, file, line, func, msg, ...)      log_msg(level, file, line, func, PSTR(msg), ##__VA_ARGS__)
 
+
+#ifndef USE_NOT_LOG /* logging functions if not disabled specifically */
+
 /** Initialize logging. */
 int log_init(void *context, uint32_t baud);
-
 /**
  * Write message to log.
  */
 void log_msg(int level, const char *file, int line, const char *func, const char *msg, ...);
-
 /** Quit logging */
 void log_quit(void);
+
+#else /* if logging is disabled, define empty ones */
+
+#define log_init(context, baud)
+#define log_msg(level, file, line, func, msg, ...)
+#define log_quit()
+
+#endif /* USE_NOT_LOG */
 
 
 #ifdef __cplusplus

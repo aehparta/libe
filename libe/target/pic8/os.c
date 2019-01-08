@@ -81,36 +81,60 @@ int8_t os_gpio_enable(uint8_t pin, bool direction)
 int8_t os_gpio_set(uint8_t pin, bool state)
 {
 	switch (pin >> 3) {
-#ifdef LATA
+#ifdef LATA /* for pics that have LATx */
 	case 0:
 		LATA = state ? (LATA | _BV(pin & 7)) : (LATA & ~_BV(pin & 7));
 		return 0;
-#endif
+#elif defined(PORTA) /* for pics that have PORTx */
+	case 0:
+		PORTA = state ? (PORTA | _BV(pin & 7)) : (PORTA & ~_BV(pin & 7));
+		return 0;
+#endif /* LATx */
 #ifdef LATB
 	case 1:
 		LATB = state ? (LATB | _BV(pin & 7)) : (LATB & ~_BV(pin & 7));
 		return 0;
-#endif
+#elif defined(PORTB) /* for pics that have PORTx */
+	case 1:
+		PORTB = state ? (PORTB | _BV(pin & 7)) : (PORTB & ~_BV(pin & 7));
+		return 0;
+#endif /* LATx */
 #ifdef LATC
 	case 2:
 		LATC = state ? (LATC | _BV(pin & 7)) : (LATC & ~_BV(pin & 7));
 		return 0;
-#endif
+#elif defined(PORTC) /* for pics that have PORTx */
+	case 2:
+		PORTC = state ? (PORTC | _BV(pin & 7)) : (PORTC & ~_BV(pin & 7));
+		return 0;
+#endif /* LATx */
 #ifdef LATD
 	case 3:
 		LATD = state ? (LATD | _BV(pin & 7)) : (LATD & ~_BV(pin & 7));
 		return 0;
-#endif
+#elif defined(PORTD) /* for pics that have PORTx */
+	case 3:
+		PORTD = state ? (PORTD | _BV(pin & 7)) : (PORTD & ~_BV(pin & 7));
+		return 0;
+#endif /* LATx */
 #ifdef LATE
 	case 4:
 		LATE = state ? (LATE | _BV(pin & 7)) : (LATE & ~_BV(pin & 7));
 		return 0;
-#endif
+#elif defined(PORTE) /* for pics that have PORTx */
+	case 4:
+		PORTE = state ? (PORTE | _BV(pin & 7)) : (PORTE & ~_BV(pin & 7));
+		return 0;
+#endif /* LATx */
 #ifdef LATF
 	case 5:
 		LATF = state ? (LATF | _BV(pin & 7)) : (LATF & ~_BV(pin & 7));
 		return 0;
-#endif
+#elif defined(PORTF) /* for pics that have PORTx */
+	case 5:
+		PORTF = state ? (PORTF | _BV(pin & 7)) : (PORTF & ~_BV(pin & 7));
+		return 0;
+#endif /* LATx */
 	}
 	return -1;
 }
@@ -122,26 +146,44 @@ uint8_t os_gpio_read(uint8_t pin)
 #ifdef LATA
 	case 0:
 		return LATA & _BV(pin & 7) ? 1 : 0;
+#elif defined(PORTA)
+	case 0:
+		return PORTA & _BV(pin & 7) ? 1 : 0;
 #endif
 #ifdef LATB
 	case 1:
 		return LATB & _BV(pin & 7) ? 1 : 0;
+#elif defined(PORTB)
+	case 1:
+		return PORTB & _BV(pin & 7) ? 1 : 0;
 #endif
 #ifdef LATC
 	case 2:
 		return LATC & _BV(pin & 7) ? 1 : 0;
+#elif defined(PORTC)
+	case 2:
+		return PORTC & _BV(pin & 7) ? 1 : 0;
 #endif
 #ifdef LATD
 	case 3:
 		return LATD & _BV(pin & 7) ? 1 : 0;
+#elif defined(PORTD)
+	case 3:
+		return PORTD & _BV(pin & 7) ? 1 : 0;
 #endif
 #ifdef LATE
 	case 4:
 		return LATE & _BV(pin & 7) ? 1 : 0;
+#elif defined(PORTE)
+	case 4:
+		return PORTE & _BV(pin & 7) ? 1 : 0;
 #endif
 #ifdef LATF
 	case 5:
 		return LATF & _BV(pin & 7) ? 1 : 0;
+#elif defined(PORTF)
+	case 5:
+		return PORTF & _BV(pin & 7) ? 1 : 0;
 #endif
 	}
 	return 0xff;

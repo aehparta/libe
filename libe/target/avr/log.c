@@ -32,8 +32,11 @@
 #define AVR_LOG_TXEN   TXEN
 #define AVR_LOG_RXEN   RXEN
 #define AVR_LOG_UCSZ   UCSZ0
+#else
+#error "no support for serial port in this mcu, maybe disable logging with USE=NOT_LOG"
 #endif
 
+#ifdef AVR_LOG_UDR
 
 static int log_putchar(char c, FILE *stream)
 {
@@ -98,3 +101,5 @@ void log_msg(int level, const char *file, int line, const char *func, const char
 	va_end(args);
 	LOG_PRINTF("\r\n");
 }
+
+#endif

@@ -7,7 +7,6 @@ endif
 # libe sources
 libe_SRC = \
     $(LIBE_PATH)/libe/target/$(TARGET)/os.c \
-    $(LIBE_PATH)/libe/target/$(TARGET)/log.c \
     $(LIBE_PATH)/libe/target/$(TARGET)/nvm.c \
     $(LIBE_PATH)/libe/aes.c
 
@@ -31,6 +30,11 @@ endif
 # add pwm only if said so
 ifneq ($(filter $(libe_DEFINES),USE_PWM),)
     libe_SRC += $(LIBE_PATH)/libe/target/$(TARGET)/pwm.c
+endif
+
+# add logging stuff  if not disabled specifically
+ifeq ($(filter $(libe_DEFINES),USE_NOT_LOG),)
+    libe_SRC += $(LIBE_PATH)/libe/target/$(TARGET)/log.c
 endif
 
 # add spi stuff  if not disabled specifically
