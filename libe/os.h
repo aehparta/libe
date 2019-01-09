@@ -31,8 +31,10 @@ extern "C" {
 #include "target/msp430/os.h"
 #elif TARGET_X86
 #include <signal.h>
+#include "target/x86/os.h"
 #elif TARGET_RPI
 #include <signal.h>
+#include "target/rpi/os.h"
 #endif
 
 #ifdef USE_FTDI
@@ -49,8 +51,6 @@ typedef double os_time_t;
 typedef long double os_time_t;
 #endif
 
-int os_init(void);
-#define os_quit()
 
 /**
  * Get absolute monotonic time with one second resolution.
@@ -83,13 +83,14 @@ const char *os_get_revision(void);
 
 #ifndef OS_GPIO_AS_MACROS_OR_INLINE
 int os_gpio_enable(uint8_t pin, bool direction);
-int os_gpio_output(uint8_t pin);
-int os_gpio_input(uint8_t pin);
 int os_gpio_set(uint8_t pin, bool state);
-int os_gpio_high(uint8_t pin);
-int os_gpio_low(uint8_t pin);
 int os_gpio_read(uint8_t pin);
 #endif
+
+#define os_gpio_output(pin) os_gpio_enable(pin, OS_GPIO_OUTPUT)
+#define os_gpio_input(pin) os_gpio_enable(pin, OS_GPIO_INPUT)
+#define os_gpio_high(pin) os_gpio_set(pin, true);
+#define os_gpio_low(pin) os_gpio_set(pin, false);
 
 #ifndef OS_DELAY_AS_MACROS_OR_INLINE
 #define os_delay_ms(x)      os_sleepf((os_time_t)x / 1000.0)

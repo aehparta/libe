@@ -13,6 +13,9 @@
 #define OS_GPIO_AS_MACROS_OR_INLINE     1
 #define OS_DELAY_AS_MACROS_OR_INLINE    1
 
+int os_init(void);
+#define os_quit()
+
 #define os_delay_ms(x)      _delay_ms(x)
 #define os_delay_us(x)      _delay_us(x)
 
@@ -53,9 +56,6 @@ inline int os_gpio_enable(uint8_t pin, bool direction)
 	return -1;
 }
 
-#define os_gpio_output(_PIN) os_gpio_enable(_PIN, OS_GPIO_OUTPUT)
-#define os_gpio_input(_PIN) os_gpio_enable(_PIN, OS_GPIO_INPUT)
-
 inline int os_gpio_set(uint8_t pin, bool state)
 {
 	switch (pin >> 3) {
@@ -92,9 +92,6 @@ inline int os_gpio_set(uint8_t pin, bool state)
 	}
 	return -1;
 }
-
-#define os_gpio_high(_PIN) os_gpio_set(_PIN, true)
-#define os_gpio_low(_PIN) os_gpio_set(_PIN, false)
 
 inline uint8_t os_gpio_read(uint8_t pin)
 {

@@ -19,8 +19,18 @@
 
 int os_init(void)
 {
+#ifdef USE_FTDI
+	os_ftdi_init();
+#endif
 	srand((unsigned int)(os_timef() * 1000));
 	return 0;
+}
+
+void os_quit(void)
+{
+#ifdef USE_FTDI
+	os_ftdi_quit();
+#endif
 }
 
 time_t os_timei(void)

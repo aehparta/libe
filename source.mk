@@ -17,7 +17,11 @@ endif
 
 # add logging
 ifneq ($(filter $(libe_DEFINES),USE_LOG),)
+ifdef TARGET_LINUX
+    libe_SRC += $(LIBE_PATH)/libe/target/linux/log.c
+else
     libe_SRC += $(LIBE_PATH)/libe/target/$(TARGET)/log.c
+endif
 endif
 
 # add spi and drivers for chips

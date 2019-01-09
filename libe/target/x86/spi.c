@@ -102,30 +102,6 @@ int spi_transfer(struct spi_device *device, uint8_t *data, size_t size)
 	return 0;
 }
 
-int spi_ftdi_set(struct spi_master *master, uint8_t pins)
-{
-	master->state |= pins;
-	uint8_t cmd[] = {
-		SET_BITS_LOW, master->state, master->dir
-	};
-	if (ftdi_write_data(master->ftdi, cmd, sizeof(cmd)) != sizeof(cmd)) {
-		return -1;
-	}
-	return 0;
-}
-
-int spi_ftdi_clr(struct spi_master *master, uint8_t pins)
-{
-	master->state &= ~pins;
-	uint8_t cmd[] = {
-		SET_BITS_LOW, master->state, master->dir
-	};
-	if (ftdi_write_data(master->ftdi, cmd, sizeof(cmd)) != sizeof(cmd)) {
-		return -1;
-	}
-	return 0;
-}
-
 #else
 
 /* empty spi functions */

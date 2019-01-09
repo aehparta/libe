@@ -18,8 +18,9 @@ include $(LIBE_PATH)/flags.mk
 include $(LIBE_PATH)/source.mk
 
 # our own sources etc
-BUILD_BINS = nrf24l01_ping
-nrf24l01_ping_SRC = main.c $(libe_SRC)
+BUILD_BINS = testing
+PROGRAM_BIN = testing
+testing_SRC = main.c $(libe_SRC)
 
 # compile flags
 CFLAGS += -D_GNU_SOURCE $(libe_CFLAGS)

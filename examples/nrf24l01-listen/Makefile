@@ -8,7 +8,7 @@ endif
 include $(LIBE_PATH)/target.mk
 
 # enable spi
-libe_USE += SPI
+libe_USE += SPI LOG
 ifdef TARGET_X86
     libe_USE += FTDI
 endif

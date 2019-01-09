@@ -13,9 +13,7 @@
 
 int nrf_open(struct nrf_device *nrf, struct spi_master *master, int ss, int ce)
 {
-#ifndef USE_FTDI
 	os_gpio_output(ce);
-#endif
 	nrf->ce = ce;
 
 	if (spi_open(&nrf->spi, master, ss)) {
@@ -76,22 +74,12 @@ int nrf_write_reg(struct nrf_device *nrf, uint8_t reg, uint8_t data)
 
 int nrf_enable_radio(struct nrf_device *nrf)
 {
-#ifdef USE_FTDI
-	return spi_ftdi_set(nrf->spi.m, nrf->ce);
-#else
 	return os_gpio_high(nrf->ce);
-#endif
-	return 0;
 }
 
 int nrf_disable_radio(struct nrf_device *nrf)
 {
-#ifdef USE_FTDI
-	return spi_ftdi_clr(nrf->spi.m, nrf->ce);
-#else
 	return os_gpio_low(nrf->ce);
-#endif
-	return 0;
 }
 
 int nrf_set_address(struct nrf_device *nrf, uint8_t pipe, uint8_t a0, uint8_t a1, uint8_t a2, uint8_t a3, uint8_t a4)

@@ -5,10 +5,14 @@
  *  Antti Partanen <aehparta@iki.fi>
  */
 
-#ifndef _CFG_H_
-#define _CFG_H_
+#ifndef _TARGET_LINUX_CFG_H_
+#define _TARGET_LINUX_CFG_H_
 
 #include <stdbool.h>
+
+#ifdef __cplusplus
+extern "C" {
+#endif
 
 
 #define CFG_FLAG_CHANGED            0x00000001
@@ -76,4 +80,8 @@ int cfg_flag_clr(char *section, char *key, uint32_t flag);
 int cfg_regex_register(char *section_regex, char *key_regex, void (*callback)(char *section, char *key, char *value, void *userdata), void *userdata);
 
 
-#endif /* _CFG_H_ */
+#ifdef __cplusplus
+}
+#endif
+
+#endif /* _TARGET_LINUX_CFG_H_ */
