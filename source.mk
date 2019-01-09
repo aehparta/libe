@@ -7,11 +7,12 @@ endif
 # libe sources, only os is mandatory
 libe_SRC = $(LIBE_PATH)/libe/target/$(TARGET)/os.c
 
-# target specific stuff
+# linux generic
 ifdef TARGET_LINUX
-ifneq ($(filter $(libe_DEFINES),USE_CFG),)
-    libe_SRC += $(LIBE_PATH)/libe/target/linux/cfg.c
-endif
+    libe_SRC += $(LIBE_PATH)/libe/target/linux/os.c
+    ifneq ($(filter $(libe_DEFINES),USE_CFG),)
+        libe_SRC += $(LIBE_PATH)/libe/target/linux/cfg.c
+    endif
 endif
 
 # add logging
@@ -57,3 +58,4 @@ endif
 ifneq ($(filter $(libe_DEFINES),USE_FTDI),)
     libe_SRC += $(LIBE_PATH)/libe/target/linux/ftdi.c
 endif
+
