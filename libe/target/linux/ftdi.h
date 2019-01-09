@@ -15,7 +15,7 @@ extern "C" {
 
 #include <stdint.h>
 #include <libftdi1/ftdi.h>
-struct ftdi_context *ftdi_open(uint16_t vid, uint16_t pid, int interface, const char *description, const char *serial, int reset);
+struct ftdi_context *ftdi_direct_open(uint16_t vid, uint16_t pid, int interface, const char *description, const char *serial, int reset);
 
 #ifdef __cplusplus
 }

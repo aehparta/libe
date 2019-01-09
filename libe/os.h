@@ -20,7 +20,6 @@ extern "C" {
 #define OS_GPIO_OUTPUT  true
 
 #ifdef TARGET_AVR
-#include <util/delay.h>
 #include "target/avr/os.h"
 #elif TARGET_PIC8
 #include "target/pic8/os.h"
@@ -32,11 +31,12 @@ extern "C" {
 #include "target/msp430/os.h"
 #elif TARGET_X86
 #include <signal.h>
-#ifdef USE_FTDI
-#include "target/x86/ftdi.h"
-#endif
 #elif TARGET_RPI
 #include <signal.h>
+#endif
+
+#ifdef USE_FTDI
+#include "target/linux/ftdi.h"
 #endif
 
 #ifdef TARGET_AVR

@@ -6,12 +6,6 @@
 
 #include <stdlib.h>
 #include <string.h>
-#ifdef TARGET_AVR
-#include <avr/io.h>
-#endif
-#ifdef USE_FTDI
-#include <libftdi1/ftdi.h>
-#endif
 #include <libe/debug.h>
 #include <libe/os.h>
 #include "nrf.h"

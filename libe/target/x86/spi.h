@@ -8,10 +8,7 @@
 #define _TARGET_X86_SPI_H_
 
 #include <stdint.h>
-
-#ifdef USE_FTDI
-#include <libftdi1/ftdi.h>
-#endif
+#include <libe/os.h>
 
 #ifdef __cplusplus
 extern "C" {

@@ -22,7 +22,7 @@ int p_init(int argc, char *argv[])
 	/* initialize spi master */
 #ifdef USE_FTDI
 	/* open ft232h type device and try to see if it has a nrf24l01+ connected to it through mpsse-spi */
-	struct ftdi_context *context = ftdi_open(0x0403, 0x6014, 0, NULL, NULL, 1);
+	struct ftdi_context *context = ftdi_direct_open(0x0403, 0x6014, 0, NULL, NULL, 1);
 #else
 	void *context = CFG_SPI_CONTEXT;
 #endif

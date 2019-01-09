@@ -48,12 +48,12 @@ ifneq ($(filter $(libe_DEFINES),USE_AES),)
     libe_SRC += $(LIBE_PATH)/libe/aes.c
 endif
 
-# add ftdi
-ifneq ($(filter $(libe_DEFINES),USE_FTDI),)
-    libe_SRC += $(LIBE_PATH)/libe/target/x86/ftdi.c
-endif
-
 # add broadcast
 ifneq ($(filter $(libe_DEFINES),USE_BROADCAST),)
     libe_SRC += $(LIBE_PATH)/libe/broadcast.c
+endif
+
+# add ftdi
+ifneq ($(filter $(libe_DEFINES),USE_FTDI),)
+    libe_SRC += $(LIBE_PATH)/libe/target/linux/ftdi.c
 endif
