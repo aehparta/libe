@@ -6,7 +6,7 @@
 COMPONENT_OBJS = \
 	libe/aes.o \
 	libe/broadcast.o \
-	libe/nrf.o \
+	libe/drivers/spi/nrf.o \
 	libe/target/esp32/i2c.o \
 	libe/target/esp32/os.o \
 	libe/target/esp32/spi.o \
@@ -16,7 +16,7 @@ COMPONENT_OBJS = \
 	libe/target/esp32/pwm.o
 
 
-COMPONENT_SRCDIRS = libe libe/target/esp32
+COMPONENT_SRCDIRS = libe libe/drivers/spi libe/target/esp32
 COMPONENT_ADD_INCLUDEDIRS = .
 
-CFLAGS += -DTARGET_ESP32 -DTARGET=esp32 -DUSE_BROADCAST
+CFLAGS += -DTARGET_ESP32 -DTARGET=esp32 -DUSE_BROADCAST -DUSE_LOG -DUSE_SPI

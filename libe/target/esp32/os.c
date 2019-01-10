@@ -20,6 +20,11 @@ int os_init(void)
 	return 0;
 }
 
+void os_quit(void)
+{
+
+}
+
 time_t os_timei(void)
 {
 	return (time_t)os_timef();

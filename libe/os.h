@@ -29,6 +29,8 @@ extern "C" {
 #include "target/pic32/os.h"
 #elif TARGET_MSP430
 #include "target/msp430/os.h"
+#elif TARGET_ESP32
+#include "target/esp32/os.h"
 #elif TARGET_X86
 #include <signal.h>
 #include "target/x86/os.h"
