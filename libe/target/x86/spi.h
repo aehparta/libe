@@ -18,11 +18,9 @@ extern "C" {
 
 /* ftdi spi master context */
 struct spi_master {
-	struct ftdi_context *ftdi;
-	/* pin states */
-	uint8_t state;
-	/* pin directions */
-	uint8_t dir;
+	uint8_t miso;
+	uint8_t mosi;
+	uint8_t sclk;
 };
 /* ftdi spi device context */
 struct spi_device {

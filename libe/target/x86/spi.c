@@ -17,8 +17,26 @@ int spi_master_open(struct spi_master *master, void *context, uint32_t frequency
 {
 	uint16_t divisor;
 
-	/* check context */
-	ERROR_IF_R(!context, -1, "need a valid ftdi context to open spi in x86 platform");
+	/* check for mpsse mode */
+	if ((sclk % 16) == 0 && (mosi - sclk) == 1 && (miso - sclk) == 2 && os_ftdi_get_mode(sclk) == BITMODE_MPSSE) {
+		/* do something? */
+	} else {
+		ERROR_MSG("spi bitbang not supported (yet?)");
+		return -1;
+	}
+
+	/* set gpio inital values and directions */
+	os_gpio_low(miso);
+	os_gpio_low(mosi);
+	os_gpio_low(sclk);
+	os_gpio_input(miso);
+	os_gpio_output(mosi);
+	os_gpio_output(sclk);
+
+	/* save pins */
+	master->miso = miso;
+	master->mosi = mosi;
+	master->sclk = sclk;
 
 	/* calculate frequency divisor */
 	if (frequency < 1) {
@@ -27,42 +45,24 @@ int spi_master_open(struct spi_master *master, void *context, uint32_t frequency
 	}
 	divisor = 60e6 / frequency / 2 - 1;
 
-	/* init struct */
-	master->ftdi = (struct ftdi_context *)context;
-	master->state = 0xf8;
-	master->dir = 0xfb;
-
-	/* tweak latency */
-	ftdi_set_latency_timer(master->ftdi, 1);
-	ftdi_write_data_set_chunksize(master->ftdi, 256);
-	ftdi_read_data_set_chunksize(master->ftdi, 256);
-
-	/* setup mpsse */
-	ftdi_usb_reset(master->ftdi);
-	ftdi_set_bitmode(master->ftdi, 0, BITMODE_RESET);
-	ftdi_set_bitmode(master->ftdi, 0, BITMODE_MPSSE);
-	ftdi_usb_purge_buffers(master->ftdi);
+	/* setup frequency */
 	uint8_t cmd[] = {
-		DIS_DIV_5,
 		TCK_DIVISOR, divisor & 0xff, divisor >> 8,
-		DIS_ADAPTIVE,
-		DIS_3_PHASE,
-		SET_BITS_LOW, master->state, master->dir
 	};
-	ERROR_IF_R(ftdi_write_data(master->ftdi, cmd, sizeof(cmd)) != sizeof(cmd), -1, "mpsse setup failed: %s", ftdi_get_error_string(master->ftdi));
+	ERROR_IF_R(ftdi_write_data(os_ftdi_get_context(sclk), cmd, sizeof(cmd)) != sizeof(cmd), -1, "mpsse clock setup failed: %s", ftdi_get_error_string(os_ftdi_get_context(sclk)));
 
 	return 0;
 }
 
 void spi_master_close(struct spi_master *master)
 {
-	ftdi_usb_reset(master->ftdi);
-	ftdi_set_bitmode(master->ftdi, 0, BITMODE_RESET);
 }
 
 int spi_open(struct spi_device *device, struct spi_master *master, uint8_t ss)
 {
-	/* base setup */
+	ERROR_IF_R(os_ftdi_has_pin(ss), -1, "pin %d is not available", ss);
+	os_gpio_high(ss);
+	os_gpio_output(ss);
 	device->m = master;
 	device->ss = ss;
 	return 0;
@@ -74,30 +74,32 @@ void spi_close(struct spi_device *device)
 
 int spi_transfer(struct spi_device *device, uint8_t *data, size_t size)
 {
+	struct ftdi_context *ftdi = os_ftdi_get_context(device->m->sclk);
 	int err;
 	uint8_t start[] = {
-		SET_BITS_LOW, device->m->state & ~device->ss, device->m->dir,
 		MPSSE_DO_WRITE | MPSSE_WRITE_NEG | MPSSE_DO_READ,
 		(size - 1) & 0xff, (size - 1) >> 8
 	};
-	uint8_t end[] = { SET_BITS_LOW, device->m->state | device->ss, device->m->dir };
+
+	/* select chip */
+	os_gpio_low(device->ss);
 
 	/* send start header */
-	ERROR_IF_R(ftdi_write_data(device->m->ftdi, start, sizeof(start)) != sizeof(start), -1, "ftdi spi header write failed");
+	ERROR_IF_R(ftdi_write_data(ftdi, start, sizeof(start)) != sizeof(start), -1, "ftdi spi header write failed");
 	/* write data */
-	err = ftdi_write_data(device->m->ftdi, data, size);
-	ERROR_IF_R(err != size, -1, "ftdi spi data write failed: %s", ftdi_get_error_string(device->m->ftdi));
+	err = ftdi_write_data(ftdi, data, size);
+	ERROR_IF_R(err != size, -1, "ftdi spi data write failed: %s", ftdi_get_error_string(ftdi));
 
 	/* read data */
 	for (int x = 0, err = 0; x < 3 && err == 0; x++) {
-		err = ftdi_read_data(device->m->ftdi, data, size);
+		err = ftdi_read_data(ftdi, data, size);
 		// DEBUG_IF(err == 0, "try read again, ftdi_read_data() returned zero");
 	}
-	ERROR_IF_R(err < 0, -1, "ftdi read failed: %s", ftdi_get_error_string(device->m->ftdi));
+	ERROR_IF_R(err < 0, -1, "ftdi read failed: %s", ftdi_get_error_string(ftdi));
 	ERROR_IF_R(err != size, -1, "ftdi read returned different amount of data than requested, returned: %d, requested: %d", err, size);
 
-	/* write end */
-	ERROR_IF_R(ftdi_write_data(device->m->ftdi, end, sizeof(end)) != sizeof(end), -1, "ftdi spi end write failed");
+	/* release select and push changes to chip */
+	os_gpio_high(device->ss);
 
 	return 0;
 }

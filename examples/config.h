@@ -37,13 +37,13 @@
 
 
 #ifdef TARGET_X86
-#define CFG_SPI_CONTEXT     NULL
+#define CFG_SPI_CONTEXT     0
 #define CFG_SPI_FREQUENCY   0
-#define CFG_SPI_MISO        0
-#define CFG_SPI_MOSI        0
+#define CFG_SPI_MISO        2
+#define CFG_SPI_MOSI        1
 #define CFG_SPI_SCLK        0
-#define CFG_NRF_SS          0x08
-#define CFG_NRF_CE          0x10
+#define CFG_NRF_SS          3
+#define CFG_NRF_CE          4
 #endif
 
 

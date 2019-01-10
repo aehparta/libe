@@ -31,6 +31,10 @@ void os_ftdi_init(void);
 void os_ftdi_quit(void);
 
 int os_ftdi_use(int pin_range, uint16_t vid, uint16_t pid, const char *description, const char *serial);
+int os_ftdi_set_mpsse(int pin);
+int os_ftdi_get_mode(int pin);
+struct ftdi_context *os_ftdi_get_context(int pin);
+int os_ftdi_has_pin(uint8_t pin);
 
 struct ftdi_context *ftdi_direct_open(uint16_t vid, uint16_t pid, int interface, const char *description, const char *serial, int reset);
 

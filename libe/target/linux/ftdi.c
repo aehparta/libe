@@ -100,9 +100,15 @@ int os_ftdi_use(int pin_range, uint16_t vid, uint16_t pid, const char *descripti
 		ftdi_free(ftdi);
 		return -1;
 	}
+	ftdi_usb_reset(ftdi);
+
+	/* first inerface is always there */
 	ftdi_set_latency_timer(ftdi, 1);
+	ftdi_write_data_set_chunksize(ftdi, 256);
+	ftdi_read_data_set_chunksize(ftdi, 256);
+	ftdi_set_bitmode(ftdi, 0, BITMODE_RESET);
+	ftdi_set_bitmode(ftdi, 0, BITMODE_BITBANG);
 	ftdi_usb_purge_buffers(ftdi);
-	ftdi_set_bitmode(ftdi, 0x00, BITMODE_BITBANG);
 	ftdi_write_data(ftdi, &b, 1);
 	fdevs[pin_range * 4].ftdi = ftdi;
 	fdevs[pin_range * 4].mode = BITMODE_BITBANG;
@@ -116,8 +122,11 @@ int os_ftdi_use(int pin_range, uint16_t vid, uint16_t pid, const char *descripti
 			break;
 		}
 		ftdi_set_latency_timer(ftdi, 1);
+		ftdi_write_data_set_chunksize(ftdi, 256);
+		ftdi_read_data_set_chunksize(ftdi, 256);
+		ftdi_set_bitmode(ftdi, 0, BITMODE_RESET);
+		ftdi_set_bitmode(ftdi, 0, BITMODE_BITBANG);
 		ftdi_usb_purge_buffers(ftdi);
-		ftdi_set_bitmode(ftdi, 0x00, BITMODE_BITBANG);
 		ftdi_write_data(ftdi, &b, 1);
 		fdevs[pin_range * 4 + i].ftdi = ftdi;
 		fdevs[pin_range * 4 + i].mode = BITMODE_BITBANG;
@@ -129,94 +138,75 @@ int os_ftdi_use(int pin_range, uint16_t vid, uint16_t pid, const char *descripti
 	return 0;
 }
 
-struct ftdi_context *os_ftdi_direct_open(uint16_t vid, uint16_t pid, int interface, const char *description, const char *serial, int reset)
+int os_ftdi_set_mpsse(int pin)
 {
-	int err, i, n;
-	struct ftdi_context *ftdi;
-	struct ftdi_device_list *list, *list_first;
+	int i = pin >> 4;
+	uint16_t divisor = 60e6 / 1e5 / 2 - 1;
 
-	/* initialize ftdi */
-	ftdi = ftdi_new();
-	if (!ftdi) {
-		ERROR_MSG("ftdi_new() failed");
-		return NULL;
+	ERROR_IF_R(!fdevs[i].ftdi, -1, "cannot change mode to mpsse, interface is not open");
+
+	/* setup mpsse */
+	ftdi_set_bitmode(fdevs[i].ftdi, 0, BITMODE_RESET);
+	ERROR_IF_R(ftdi_set_bitmode(fdevs[i].ftdi, 0, BITMODE_MPSSE), -1, "unable to enable mpsse bitmode");
+	ftdi_usb_purge_buffers(fdevs[i].ftdi);
+
+	uint8_t cmd[] = {
+		DIS_DIV_5,
+		TCK_DIVISOR, divisor & 0xff, divisor >> 8,
+		DIS_ADAPTIVE,
+		DIS_3_PHASE,
+		SET_BITS_LOW, fdevs[i].pins[0], fdevs[i].dirs[0],
+		SET_BITS_HIGH, fdevs[i].pins[1], fdevs[i].dirs[1]
+	};
+	ERROR_IF_R(ftdi_write_data(fdevs[i].ftdi, cmd, sizeof(cmd)) != sizeof(cmd), -1, "mpsse setup failed: %s", ftdi_get_error_string(fdevs[i].ftdi));
+
+	fdevs[i].mode = BITMODE_MPSSE;
+
+	return 0;
+}
+
+int os_ftdi_get_mode(int pin)
+{
+	int i = pin >> 4;
+	if (fdevs[i].ftdi) {
+		return fdevs[i].mode;
 	}
-	err = ftdi_set_interface(ftdi, interface);
-	if (err < 0) {
-		ERROR_MSG("unable to set selected interface on ftdi device: %d (%s)", err, ftdi_get_error_string(ftdi));
-		ftdi_free(ftdi);
-		return NULL;
-	}
+	return -1;
+}
 
-	/* list all somewhat matching devices */
-	n = ftdi_usb_find_all(ftdi, &list, vid, pid);
-	if (n < 1) {
-		DEBUG_MSG("unable to find any matching device");
-		ftdi_free(ftdi);
-		return NULL;
-	}
+struct ftdi_context *os_ftdi_get_context(int pin)
+{
+	return fdevs[pin >> 4].ftdi;
+}
 
-	/* save list start for freeing whole list later */
-	list_first = list;
+int os_ftdi_has_pin(uint8_t pin)
+{
+	int pin_range = pin >> 4;
+	int ud = (pin & 0x08) ? 1 : 0;
 
-	/* try to find matching device if more precise description or serial was given */
-	if (description || serial) {
-		for (i = 0; i < n; i++) {
-			char m[1024], d[1024], s[1024];
-			memset(m, 0, 1024);
-			memset(d, 0, 1024);
-			memset(s, 0, 1024);
-			ftdi_usb_get_strings(ftdi, list->dev, m, 1024, d, 1024, s, 1024);
-			if (description) {
-				if (strcmp(description, d) != 0) {
-					list = list->next;
-					continue;
-				}
-			}
-			if (serial) {
-				if (strcmp(serial, s) != 0) {
-					list = list->next;
-					continue;
-				}
-			}
-			break;
-		}
-		if (i >= n) {
-			DEBUG_MSG("unable to find any matching device");
-			ftdi_list_free(&list);
-			ftdi_free(ftdi);
-			return NULL;
-		}
-	}
+	ERROR_IF_R(!fdevs[pin_range].ftdi, -1, "ftdi gpio %d is not available", pin);
+	ERROR_IF_R(fdevs[pin_range].mode != BITMODE_MPSSE && ud, -1, "ftdi gpio %d is not available in bitbang mode", pin);
 
-	err = ftdi_usb_open_dev(ftdi, list->dev);
-	ftdi_list_free(&list_first);
-	if (err < 0) {
-		DEBUG_MSG("unable to open ftdi device: %s", ftdi_get_error_string(ftdi));
-		ftdi_free(ftdi);
-		return NULL;
-	}
+	return 0;
+}
 
-	/* reset chip */
-	if (reset) {
-		if (ftdi_usb_reset(ftdi)) {
-			DEBUG_MSG("failed to reset device: %s", ftdi_get_error_string(ftdi));
-			ftdi_free(ftdi);
-			return NULL;
-		}
-	}
+static int os_ftdi_gpio_check_pin(uint8_t pin, uint8_t *pin_range, uint8_t *ud, uint8_t *p)
+{
+	*pin_range = pin >> 4;
+	*ud = (pin & 0x08) ? 1 : 0;
+	*p = (1 << (pin & 0x07));
 
-	return ftdi;
+	ERROR_IF_R(!fdevs[*pin_range].ftdi, -1, "ftdi gpio %d is not available", pin);
+	ERROR_IF_R(fdevs[*pin_range].mode != BITMODE_MPSSE && *ud, -1, "ftdi gpio %d is not available in bitbang mode", pin);
+
+	return 0;
 }
 
 int os_ftdi_gpio_enable(uint8_t pin, bool direction)
 {
-	uint8_t pin_range = pin >> 4;
-	uint8_t ud = (pin & 0x08) ? 1 : 0;
-	uint8_t p = (1 << (pin & 0x07));
+	uint8_t pin_range, ud, p;
 
-	ERROR_IF_R(!fdevs[pin_range].ftdi, -1, "ftdi gpio %d is not available", pin);
-	ERROR_IF_R(fdevs[pin_range].mode != BITMODE_MPSSE && ud, -1, "ftdi gpio %d is not available in bitbang mode", pin);
+	IF_R(os_ftdi_gpio_check_pin(pin, &pin_range, &ud, &p), -1);
 
 	if ((fdevs[pin_range].dirs[ud] & p) == (direction == OS_GPIO_OUTPUT ? p : 0)) {
 		/* no changes, just return */
@@ -232,28 +222,21 @@ int os_ftdi_gpio_enable(uint8_t pin, bool direction)
 	if (fdevs[pin_range].mode == BITMODE_BITBANG) {
 		ftdi_set_bitmode(fdevs[pin_range].ftdi, fdevs[pin_range].dirs[ud], BITMODE_BITBANG);
 		ftdi_write_data(fdevs[pin_range].ftdi, &fdevs[pin_range].pins[ud], 1);
+	} else if (fdevs[pin_range].mode == BITMODE_MPSSE) {
+		uint8_t buf[3] = { ud ? SET_BITS_HIGH : SET_BITS_LOW, fdevs[pin_range].pins[ud], fdevs[pin_range].dirs[ud] };
+		ftdi_write_data(fdevs[pin_range].ftdi, buf, 3);
+	} else {
+		ERROR_MSG("invalid mode for pin %d", pin);
 	}
 
-	/*
-		master->state |= pins;
-		uint8_t cmd[] = {
-			SET_BITS_LOW, master->state, master->dir
-		};
-		if (ftdi_write_data(master->ftdi, cmd, sizeof(cmd)) != sizeof(cmd)) {
-			return -1;
-		}
-	*/
 	return 0;
 }
 
 int os_ftdi_gpio_set(uint8_t pin, bool state)
 {
-	uint8_t pin_range = pin >> 4;
-	uint8_t ud = (pin & 0x08) ? 1 : 0;
-	uint8_t p = (1 << (pin & 0x07));
+	uint8_t pin_range, ud, p;
 
-	ERROR_IF_R(!fdevs[pin_range].ftdi, -1, "ftdi gpio %d is not available", pin);
-	ERROR_IF_R(fdevs[pin_range].mode != BITMODE_MPSSE && ud, -1, "ftdi gpio %d is not available in bitbang mode", pin);
+	IF_R(os_ftdi_gpio_check_pin(pin, &pin_range, &ud, &p), -1);
 
 	if ((fdevs[pin_range].pins[ud] & p) == (state ? p : 0)) {
 		/* no changes, just return */
@@ -268,21 +251,21 @@ int os_ftdi_gpio_set(uint8_t pin, bool state)
 
 	if (fdevs[pin_range].mode == BITMODE_BITBANG) {
 		ftdi_write_data(fdevs[pin_range].ftdi, &fdevs[pin_range].pins[ud], 1);
+	} else if (fdevs[pin_range].mode == BITMODE_MPSSE) {
+		uint8_t buf[3] = { ud ? SET_BITS_HIGH : SET_BITS_LOW, fdevs[pin_range].pins[ud], fdevs[pin_range].dirs[ud] };
+		ftdi_write_data(fdevs[pin_range].ftdi, buf, 3);
+	} else {
+		ERROR_MSG("invalid mode for pin %d", pin);
 	}
 
-	/*
-		master->state &= ~pins;
-		uint8_t cmd[] = {
-			SET_BITS_LOW, master->state, master->dir
-		};
-		if (ftdi_write_data(master->ftdi, cmd, sizeof(cmd)) != sizeof(cmd)) {
-			return -1;
-		}
-	*/
 	return 0;
 }
 
 int os_ftdi_gpio_read(uint8_t pin)
 {
-	return -1;
+	uint8_t pin_range, ud, p, pins;
+	IF_R(os_ftdi_gpio_check_pin(pin, &pin_range, &ud, &p), -1);
+	ftdi_read_pins(fdevs[pin_range].ftdi, &pins);
+	return (pins & p) ? 1 : 0;
 }
+

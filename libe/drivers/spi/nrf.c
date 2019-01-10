@@ -13,6 +13,7 @@
 
 int nrf_open(struct nrf_device *nrf, struct spi_master *master, int ss, int ce)
 {
+	os_gpio_low(ce);
 	os_gpio_output(ce);
 	nrf->ce = ce;
 
@@ -22,11 +23,10 @@ int nrf_open(struct nrf_device *nrf, struct spi_master *master, int ss, int ce)
 		return -1;
 	}
 
-	nrf_disable_radio(nrf);
-
 	nrf_setup(nrf);
+
 	int err = nrf_read_reg(nrf, NRF_REG_CONFIG, NULL);
-	ERROR_IF_R((err & 0x0f) != 0x08, -1, "nrf config register value invalid after initialization");
+	ERROR_IF_R((err & 0x0f) != 0x08, -1, "nrf config register value invalid after initialization (%02x)", err);
 
 	return 0;
 }
