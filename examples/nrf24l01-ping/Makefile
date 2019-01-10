@@ -19,6 +19,7 @@ include $(LIBE_PATH)/source.mk
 
 # our own sources etc
 BUILD_BINS = nrf24l01_ping
+PROGRAM_BIN = nrf24l01_ping
 nrf24l01_ping_SRC = main.c $(libe_SRC)
 
 # compile flags
