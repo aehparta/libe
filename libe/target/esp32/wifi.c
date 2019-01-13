@@ -13,8 +13,8 @@
 #include "wifi.h"
 
 
-#define WIFI_SSID      "elukka"
-#define WIFI_PASS      "salaisuus"
+#define WIFI_SSID      "badge"
+#define WIFI_PASS      "sChaTEGnEAcOlER"
 #define WIFI_MAXIMUM_RETRY      10
 #define WIFI_CONNECTED_BIT      BIT0
 

@@ -12,7 +12,7 @@
 extern "C" {
 #endif
 
-#define BROADCAST_DEFAULT_PORT      21579 /* same as packet magic! */
+#define BROADCAST_DEFAULT_PORT      21579
 
 int broadcast_init(uint16_t port);
 void broadcast_quit(void);

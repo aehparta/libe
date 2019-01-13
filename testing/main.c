@@ -11,6 +11,10 @@ int app_main(int argc, char *argv[])
 int main(int argc, char *argv[])
 #endif
 {
+	P1DIR = 0xf0;
+	P1OUT = 0xaa;
+	while (1);
+
 	os_init();
 	log_init(NULL, 0);
 

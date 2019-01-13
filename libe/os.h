@@ -29,6 +29,7 @@ extern "C" {
 #include "target/pic32/os.h"
 #elif TARGET_MSP430
 #include "target/msp430/os.h"
+#define time_t uint32_t
 #elif TARGET_ESP32
 #include "target/esp32/os.h"
 #elif TARGET_X86
