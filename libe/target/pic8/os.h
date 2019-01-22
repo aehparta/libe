@@ -11,6 +11,9 @@
 #define OS_GPIO_AS_MACROS_OR_INLINE     1
 #define OS_DELAY_AS_MACROS_OR_INLINE    1
 
+int os_init(void);
+#define os_quit()
+
 #define _BV(_PIN)           (1 << (_PIN))
 
 #define os_delay_ms(x)      __delay_ms(x)

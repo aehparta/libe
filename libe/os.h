@@ -85,9 +85,9 @@ const char *os_get_revision(void);
 
 
 #ifndef OS_GPIO_AS_MACROS_OR_INLINE
-int os_gpio_enable(uint8_t pin, bool direction);
-int os_gpio_set(uint8_t pin, bool state);
-int os_gpio_read(uint8_t pin);
+int8_t os_gpio_enable(uint8_t pin, bool direction);
+int8_t os_gpio_set(uint8_t pin, bool state);
+uint8_t os_gpio_read(uint8_t pin);
 #endif
 
 #define os_gpio_output(pin) os_gpio_enable(pin, OS_GPIO_OUTPUT)

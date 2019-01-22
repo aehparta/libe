@@ -2,8 +2,12 @@
  * 32-bit pic specific os routines as macros.
  */
 
+#ifndef _TARGET_PIC32_OS_H_
+#define _TARGET_PIC32_OS_H_
+
 #include <xc.h>
 
-#define NAN                 -1e13
-#define isfinite(x)         (x > -0.9e13)
-#define M_E                 2.7182818284590452354
+int os_init(void);
+void os_quit(void);
+
+#endif /* _TARGET_PIC32_OS_H_ */

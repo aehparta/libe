@@ -24,6 +24,11 @@ else
 endif
 endif
 
+# gpio drivers
+ifneq ($(filter $(libe_DEFINES),USE_HD44780),)
+    libe_SRC += $(LIBE_PATH)/libe/drivers/gpio/hd44780.c
+endif
+
 # add spi and drivers for chips
 ifneq ($(filter $(libe_DEFINES),USE_SPI),)
     libe_SRC += \

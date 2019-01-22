@@ -12,6 +12,18 @@
 
 int os_init(void)
 {
+	/* pll multiplier, 0=4x, 1=3x */
+	OSCCONbits.SPLLMULT = 0;
+	/* pll enable, if enabled by config then this is ignored */
+	OSCCONbits.SPLLEN = 0;
+	/* internal oscillator frequency */
+	OSCCONbits.IRCF = 0xf;
+
+	/* wait for internal oscillator and pll to start and stabilize */
+	while (!OSCSTATbits.HFIOFR || !OSCSTATbits.HFIOFS || !!OSCSTATbits.PLLRDY);
+	/* start using internal oscillator */
+	OSCCONbits.SCS = 0x2;
+
 	return 0;
 }
 
@@ -143,45 +155,27 @@ int8_t os_gpio_set(uint8_t pin, bool state)
 uint8_t os_gpio_read(uint8_t pin)
 {
 	switch (pin >> 3) {
-#ifdef LATA
-	case 0:
-		return LATA & _BV(pin & 7) ? 1 : 0;
-#elif defined(PORTA)
+#ifdef PORTA
 	case 0:
 		return PORTA & _BV(pin & 7) ? 1 : 0;
 #endif
-#ifdef LATB
-	case 1:
-		return LATB & _BV(pin & 7) ? 1 : 0;
-#elif defined(PORTB)
+#ifdef PORTB
 	case 1:
 		return PORTB & _BV(pin & 7) ? 1 : 0;
 #endif
-#ifdef LATC
-	case 2:
-		return LATC & _BV(pin & 7) ? 1 : 0;
-#elif defined(PORTC)
+#ifdef PORTC
 	case 2:
 		return PORTC & _BV(pin & 7) ? 1 : 0;
 #endif
-#ifdef LATD
-	case 3:
-		return LATD & _BV(pin & 7) ? 1 : 0;
-#elif defined(PORTD)
+#ifdef PORTD
 	case 3:
 		return PORTD & _BV(pin & 7) ? 1 : 0;
 #endif
-#ifdef LATE
-	case 4:
-		return LATE & _BV(pin & 7) ? 1 : 0;
-#elif defined(PORTE)
+#ifdef PORTE
 	case 4:
 		return PORTE & _BV(pin & 7) ? 1 : 0;
 #endif
-#ifdef LATF
-	case 5:
-		return LATF & _BV(pin & 7) ? 1 : 0;
-#elif defined(PORTF)
+#ifdef PORTF
 	case 5:
 		return PORTF & _BV(pin & 7) ? 1 : 0;
 #endif

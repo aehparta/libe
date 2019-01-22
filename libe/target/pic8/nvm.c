@@ -2,7 +2,7 @@
  * Non-volatile memory handler for pic 8-bit
  */
 
-#include <xc.h>
+#include <libe/os.h>
 #include <libe/nvm.h>
 
 

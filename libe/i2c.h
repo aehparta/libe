@@ -33,10 +33,10 @@ struct i2c_context {};
 #define I2C_DELAY()         _delay_loop_1(F_CPU / F_I2C / 3 / 2)
 
 /* I2C SCL port and pin definitions */
-#define I2C_SCL_IO          (6 + (8 * 3)) /* pin 6 on PORTD */
+#define I2C_SCL_IO          8
 
 /* I2C SDA port and pin definitions */
-#define I2C_SDA_IO          (5 + (8 * 3)) /* pin 5 on PORTD */
+#define I2C_SDA_IO          9
 
 #elif TARGET_PIC8
 
@@ -102,7 +102,7 @@ do { \
 /* I2C write bit */
 #define I2C_WRITE_BIT(bit) \
 do { \
-    if (bit) I2C_SDA_HIGH(); \
+    if (bit) { I2C_SDA_HIGH(); } \
     else I2C_SDA_LOW(); \
     I2C_SCL_HIGH(); \
     I2C_DELAY(); \
@@ -113,7 +113,7 @@ do { \
 /* I2C write bit from byte */
 #define I2C_WRITE(byte, bit) \
 do { \
-    if (byte & _BV(bit)) I2C_SDA_HIGH(); \
+    if (byte & _BV(bit)) { I2C_SDA_HIGH(); } \
     else I2C_SDA_LOW(); \
     I2C_SCL_HIGH(); \
     I2C_DELAY(); \

@@ -202,7 +202,7 @@ static int os_ftdi_gpio_check_pin(uint8_t pin, uint8_t *pin_range, uint8_t *ud, 
 	return 0;
 }
 
-int os_ftdi_gpio_enable(uint8_t pin, bool direction)
+int8_t os_ftdi_gpio_enable(uint8_t pin, bool direction)
 {
 	uint8_t pin_range, ud, p;
 
@@ -232,7 +232,7 @@ int os_ftdi_gpio_enable(uint8_t pin, bool direction)
 	return 0;
 }
 
-int os_ftdi_gpio_set(uint8_t pin, bool state)
+int8_t os_ftdi_gpio_set(uint8_t pin, bool state)
 {
 	uint8_t pin_range, ud, p;
 
@@ -261,7 +261,7 @@ int os_ftdi_gpio_set(uint8_t pin, bool state)
 	return 0;
 }
 
-int os_ftdi_gpio_read(uint8_t pin)
+uint8_t os_ftdi_gpio_read(uint8_t pin)
 {
 	uint8_t pin_range, ud, p, pins;
 	IF_R(os_ftdi_gpio_check_pin(pin, &pin_range, &ud, &p), -1);
