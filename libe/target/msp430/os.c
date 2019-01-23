@@ -5,7 +5,7 @@
  */
 
 #include <libe/os.h>
-#include <libe/debug.h>
+#include <libe/log.h>
 
 int os_init(void)
 {

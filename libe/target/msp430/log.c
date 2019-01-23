@@ -8,7 +8,7 @@
 #include <stdarg.h>
 #include <libe/os.h>
 #include <libe/log.h>
-#include <libe/debug.h>
+#include <libe/log.h>
 
 
 // static int printchar(char c, FILE *stream)

@@ -9,7 +9,7 @@
 #include <esp_wifi.h>
 #include <esp_wps.h>
 #include <esp_event_loop.h>
-#include <libe/debug.h>
+#include <libe/log.h>
 #include "wifi.h"
 
 

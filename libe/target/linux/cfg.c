@@ -8,7 +8,7 @@
 #include <stdio.h>
 #include <stdint.h>
 #include <pcre.h>
-#include <libe/debug.h>
+#include <libe/log.h>
 #include <libe/linkedlist.h>
 #include "cfg.h"
 

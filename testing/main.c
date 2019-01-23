@@ -3,7 +3,7 @@
  */
 
 #include <libe/os.h>
-#include <libe/debug.h>
+#include <libe/log.h>
 #include <libe/drivers/gpio/hd44780.h>
 #include <libe/i2c.h>
 #include <libe/spi.h>

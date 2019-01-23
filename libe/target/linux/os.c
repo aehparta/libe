@@ -6,6 +6,7 @@
  */
 
 #include <stdio.h>
+#include <stdlib.h>
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <fcntl.h>
@@ -14,7 +15,7 @@
 #include <errno.h>
 #include <math.h>
 #include <libe/os.h>
-#include <libe/debug.h>
+#include <libe/log.h>
 
 
 int os_init(void)

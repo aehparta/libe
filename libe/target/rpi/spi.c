@@ -13,7 +13,7 @@
 #include <unistd.h>
 #include <linux/spi/spidev.h>
 #include <libe/spi.h>
-#include <libe/debug.h>
+#include <libe/log.h>
 #include <libe/os.h>
 
 

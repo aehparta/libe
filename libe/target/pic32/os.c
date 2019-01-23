@@ -6,7 +6,7 @@
  */
 
 #include <libe/os.h>
-#include <libe/debug.h>
+#include <libe/log.h>
 
 #define _BV(_PIN)           (1 << (_PIN))
 

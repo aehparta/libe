@@ -15,7 +15,7 @@
 #include <arpa/inet.h>
 #include <errno.h>
 #include <fcntl.h>
-#include <libe/debug.h>
+#include <libe/log.h>
 #include "broadcast.h"
 #ifdef TARGET_ESP32
 #include <libe/target/esp32/wifi.h>

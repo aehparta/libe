@@ -10,7 +10,7 @@
 #include <freertos/FreeRTOS.h>
 #include <freertos/task.h>
 #include <libe/os.h>
-#include <libe/debug.h>
+#include <libe/log.h>
 #include <sdkconfig.h>
 
 

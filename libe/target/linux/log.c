@@ -10,7 +10,7 @@
 #include <pthread.h>
 #include <libe/os.h>
 #include <libe/log.h>
-#include <libe/debug.h>
+#include <libe/log.h>
 
 
 static pthread_mutex_t log_mutex;

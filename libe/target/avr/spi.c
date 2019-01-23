@@ -8,7 +8,7 @@
 #include <string.h>
 #include <avr/io.h>
 #include <libe/spi.h>
-#include <libe/debug.h>
+#include <libe/log.h>
 #include <libe/os.h>
 
 

@@ -10,7 +10,7 @@
 #include <fcntl.h>
 #include <unistd.h>
 #include <libe/os.h>
-#include <libe/debug.h>
+#include <libe/log.h>
 #include <libe/i2c.h>
 
 

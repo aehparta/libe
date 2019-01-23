@@ -3,7 +3,7 @@
  */
 
 #include <nvs_flash.h>
-#include <libe/debug.h>
+#include <libe/log.h>
 #include <libe/nvm.h>
 
 

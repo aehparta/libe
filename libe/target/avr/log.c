@@ -7,7 +7,7 @@
 
 #include <libe/os.h>
 #include <libe/log.h>
-#include <libe/debug.h>
+#include <libe/log.h>
 
 
 #if defined(AVR_LOG_UDR)

@@ -6,7 +6,7 @@
 
 #include <stdlib.h>
 #include <string.h>
-#include <libe/debug.h>
+#include <libe/log.h>
 #include <libe/os.h>
 #include "nrf.h"
 

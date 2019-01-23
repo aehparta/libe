@@ -3,7 +3,7 @@
  */
 
 #include <libe/os.h>
-#include <libe/debug.h>
+#include <libe/log.h>
 
 #ifdef TARGET_ESP32
 int app_main(int argc, char *argv[])

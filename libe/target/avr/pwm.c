@@ -5,7 +5,7 @@
 #include <stdint.h>
 #include <libe/pwm.h>
 #include <libe/os.h>
-#include <libe/debug.h>
+#include <libe/log.h>
 
 static uint8_t pwm_prescaling = 0x05;
 static uint8_t pwm_channels = 0;

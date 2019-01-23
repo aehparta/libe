@@ -8,7 +8,10 @@
 #ifndef _LIBE_LOG_H_
 #define _LIBE_LOG_H_
 
+#include <stdio.h>
+#include <stdlib.h>
 #include <stdint.h>
+#include <ctype.h>
 
 #ifdef __cplusplus
 extern "C" {

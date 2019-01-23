@@ -11,7 +11,7 @@
 #include <fcntl.h>
 #include <unistd.h>
 #include <libe/os.h>
-#include <libe/debug.h>
+#include <libe/log.h>
 
 
 int os_gpio_enable(uint8_t pin, bool direction)
