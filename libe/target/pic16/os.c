@@ -116,7 +116,7 @@ int8_t os_gpio_set(uint8_t pin, bool state)
 }
 
 
-uint8_t os_gpio_read(uint8_t pin)
+int8_t os_gpio_read(uint8_t pin)
 {
 	switch (pin >> 3) {
 #ifdef LATA
@@ -144,5 +144,5 @@ uint8_t os_gpio_read(uint8_t pin)
 		return LATF & _BV(pin & 7) ? 1 : 0;
 #endif
 	}
-	return 0xff;
+	return -1;
 }

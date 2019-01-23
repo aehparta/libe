@@ -58,7 +58,7 @@ int8_t os_gpio_set(uint8_t pin, bool state)
 	return 0;
 }
 
-uint8_t os_gpio_read(uint8_t pin)
+int8_t os_gpio_read(uint8_t pin)
 {
 	return gpio_get_level(pin);
 }

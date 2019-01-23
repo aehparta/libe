@@ -12,6 +12,7 @@
 
 int os_init(void)
 {
+#ifdef OSCCON
 	/* pll multiplier, 0=4x, 1=3x */
 	OSCCONbits.SPLLMULT = 0;
 	/* pll enable, if enabled by config then this is ignored */
@@ -23,6 +24,7 @@ int os_init(void)
 	while (!OSCSTATbits.HFIOFR || !OSCSTATbits.HFIOFS || !!OSCSTATbits.PLLRDY);
 	/* start using internal oscillator */
 	OSCCONbits.SCS = 0x2;
+#endif
 
 	return 0;
 }
@@ -42,14 +44,14 @@ os_time_t os_timef(void)
 void os_sleepi(time_t t)
 {
 	for (time_t i = 0; i < t; i++) {
-		os_delay_ms(1000);
+		os_delay_ms(999);
 	}
 }
 
 void os_sleepf(os_time_t t)
 {
 	for (int i = (int)(t * 1000); i > 0; i--) {
-		os_delay_us(999);
+		os_delay_us(830);
 	}
 }
 
@@ -152,7 +154,7 @@ int8_t os_gpio_set(uint8_t pin, bool state)
 }
 
 
-uint8_t os_gpio_read(uint8_t pin)
+int8_t os_gpio_read(uint8_t pin)
 {
 	switch (pin >> 3) {
 #ifdef PORTA
@@ -180,5 +182,5 @@ uint8_t os_gpio_read(uint8_t pin)
 		return PORTF & _BV(pin & 7) ? 1 : 0;
 #endif
 	}
-	return 0xff;
+	return -1;
 }

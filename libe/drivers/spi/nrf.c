@@ -18,15 +18,12 @@ int nrf_open(struct nrf_device *nrf, struct spi_master *master, int ss, int ce)
 	nrf->ce = ce;
 
 	if (spi_open(&nrf->spi, master, ss)) {
-		ERROR_MSG("failed to open spi device");
 		spi_close(&nrf->spi);
 		return -1;
 	}
 
 	nrf_setup(nrf);
-
-	int err = nrf_read_reg(nrf, NRF_REG_CONFIG, NULL);
-	ERROR_IF_R((err & 0x0f) != 0x08, -1, "nrf config register value invalid after initialization (%02x)", err);
+	IF_R((nrf_read_reg(nrf, NRF_REG_CONFIG, NULL) & 0x0f) != 0x08, -1);
 
 	return 0;
 }
@@ -186,9 +183,8 @@ int nrf_recv(struct nrf_device *nrf, void *data)
 {
 	/* check status */
 	int status = nrf_read_status(nrf);
-	// DEBUG_MSG("%02x", status);
+
 	if (status < 0) {
-		ERROR_MSG("nrf_read_status() failed");
 		return -1;
 	}
 	if ((status & 0xe) == 0xe) {
@@ -200,7 +196,6 @@ int nrf_recv(struct nrf_device *nrf, void *data)
 		0x61,
 	};
 	if (spi_transfer(&nrf->spi, cmd, sizeof(cmd))) {
-		ERROR_MSG("nrf spi receive transfer failed");
 		return -1;
 	}
 	memcpy(data, cmd + 1, 32);
@@ -217,7 +212,6 @@ int nrf_send(struct nrf_device *nrf, void *data)
 	};
 	memcpy(cmd + 1, data, 32);
 	if (spi_transfer(&nrf->spi, cmd, sizeof(cmd))) {
-		ERROR_MSG("nrf spi send transfer failed");
 		return -1;
 	}
 	/* switch to transmit mode */

@@ -21,7 +21,7 @@ int os_init(void);
 
 int8_t os_gpio_enable(uint8_t pin, bool direction);
 int8_t os_gpio_set(uint8_t pin, bool state);
-uint8_t os_gpio_read(uint8_t pin);
+int8_t os_gpio_read(uint8_t pin);
 
 
 #endif /* _TARGET_OS_H_ */

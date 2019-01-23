@@ -23,7 +23,7 @@ PROGRAM_BIN = testing
 testing_SRC = main.c $(libe_SRC)
 
 # compile flags
-CFLAGS += -D_GNU_SOURCE $(libe_CFLAGS)
+CFLAGS += $(libe_CFLAGS)
 LDFLAGS += $(libe_LDFLAGS)
 
 # build

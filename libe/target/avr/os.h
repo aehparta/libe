@@ -93,7 +93,7 @@ inline int os_gpio_set(uint8_t pin, bool state)
 	return -1;
 }
 
-inline uint8_t os_gpio_read(uint8_t pin)
+inline int8_t os_gpio_read(uint8_t pin)
 {
 	switch (pin >> 3) {
 #ifdef PINA
@@ -121,7 +121,7 @@ inline uint8_t os_gpio_read(uint8_t pin)
 		return PINF & _BV(pin & 7) ? 1 : 0;
 #endif
 	}
-	return 0xff;
+	return -1;
 }
 
 #endif /* _TARGET_OS_H_ */

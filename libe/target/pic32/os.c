@@ -72,10 +72,10 @@ int8_t os_gpio_enable(uint8_t pin, bool direction)
 
 int8_t os_gpio_set(uint8_t pin, bool state)
 {
-	return 0;
+	return -1;
 }
 
-uint8_t os_gpio_read(uint8_t pin)
+int8_t os_gpio_read(uint8_t pin)
 {
-	return 0;
+	return -1;
 }

@@ -13,9 +13,9 @@
 
 int spi_master_open(struct spi_master *master, void *context, uint32_t frequency, uint8_t miso, uint8_t mosi, uint8_t sclk)
 {
-	os_gpio_output(19); /* sclk */
-	os_gpio_input(20); /* miso */
-	os_gpio_output(21); /* mosi */
+	os_gpio_input(miso);
+	os_gpio_output(mosi);
+	os_gpio_output(sclk);
 #ifdef SSPCON1
 	SSPCON1 = 0x20;
 #else
@@ -33,9 +33,6 @@ void spi_master_close(struct spi_master *master)
 	SSPCON = 0;
 #endif
 	SSPSTAT = 0;
-	os_gpio_input(19);
-	os_gpio_input(20);
-	os_gpio_input(21);
 }
 
 int spi_open(struct spi_device *device, struct spi_master *master, uint8_t ss)

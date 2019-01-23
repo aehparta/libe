@@ -19,7 +19,7 @@
 
 int8_t os_gpio_enable(uint8_t pin, bool direction);
 int8_t os_gpio_set(uint8_t pin, bool state);
-uint8_t os_gpio_read(uint8_t pin);
+int8_t os_gpio_read(uint8_t pin);
 
 #define NAN                 -1e13
 #define isfinite(x)         (x > -0.9e13)
