@@ -97,11 +97,11 @@ int main(int argc, char *argv[])
 
 			/* print info */
 			printf("packet received, data as ascii and hex dumps:\r\n");
-			printf(LDC_DGRAYB);
+			LOG_COLOR(LDC_DGRAYB);
 			ASCII_DUMP(data, sizeof(data), 0);
-			printf(LDC_YELLOWB);
+			LOG_COLOR(LDC_YELLOWB);
 			HEX_DUMP(data, sizeof(data));
-			printf(LDC_DEFAULT);
+			LOG_COLOR(LDC_DEFAULT);
 		}
 
 		/* lets not waste all cpu */

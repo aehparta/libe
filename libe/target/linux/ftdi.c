@@ -261,7 +261,7 @@ int8_t os_ftdi_gpio_set(uint8_t pin, bool state)
 	return 0;
 }
 
-uint8_t os_ftdi_gpio_read(uint8_t pin)
+int8_t os_ftdi_gpio_read(uint8_t pin)
 {
 	uint8_t pin_range, ud, p, pins;
 	IF_R(os_ftdi_gpio_check_pin(pin, &pin_range, &ud, &p), -1);
