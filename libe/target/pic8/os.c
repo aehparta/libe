@@ -12,7 +12,7 @@
 
 int os_init(void)
 {
-#ifdef OSCCON
+#ifdef OSCCONbits
 	/* pll multiplier, 0=4x, 1=3x */
 	OSCCONbits.SPLLMULT = 0;
 	/* pll enable, if enabled by config then this is ignored */
@@ -24,6 +24,8 @@ int os_init(void)
 	while (!OSCSTATbits.HFIOFR || !OSCSTATbits.HFIOFS || !!OSCSTATbits.PLLRDY);
 	/* start using internal oscillator */
 	OSCCONbits.SCS = 0x2;
+#elif OSCCON
+	OSCCON = 0x72;
 #endif
 
 	return 0;

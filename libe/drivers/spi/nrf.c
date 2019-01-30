@@ -22,6 +22,14 @@ int nrf_open(struct nrf_device *nrf, struct spi_master *master, int ss, int ce)
 		return -1;
 	}
 
+	while (1) {
+		uint8_t x = 0x5a;
+		spi_transfer(&nrf->spi, &x, 1);
+		printf("%02x\r\n", x);
+		os_delay_ms(100);
+	}
+
+
 	nrf_setup(nrf);
 	IF_R((nrf_read_reg(nrf, NRF_REG_CONFIG, NULL) & 0x0f) != 0x08, -1);
 

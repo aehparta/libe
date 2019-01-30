@@ -13,15 +13,15 @@
 
 int spi_master_open(struct spi_master *master, void *context, uint32_t frequency, uint8_t miso, uint8_t mosi, uint8_t sclk)
 {
-	os_gpio_input(miso);
-	os_gpio_output(mosi);
-	os_gpio_output(sclk);
+	SSPSTAT = 0;
 #ifdef SSPCON1
 	SSPCON1 = 0x20;
 #else
 	SSPCON = 0x20;
 #endif
-	SSPSTAT = 0;
+	os_gpio_input(miso);
+	os_gpio_output(mosi);
+	os_gpio_output(sclk);
 	return 0;
 }
 
@@ -53,11 +53,52 @@ int spi_transfer(struct spi_device *device, uint8_t *data, size_t size)
 	os_gpio_low(device->ss);
 	for ( ; size > 0; size--) {
 		SSPBUF = *data;
-		while (!BF);
+		while (!SSPSTATbits.BF);
 		*data = SSPBUF;
 		data++;
 	}
 	os_gpio_high(device->ss);
-	
+
 	return 0;
 }
+
+
+// void initialise_SPI(void);
+// void spi_w(unsigned char data);
+// void init_io(void)
+// {
+// 	TRISA = 0x01;
+// 	TRISB = 0x01;   // bit 0 = output, 1 = input
+// 	TRISC = 0b10010111;
+// 	TRISD = 0x00;
+// 	TRISE = 0x00;
+// }
+// //SPI write command function
+// void spi_w(unsigned char data)
+// {
+// 	unsigned char x;
+// 	PORTC, RC6 = 0;
+// 	while (!SSPIF);  //wait for transmission complete
+// 	x = SSPBUF; //dummy read
+// 	SSPBUF = data;
+// 	while (!SSPIF);  //wait for transmission complete
+// 	x = SSPBUF;
+// 	PORTC, RC6 = 1;
+// }
+// void initialise_SPI(void)
+// {
+// 	SSPEN = 0;
+// 	SSPSTAT = 0b01000000;
+// 	SSPCON = 0b00100010;
+// 	SSPEN = 1;
+// }
+// void main()
+// {
+// 	unsigned char data = 0x05;
+// 	init_io();
+// 	initialise_SPI();
+// 	while (1) {
+// 		spi_w(data);
+// 		PORTD = data;
+// 	}
+// }

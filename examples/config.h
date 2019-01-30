@@ -37,13 +37,28 @@
 
 
 #ifdef TARGET_X86
+/* ftdi */
+#define CFG_FTDI_VID        0 /* example 0x0403 */
+#define CFG_FTDI_PID        0 /* example 0x6011 which is FT4232H */
+#define CFG_FTDI_DESC       NULL
+#define CFG_FTDI_SERIAL     NULL
+/* spi */
 #define CFG_SPI_CONTEXT     0
 #define CFG_SPI_FREQUENCY   0
 #define CFG_SPI_MISO        2
 #define CFG_SPI_MOSI        1
 #define CFG_SPI_SCLK        0
+/* nrf24l01+ */
 #define CFG_NRF_SS          3
 #define CFG_NRF_CE          4
+/* hd44780 */
+#define CFG_HD44780_D4      16
+#define CFG_HD44780_D5      17
+#define CFG_HD44780_D6      18
+#define CFG_HD44780_D7      19
+#define CFG_HD44780_EN      20
+#define CFG_HD44780_RW      21
+#define CFG_HD44780_RS      22
 #endif
 
 

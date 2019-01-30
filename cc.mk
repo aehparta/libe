@@ -81,7 +81,7 @@ else ifeq ($(TARGET),pic8)
     LIB_EXT  ?= .lpp
     OBJCOPY  = 
     OBJDUMP  =
-    OPTIMIZATION = 1
+    OPTIMIZATION ?= 2
 else ifeq ($(TARGET),pic16)
     libe_CFLAGS  += -DF_CPU=$(F_CPU)
     libe_CFLAGS  += -mcpu=$(MCU)
@@ -90,7 +90,7 @@ else ifeq ($(TARGET),pic16)
     libe_LDFLAGS += -Wl,--gc-sections
     OBJCOPY  = 
     BIN2HEX  = xc16-bin2hex
-    OPTIMIZATION = 1
+    OPTIMIZATION ?= 2
 else ifeq ($(TARGET),pic32)
     libe_CFLAGS  += -DF_CPU=$(F_CPU)
     libe_CFLAGS  += -mprocessor=$(MCU)
@@ -98,7 +98,7 @@ else ifeq ($(TARGET),pic32)
     libe_LDFLAGS += -mprocessor=$(MCU)
     libe_LDFLAGS += -Wl,--gc-sections -no-legacy-libc
     libe_LDFLAGS += -Wl,--defsym=_min_heap_size=0,--gc-sections,--no-code-in-dinit,--no-dinit-in-serial-mem,-Map=$(TARGET).map,--cref
-    OPTIMIZATION = 1
+    OPTIMIZATION ?= 2
 else ifeq ($(TARGET),msp430)
     libe_CFLAGS  += -DF_CPU=$(F_CPU)
     libe_CFLAGS  += -mmcu=$(MCU)

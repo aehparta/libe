@@ -183,7 +183,7 @@ do { \
 
 /* dumping memory macros that are defined only in specific situations */
 #if defined(DEBUG) || defined(TARGET_LINUX) || defined(TARGET_ESP32)
-/** HEX dumping. */
+/** hex dumping. */
 #define HEX_DUMP(data, size) \
     do { \
         int __i; \
