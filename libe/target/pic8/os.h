@@ -23,5 +23,10 @@ int8_t os_gpio_enable(uint8_t pin, bool direction);
 int8_t os_gpio_set(uint8_t pin, bool state);
 int8_t os_gpio_read(uint8_t pin);
 
+#if defined(RA0PPS) || defined(RB0PPS) || defined(RC0PPS)
+void os_pic8_rxxpps(uint8_t pin, uint8_t action);
+#else
+#define os_pic8_rxxpps(pin, action)
+#endif
 
 #endif /* _TARGET_OS_H_ */

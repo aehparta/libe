@@ -13,15 +13,32 @@
 
 int spi_master_open(struct spi_master *master, void *context, uint32_t frequency, uint8_t miso, uint8_t mosi, uint8_t sclk)
 {
+#ifdef SSP1STAT
+	SSP1STAT = 0;
+#else
 	SSPSTAT = 0;
+#endif
 #ifdef SSPCON1
 	SSPCON1 = 0x20;
+#elif defined(SSP1CON1)
+	SSP1CON1 = 0x20;
 #else
 	SSPCON = 0x20;
 #endif
 	os_gpio_input(miso);
 	os_gpio_output(mosi);
 	os_gpio_output(sclk);
+
+	/* if device supports mapping of pins */
+#ifdef SSP1DATPPS
+	SSP1DATPPS = miso;
+#endif
+#ifdef SSP1CLKPPS
+	SSP1CLKPPS = sclk;
+#endif
+	os_pic8_rxxpps(sclk, 0x13);
+	os_pic8_rxxpps(mosi, 0x14);
+
 	return 0;
 }
 
@@ -29,10 +46,16 @@ void spi_master_close(struct spi_master *master)
 {
 #ifdef SSPCON1
 	SSPCON1 = 0;
+#elif defined(SSP1CON1)
+	SSP1CON1 = 0;
 #else
 	SSPCON = 0;
 #endif
+#ifdef SSP1STAT
+	SSP1STAT = 0;
+#else
 	SSPSTAT = 0;
+#endif
 }
 
 int spi_open(struct spi_device *device, struct spi_master *master, uint8_t ss)
@@ -52,9 +75,15 @@ int spi_transfer(struct spi_device *device, uint8_t *data, size_t size)
 {
 	os_gpio_low(device->ss);
 	for ( ; size > 0; size--) {
+#ifdef SSP1BUF
+		SSP1BUF = *data;
+		while (!SSP1STATbits.BF);
+		*data = SSP1BUF;
+#else
 		SSPBUF = *data;
 		while (!SSPSTATbits.BF);
 		*data = SSPBUF;
+#endif
 		data++;
 	}
 	os_gpio_high(device->ss);

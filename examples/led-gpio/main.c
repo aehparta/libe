@@ -52,7 +52,7 @@ int main(int argc, char *argv[])
 #elif defined(LATB) && defined(TARGET_PIC8)
 		/* or in PIC with LATB */
 		LATB &= ~(1 << 5);
-#elif defined(PORTA) && defined(TARGET_PIC8)
+#elif defined(PORTB) && defined(TARGET_PIC8)
 		/* or in older PIC with PORTB */
 		PORTB &= ~(1 << 5);
 #endif
