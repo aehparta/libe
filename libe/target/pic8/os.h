@@ -8,6 +8,8 @@
 #define _XTAL_FREQ          F_CPU
 #include <xc.h>
 
+void *memcpy(void *dest, const void *src, size_t n);
+
 #define OS_GPIO_AS_MACROS_OR_INLINE     1
 #define OS_DELAY_AS_MACROS_OR_INLINE    1
 
@@ -24,9 +26,8 @@ int8_t os_gpio_set(uint8_t pin, bool state);
 int8_t os_gpio_read(uint8_t pin);
 
 #if defined(RA0PPS) || defined(RB0PPS) || defined(RC0PPS)
-void os_pic8_rxxpps(uint8_t pin, uint8_t action);
-#else
-#define os_pic8_rxxpps(pin, action)
+#define OS_HAS_PPS
+void os_pin_pps(uint8_t pin, uint8_t action);
 #endif
 
 #endif /* _TARGET_OS_H_ */

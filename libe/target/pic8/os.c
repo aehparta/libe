@@ -192,7 +192,7 @@ int8_t os_gpio_read(uint8_t pin)
 
 
 #if defined(RA0PPS) || defined(RB0PPS) || defined(RC0PPS)
-void os_pic8_rxxpps(uint8_t pin, uint8_t action)
+void os_pin_pps(uint8_t pin, uint8_t action)
 {
 	switch (pin) {
 	/* port A */

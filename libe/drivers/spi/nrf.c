@@ -5,7 +5,9 @@
  */
 
 #include <stdlib.h>
+#ifndef TARGET_PIC8
 #include <string.h>
+#endif
 #include <libe/log.h>
 #include <libe/os.h>
 #include "nrf.h"

@@ -13,11 +13,19 @@
 
 void putch(char ch)
 {
+#ifdef TX1STA
+	/* wait till the transmitter register becomes empty */
+	while (!TX1IF);
+	/* clear transmitter flag and send character */
+	TX1IF = 0;
+	TX1REG = ch;
+#else
 	/* wait till the transmitter register becomes empty */
 	while (!TXIF);
 	/* clear transmitter flag and send character */
 	TXIF = 0;
 	TXREG = ch;
+#endif
 }
 
 int log_init(void *context, uint32_t baud)
@@ -27,16 +35,27 @@ int log_init(void *context, uint32_t baud)
 		baud = 38400;
 	}
 	/* enable uart transmit with baud rate multiplier and calculate baud rate setting */
+#ifdef TX1STA
+	TX1STA = 0x24;
+	RC1STA = 0x80;
+	SP1BRG = (_XTAL_FREQ / (long)(16UL * baud)) - 1;
+#else
 	TXSTA = 0x24;
 	RCSTA = 0x80;
 	SPBRG = (_XTAL_FREQ / (long)(16UL * baud)) - 1;
+#endif
 	return 0;
 }
 
 void log_quit(void)
 {
+#ifdef TX1STA
+	TX1STA = 0;
+	SP1BRG = 0;
+#else
 	TXSTA = 0;
 	SPBRG = 0;
+#endif
 }
 
 void log_msg(int level, const char *file, int line, const char *func, const char *msg, ...)

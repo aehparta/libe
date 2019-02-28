@@ -100,6 +100,9 @@ int8_t os_gpio_read(uint8_t pin);
 #define os_delay_us(x)      os_sleepf((os_time_t)x / 1000.0 / 1000.0)
 #endif
 
+#ifndef OS_HAS_PPS
+#define os_pin_pps(pin, action)
+#endif
 
 #ifdef __cplusplus
 }

@@ -5,7 +5,7 @@
  */
 
 #include <stdlib.h>
-#include <string.h>
+// #include <string.h>
 #include <libe/spi.h>
 #include <libe/log.h>
 #include <libe/os.h>
@@ -36,8 +36,8 @@ int spi_master_open(struct spi_master *master, void *context, uint32_t frequency
 #ifdef SSP1CLKPPS
 	SSP1CLKPPS = sclk;
 #endif
-	os_pic8_rxxpps(sclk, 0x13);
-	os_pic8_rxxpps(mosi, 0x14);
+	os_pin_pps(sclk, 0x13);
+	os_pin_pps(mosi, 0x14);
 
 	return 0;
 }
