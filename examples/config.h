@@ -28,12 +28,12 @@
 /* spi */
 #define CFG_SPI_CONTEXT     NULL
 #define CFG_SPI_FREQUENCY   0
-#define CFG_SPI_MISO        0
-#define CFG_SPI_MOSI        0
+#define CFG_SPI_MISO        2
+#define CFG_SPI_MOSI        1
 #define CFG_SPI_SCLK        0
 /* nrf24l01+ */
-#define CFG_NRF_SS          0
-#define CFG_NRF_CE          1
+#define CFG_NRF_SS          4
+#define CFG_NRF_CE          5
 #endif
 
 
