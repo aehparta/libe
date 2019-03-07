@@ -12,6 +12,9 @@
 #include <stdlib.h>
 #include <stdint.h>
 #include <ctype.h>
+#ifdef TARGET_LINUX
+#include <string.h>
+#endif
 
 #ifdef __cplusplus
 extern "C" {

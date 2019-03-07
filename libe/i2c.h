@@ -154,11 +154,11 @@ struct i2c_context {
 /**
  * Initialize I2C bitbang.
  */
-struct i2c_context *i2c_open(void *context);
+int i2c_open(struct i2c_context *i2c, void *context);
 void i2c_close(struct i2c_context *i2c);
 
 int i2c_addr7(struct i2c_context *i2c, uint8_t addr, uint8_t rw);
-uint8_t i2c_read_byte(struct i2c_context *i2c, int nack);
+int i2c_read_byte(struct i2c_context *i2c, int nack);
 int i2c_write_byte(struct i2c_context *i2c, uint8_t byte);
 void i2c_stop(struct i2c_context *i2c);
 

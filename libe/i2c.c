@@ -6,7 +6,7 @@
  */
 
 #include "i2c.h"
-#include "debug.h"
+#include "log.h"
 #include "os.h"
 
 

@@ -14,57 +14,42 @@
 #include <libe/i2c.h>
 
 
-struct i2c_context *i2c_open(void *context)
+int i2c_open(struct i2c_context *i2c, void *context)
 {
-	struct i2c_context *i2c;
-	int fd;
-
-	if (!context) {
-		WARN_MSG("i2c device is invalid (null)");
-		return NULL;
-	}
-
-	fd = open(context, O_RDWR);
-	ERROR_IF_R(fd < 0, NULL, "unable to open i2c device: %s", context);
-
-	// ERR_IF_R(ioctl(fd, I2C_SLAVE, SSD1306_I2C_ADDR) < 0 ) {
-	// 	printf("SSD1306 ioctl error : %s\r\n", strerror(errno));
-	// }
-
-	SALLOC(i2c, NULL);
-	i2c->fd = fd;
-
-	return i2c;
+	IF_R(!context, -1);
+	i2c->fd = open(context, O_RDWR);
+	IF_R(i2c->fd < 0, -1);
+	return 0;
 }
 
 
 void i2c_close(struct i2c_context *i2c)
 {
-	if (i2c) {
-		if (i2c->fd > -1) {
-			close(i2c->fd);
-		}
-		free(i2c);
+	if (i2c->fd > -1) {
+		close(i2c->fd);
 	}
 }
 
 
 int i2c_addr7(struct i2c_context *i2c, uint8_t addr, uint8_t rw)
 {
-	ERROR_IF_R(ioctl(i2c->fd, I2C_SLAVE, addr) < 0, -1, "i2c error when setting slave address: 0x%02x", addr);
-	return 0;
+	int err = ioctl(i2c->fd, I2C_SLAVE, addr);
+	ERROR_IF_R(err < 0, -1, "i2c error when setting slave address: 0x%02x", addr);
+	return err;
 }
 
 
-uint8_t i2c_read_byte(struct i2c_context *i2c, int nack)
+int i2c_read_byte(struct i2c_context *i2c, int nack)
 {
-	return -1;
+	uint8_t byte;
+	IF_R(read(i2c->fd, &byte, 1) != 1, -1);
+	return byte;
 }
 
 
 int i2c_write_byte(struct i2c_context *i2c, uint8_t byte)
 {
-	ERROR_IF_R(write(i2c->fd, &byte, 1) != 1, -1, "i2c write byte failed");
+	IF_R(write(i2c->fd, &byte, 1) != 1, -1);
 	return 0;
 }
 
