@@ -40,7 +40,8 @@ endif
 ifneq ($(filter $(libe_DEFINES),USE_I2C),)
     libe_SRC += \
         $(LIBE_PATH)/libe/target/$(TARGET)/i2c.c \
-        $(LIBE_PATH)/libe/i2c.c
+        $(LIBE_PATH)/libe/i2c.c \
+        $(LIBE_PATH)/libe/drivers/i2c/mcp3221.c
 endif
 
 # add non-volatile memory (eeprom or similar)

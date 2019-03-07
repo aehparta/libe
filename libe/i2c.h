@@ -18,7 +18,10 @@
 
 #if defined(TARGET_AVR) || defined(TARGET_PIC8)  || defined(TARGET_MSP430)
 
-struct i2c_context {};
+struct i2c_master {};
+struct i2c_device {
+	uint8_t address;
+};
 
 #ifndef F_I2C
 /**
@@ -124,13 +127,13 @@ do { \
 /* I2C read bit */
 static inline uint8_t I2C_READ_BIT(void)
 {
-    uint8_t bit;
-    I2C_SCL_HIGH();
-    I2C_DELAY();
-    bit = I2C_SDA_READ();
-    I2C_SCL_LOW();
-    I2C_DELAY();
-    return bit;
+	uint8_t bit;
+	I2C_SCL_HIGH();
+	I2C_DELAY();
+	bit = I2C_SDA_READ();
+	I2C_SCL_LOW();
+	I2C_DELAY();
+	return bit;
 }
 
 /* I2C read bit to byte */
@@ -144,44 +147,28 @@ do { \
 } while (0);
 
 #elif TARGET_X86 || TARGET_RPI
-struct i2c_context {
-    int fd;
-    uint8_t last_addr;
+struct i2c_master {
+	int fd;
+};
+struct i2c_device {
+	struct i2c_master *master;
+	uint8_t address;
 };
 #endif
 
 
-/**
- * Initialize I2C bitbang.
+/*
+ * I2C functions
  */
-int i2c_open(struct i2c_context *i2c, void *context);
-void i2c_close(struct i2c_context *i2c);
 
-int i2c_addr7(struct i2c_context *i2c, uint8_t addr, uint8_t rw);
-int i2c_read_byte(struct i2c_context *i2c, int nack);
-int i2c_write_byte(struct i2c_context *i2c, uint8_t byte);
-void i2c_stop(struct i2c_context *i2c);
+int i2c_master_open(struct i2c_master *master, void *context);
+void i2c_master_close(struct i2c_master *master);
 
-/** Read two bytes, LSB first. */
-uint16_t i2c_read_u16(struct i2c_context *i2c, int nack);
-/** Read four bytes, LSB first. */
-uint32_t i2c_read_u32(struct i2c_context *i2c, int nack);
+int i2c_open(struct i2c_device *dev, struct i2c_master *master, uint8_t address);
+void i2c_close(struct i2c_device *dev);
 
-/**
- * Read register:
- *  - start
- *  - write register
- *  - stop
- *  - start
- *  - read byte
- *  - stop
- */
-uint8_t i2c_read_reg_byte(struct i2c_context *i2c, uint8_t address, uint8_t reg);
-
-void i2c_write_reg_byte(struct i2c_context *i2c, uint8_t address, uint8_t reg, uint8_t value);
-
-/* i2c test of all addresses to find i2c devices when debugging */
-void i2c_test_dump(void);
+int i2c_read(struct i2c_device *i2c, void *data, size_t size);
+int i2c_write(struct i2c_device *i2c, void *data, size_t size);
 
 
 #endif /* _I2C_H_ */
