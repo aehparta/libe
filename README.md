@@ -17,6 +17,10 @@ Especially 8-bit PIC with free xc8 generated code is slow since no proper optimi
 On other platforms, like AVR, GPIO functions are inline and will often optimize as well
 as directly written native code.
 
+#### Drivers
+
+* HD44780 LCD in 4 bit mode (7 GPIO pins needed)
+
 ### Timing and delay
 
 Generic *"time elapsed since bootup"* and *sleep/delay* functions.
