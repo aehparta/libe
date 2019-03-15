@@ -19,7 +19,7 @@ as directly written native code.
 
 #### Drivers
 
-* HD44780 LCD in 4 bit mode
+* HD44780: Alphanumeric LCD in 4 bit mode
 
 ### Timing and delay
 
