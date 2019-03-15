@@ -31,7 +31,7 @@ Generic SPI interface. Supports multiple SPI masters and multiple devices under 
 
 #### Drivers
 
-* NRF24L01+
+* NRF24L01+: RF transceiver IC
 
 ### I2C
 
