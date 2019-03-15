@@ -39,6 +39,8 @@ Generic I2C interface either in bitbang mode or using native hardware.
 
 #### Drivers
 
+* MCP3221: Microchip 12-bit ADC
+
 ***Coming but not yet available (already written though, need a bit of porting to new libe)***
 
 * CAP1293: Microchip touch sensor
