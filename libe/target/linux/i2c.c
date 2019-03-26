@@ -16,7 +16,7 @@
 #include <libe/i2c.h>
 
 
-int i2c_master_open(struct i2c_master *master, void *context)
+int i2c_master_open(struct i2c_master *master, void *context, uint32_t frequency, uint8_t scl, uint8_t sda)
 {
 	struct stat st;
 
@@ -43,6 +43,7 @@ int i2c_open(struct i2c_device *dev, struct i2c_master *master, uint8_t address)
 {
 	dev->master = master;
 	dev->address = address;
+	/* do a write without any data to detect if there is a device at this address */
 	return i2c_write(dev, NULL, 0);
 }
 

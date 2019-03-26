@@ -36,7 +36,7 @@ int main(int argc, char *argv[])
 #endif
 
 	/* open i2c */
-	ERROR_IF_R(i2c_master_open(&i2c, context), 1, "unable to open i2c device");
+	ERROR_IF_R(i2c_master_open(&i2c, context, 0, 0, 0), 1, "unable to open i2c device");
 
 	/* open mcp3221 */
 	ERROR_IF_R(mcp3221_open(&dev, &i2c, MCP3221_ADDR_A2), 1, "unable to find mcp3221");

@@ -17,11 +17,11 @@ endif
 
 # add logging
 ifneq ($(filter $(libe_DEFINES),USE_LOG),)
-ifdef TARGET_LINUX
-    libe_SRC += $(LIBE_PATH)/libe/target/linux/log.c
-else
-    libe_SRC += $(LIBE_PATH)/libe/target/$(TARGET)/log.c
-endif
+    ifdef TARGET_LINUX
+        libe_SRC += $(LIBE_PATH)/libe/target/linux/log.c
+    else
+        libe_SRC += $(LIBE_PATH)/libe/target/$(TARGET)/log.c
+    endif
 endif
 
 # gpio drivers
@@ -39,9 +39,15 @@ endif
 # add i2c and drivers for chips
 ifneq ($(filter $(libe_DEFINES),USE_I2C),)
     libe_SRC += \
-        $(LIBE_PATH)/libe/target/$(TARGET)/i2c.c \
         $(LIBE_PATH)/libe/i2c.c \
         $(LIBE_PATH)/libe/drivers/i2c/mcp3221.c
+    ifneq ($(filter $(libe_DEFINES),USE_I2C_BITBANG),)
+        libe_SRC += $(LIBE_PATH)/libe/drivers/i2c/bitbang.c
+    else ifdef TARGET_LINUX
+        libe_SRC += $(LIBE_PATH)/libe/target/linux/i2c.c
+    else
+        libe_SRC += $(LIBE_PATH)/libe/target/$(TARGET)/i2c.c
+    endif
 endif
 
 # add non-volatile memory (eeprom or similar)

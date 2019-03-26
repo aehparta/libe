@@ -10,6 +10,7 @@
 #include <sys/stat.h>
 #include <unistd.h>
 #endif
+#include "../config.h"
 
 
 #ifdef TARGET_ESP32
@@ -27,13 +28,16 @@ int main(int argc, char *argv[])
 	log_init(NULL, 0);
 
 	/* check i2c device if using linux */
-#ifdef TARGET_LINUX
+#ifdef USE_FTDI
+	ERROR_IF_R(os_ftdi_use(OS_FTDI_GPIO_0_TO_63, CFG_FTDI_VID, CFG_FTDI_PID, CFG_FTDI_DESC, CFG_FTDI_SERIAL), -1, "unable to open ftdi device for gpio 0-63");
+#endif
+#if defined(TARGET_LINUX) && !defined(USE_I2C_BITBANG)
 	ERROR_IF_R(argc < 2, 1, "give i2c device as first argument");
 	context = argv[1];
 #endif
 
 	/* open i2c */
-	ERROR_IF_R(i2c_master_open(&i2c, context), 1, "unable to open i2c device");
+	ERROR_IF_R(i2c_master_open(&i2c, context, 100000, 0, 1), 1, "unable to open i2c device");
 
 	/* scan i2c bus */
 	int found = 0;
