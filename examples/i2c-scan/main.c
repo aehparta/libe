@@ -39,6 +39,17 @@ int main(int argc, char *argv[])
 	/* open i2c */
 	ERROR_IF_R(i2c_master_open(&i2c, context, CFG_I2C_FREQUENCY, CFG_I2C_SCL, CFG_I2C_SDA), 1, "unable to open i2c device");
 
+	i2c_open(&dev, &i2c, 0x20);
+	uint8_t data[8] = { 0x03, 0xff };
+	i2c_write(&dev, data, 2);
+	os_sleepf(0.001);
+	
+	data[0] = 0x01;
+	data[1] = 0x00;
+	i2c_write(&dev, data, 2);
+
+	return 0;
+
 	/* scan i2c bus */
 	int found = 0;
 	for (int a = 0; a < 128; a++) {
