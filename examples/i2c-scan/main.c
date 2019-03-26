@@ -40,13 +40,18 @@ int main(int argc, char *argv[])
 	ERROR_IF_R(i2c_master_open(&i2c, context, CFG_I2C_FREQUENCY, CFG_I2C_SCL, CFG_I2C_SDA), 1, "unable to open i2c device");
 
 	i2c_open(&dev, &i2c, 0x20);
+
+	os_sleepf(0.001);
+
 	uint8_t data[8] = { 0x03, 0xff };
 	i2c_write(&dev, data, 2);
+
 	os_sleepf(0.001);
-	
-	data[0] = 0x01;
-	data[1] = 0x00;
-	i2c_write(&dev, data, 2);
+
+	data[0] = 0x00;
+	i2c_write(&dev, data, 1);
+	i2c_read(&dev, data, 4);
+	INFO_MSG("got %02x %02x %02x", data[0], data[1], data[2]);
 
 	return 0;
 

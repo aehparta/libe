@@ -16,14 +16,14 @@
 #define I2C_DELAY()         _delay_us(10)
 #endif
 
-#define I2C_WRITE(state) \
+#define I2C_START() \
 	do { \
-		os_gpio_set(dev->master->sda, state ? true : false); \
+		os_gpio_output(dev->master->sda); \
 		os_gpio_high(dev->master->scl); \
+		os_gpio_low(dev->master->sda); \
 		I2C_DELAY(); \
 		os_gpio_low(dev->master->scl); \
-		I2C_DELAY(); \
-	} while(0)
+	} while (0)
 
 #define I2C_STOP() \
 	do { \
@@ -33,7 +33,41 @@
 		os_gpio_high(dev->master->scl); \
 		I2C_DELAY(); \
 		os_gpio_input(dev->master->sda); \
-	} while(0)
+	} while (0)
+
+#define I2C_WRITE(state) \
+	do { \
+		os_gpio_set(dev->master->sda, state ? true : false); \
+		I2C_DELAY(); \
+		os_gpio_high(dev->master->scl); \
+		I2C_DELAY(); \
+		os_gpio_low(dev->master->scl); \
+	} while (0)
+
+#define I2C_READ(var, mask) \
+	do { \
+		I2C_DELAY(); \
+		os_gpio_high(dev->master->scl); \
+		I2C_DELAY(); \
+		if (!os_gpio_read(dev->master->sda)) { \
+			(var) &= mask; \
+		} \
+		os_gpio_low(dev->master->scl); \
+	} while (0)
+
+#define I2C_READ_ACK() \
+	do { \
+		os_gpio_input(dev->master->sda); \
+		I2C_DELAY(); \
+		os_gpio_high(dev->master->scl); \
+		I2C_DELAY(); \
+		if (os_gpio_read(dev->master->sda)) { \
+			/* no ack received */ \
+			I2C_STOP(); \
+			return -1; \
+		} \
+		os_gpio_low(dev->master->scl); \
+	} while (0)
 
 
 int i2c_master_open(struct i2c_master *master, void *context, uint32_t frequency, uint8_t scl, uint8_t sda)
@@ -81,16 +115,8 @@ void i2c_close(struct i2c_device *dev)
 
 int i2c_read(struct i2c_device *dev, void *data, size_t size)
 {
-	int8_t b;
-
-	os_gpio_output(dev->master->sda);
-
 	/* start bit */
-	os_gpio_high(dev->master->scl);
-	os_gpio_low(dev->master->sda);
-	I2C_DELAY();
-	os_gpio_low(dev->master->scl);
-	I2C_DELAY();
+	I2C_START();
 
 	/* address */
 	I2C_WRITE(dev->address & 0x40);
@@ -105,31 +131,36 @@ int i2c_read(struct i2c_device *dev, void *data, size_t size)
 	I2C_WRITE(1);
 
 	/* read ack */
-	os_gpio_input(dev->master->sda);
-	os_gpio_high(dev->master->scl);
-	I2C_DELAY();
-	b = os_gpio_read(dev->master->sda);
-	os_gpio_low(dev->master->scl);
-	I2C_DELAY();
+	I2C_READ_ACK();
+
+	/* read data */
+	for (uint8_t *p = data; size > 0; size--, p++) {
+		os_gpio_input(dev->master->sda);
+		*p = 0xff;
+		I2C_READ(*p, ~0x80);
+		I2C_READ(*p, ~0x40);
+		I2C_READ(*p, ~0x20);
+		I2C_READ(*p, ~0x10);
+		I2C_READ(*p, ~0x08);
+		I2C_READ(*p, ~0x04);
+		I2C_READ(*p, ~0x02);
+		I2C_READ(*p, ~0x01);
+
+		/* send ack/nack */
+		os_gpio_output(dev->master->sda);
+		I2C_WRITE(size > 1 ? 0 : 1);
+	}
 
 	/* stop */
 	I2C_STOP();
 
-	return b == 0 ? 0 : -1;
+	return 0;
 }
 
 int i2c_write(struct i2c_device *dev, void *data, size_t size)
 {
-	int8_t b;
-
-	os_gpio_output(dev->master->sda);
-
 	/* start bit */
-	os_gpio_high(dev->master->scl);
-	os_gpio_low(dev->master->sda);
-	I2C_DELAY();
-	os_gpio_low(dev->master->scl);
-	I2C_DELAY();
+	I2C_START();
 
 	/* address */
 	I2C_WRITE(dev->address & 0x40);
@@ -144,17 +175,7 @@ int i2c_write(struct i2c_device *dev, void *data, size_t size)
 	I2C_WRITE(0);
 
 	/* read ack */
-	os_gpio_input(dev->master->sda);
-	os_gpio_high(dev->master->scl);
-	I2C_DELAY();
-	b = os_gpio_read(dev->master->sda);
-	if (b) {
-		/* no ack received */
-		I2C_STOP();
-		return -1;
-	}
-	os_gpio_low(dev->master->scl);
-	I2C_DELAY();
+	I2C_READ_ACK();
 
 	/* write data */
 	for (uint8_t *p = data; size > 0; size--, p++) {
@@ -169,19 +190,13 @@ int i2c_write(struct i2c_device *dev, void *data, size_t size)
 		I2C_WRITE(*p & 0x01);
 
 		/* read ack */
-		os_gpio_input(dev->master->sda);
-		os_gpio_high(dev->master->scl);
-		I2C_DELAY();
-		b = os_gpio_read(dev->master->sda);
-		ERROR_IF(b, "ack not received");
-		os_gpio_low(dev->master->scl);
-		I2C_DELAY();
+		I2C_READ_ACK();
 	}
 
 	/* stop */
 	I2C_STOP();
 
-	return b == 0 ? 0 : -1;
+	return 0;
 }
 
 
