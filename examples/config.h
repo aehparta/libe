@@ -4,6 +4,11 @@
 
 
 #ifdef TARGET_AVR
+/* i2c */
+#define CFG_I2C_CONTEXT     NULL
+#define CFG_I2C_FREQUENCY   100000
+#define CFG_I2C_SCL         21
+#define CFG_I2C_SDA         20
 /* spi */
 #define CFG_SPI_CONTEXT     NULL
 #define CFG_SPI_FREQUENCY   0
@@ -56,6 +61,11 @@
 #define CFG_FTDI_PID        0 /* example 0x6011 which is FT4232H */
 #define CFG_FTDI_DESC       NULL
 #define CFG_FTDI_SERIAL     NULL
+/* i2c */
+#define CFG_I2C_CONTEXT     NULL
+#define CFG_I2C_FREQUENCY   100000
+#define CFG_I2C_SCL         0
+#define CFG_I2C_SDA         1
 /* spi */
 #define CFG_SPI_CONTEXT     0
 #define CFG_SPI_FREQUENCY   0
