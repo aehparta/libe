@@ -10,10 +10,10 @@
 #include <libe/i2c.h>
 
 
-#ifdef TARGET_AVR
-#define I2C_DELAY()         _delay_us(5)
+#ifdef TARGET_LINUX
+#define I2C_DELAY()             os_sleepf(1 / dev->master->frequency)
 #else
-#define I2C_DELAY(delay)         os_sleepf(1 / dev->master->frequency)
+#define I2C_DELAY()             os_delay_us(5)
 #endif
 
 #define I2C_START() \

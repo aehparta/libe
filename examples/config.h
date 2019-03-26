@@ -7,8 +7,8 @@
 /* i2c */
 #define CFG_I2C_CONTEXT     NULL
 #define CFG_I2C_FREQUENCY   100000
-#define CFG_I2C_SCL         21
-#define CFG_I2C_SDA         20
+#define CFG_I2C_SCL         30
+#define CFG_I2C_SDA         29
 /* spi */
 #define CFG_SPI_CONTEXT     NULL
 #define CFG_SPI_FREQUENCY   0
