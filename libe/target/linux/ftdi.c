@@ -32,7 +32,7 @@ void os_ftdi_quit(void)
 		if (!fdevs[i].ftdi) {
 			continue;
 		}
-		DEBUG_MSG("free interface %d", i);
+		// DEBUG_MSG("free interface %d", i);
 		if ((i % 4) == 0) {
 			ftdi_set_bitmode(fdevs[i].ftdi, 0, BITMODE_RESET);
 		}
@@ -45,7 +45,7 @@ int os_ftdi_use(int pin_range, uint16_t vid, uint16_t pid, const char *descripti
 	struct ftdi_context *ftdi;
 	struct ftdi_device_list *list, *list_first;
 	int i, n;
-	uint8_t b = 0;
+	uint8_t zero = 0;
 
 	/* initialize ftdi */
 	ftdi = ftdi_new();
@@ -102,14 +102,15 @@ int os_ftdi_use(int pin_range, uint16_t vid, uint16_t pid, const char *descripti
 	}
 	ftdi_usb_reset(ftdi);
 
-	/* first inerface is always there */
+	/* first interface is always there */
 	ftdi_set_latency_timer(ftdi, 1);
 	ftdi_write_data_set_chunksize(ftdi, 256);
 	ftdi_read_data_set_chunksize(ftdi, 256);
 	ftdi_set_bitmode(ftdi, 0, BITMODE_RESET);
 	ftdi_set_bitmode(ftdi, 0, BITMODE_BITBANG);
+	ftdi_set_baudrate(ftdi, 1e6);
 	ftdi_usb_purge_buffers(ftdi);
-	ftdi_write_data(ftdi, &b, 1);
+	ftdi_write_data(ftdi, &zero, 1);
 	fdevs[pin_range * 4].ftdi = ftdi;
 	fdevs[pin_range * 4].mode = BITMODE_BITBANG;
 
@@ -127,11 +128,12 @@ int os_ftdi_use(int pin_range, uint16_t vid, uint16_t pid, const char *descripti
 		ftdi_set_bitmode(ftdi, 0, BITMODE_RESET);
 		ftdi_set_bitmode(ftdi, 0, BITMODE_BITBANG);
 		ftdi_usb_purge_buffers(ftdi);
-		ftdi_write_data(ftdi, &b, 1);
+		ftdi_set_baudrate(ftdi, 1e6);
+		ftdi_write_data(ftdi, &zero, 1);
 		fdevs[pin_range * 4 + i].ftdi = ftdi;
 		fdevs[pin_range * 4 + i].mode = BITMODE_BITBANG;
 	}
-	DEBUG_MSG("device has %d interfaces", i);
+	// DEBUG_MSG("device has %d interfaces", i);
 
 	ftdi_list_free(&list_first);
 

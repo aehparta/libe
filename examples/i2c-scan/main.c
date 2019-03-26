@@ -29,7 +29,7 @@ int main(int argc, char *argv[])
 
 	/* check i2c device if using linux */
 #ifdef USE_FTDI
-	ERROR_IF_R(os_ftdi_use(OS_FTDI_GPIO_0_TO_63, CFG_FTDI_VID, CFG_FTDI_PID, CFG_FTDI_DESC, CFG_FTDI_SERIAL), -1, "unable to open ftdi device for gpio 0-63");
+	ERROR_IF_R(os_ftdi_use(OS_FTDI_GPIO_0_TO_63, CFG_FTDI_VID, CFG_FTDI_PID, CFG_FTDI_DESC, CFG_FTDI_SERIAL), 1, "unable to open ftdi device for gpio 0-63");
 #endif
 #if defined(TARGET_LINUX) && !defined(USE_I2C_BITBANG)
 	ERROR_IF_R(argc < 2, 1, "give i2c device as first argument");

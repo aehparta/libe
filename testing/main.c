@@ -4,7 +4,7 @@
 
 #include <libe/os.h>
 #include <libe/log.h>
-#include <libe/drivers/gpio/hd44780.h>
+#include <libe/drivers/i2c/hdc1080.h>
 #include <libe/i2c.h>
 #include <libe/spi.h>
 
@@ -18,36 +18,23 @@ int main(int argc, char *argv[])
 	log_init(NULL, 0);
 
 #ifdef USE_FTDI
-	WARN_IF(os_ftdi_use(OS_FTDI_GPIO_0_TO_63, 0x0403, 0x6011, NULL, NULL), "unable to open ftdi device for gpio 0-63");
+	ERROR_IF_R(os_ftdi_use(OS_FTDI_GPIO_0_TO_63, 0x0403, 0x6011, NULL, NULL), 1, "unable to open ftdi device for gpio 0-63");
 	// os_ftdi_set_mpsse(0);
 #endif
 
-	// struct i2c_context *i2c = i2c_open(NULL);
-	// for (uint8_t a = 0; a < 128; a++) {
-	// 	INFO_IF(!i2c_addr7(i2c, a, 0), "device at address %02x", a);
-	// 	i2c_stop(i2c);
-	// }
-	struct hd44780_device lcd1;
-	hd44780_init(&lcd1, 16, 17, 18, 19, 20, 21, 22);
-	hd44780_write_str(&lcd1, "morooop");
-	hd44780_goto_xy(&lcd1, 0, 1);
-	hd44780_write_str(&lcd1, "toka");
-	return 0;
+	struct i2c_master i2c;
+	struct i2c_device dev;
 
-	struct spi_device dev;
-	spi_master_open(NULL, NULL, 0, 20, 21, 19);
-	spi_open(&dev, NULL, 18);
-	os_gpio_output(0);
+	i2c_master_open(&i2c, NULL, 100000, 0, 1);
+	ERROR_IF_R(hdc1080_open(&dev, &i2c), 1, "unable to open hdc1080");
 
-	while (1) {
-		uint8_t d[8] = "12345678";
-		spi_transfer(&dev, d, 8);
-		DEBUG_MSG("toggling led");
-		os_gpio_high(0);
-		os_sleepf(0.5);
-		os_gpio_low(0);
-		os_sleepf(0.5);
-	}
+	float t, h;
+	ERROR_IF_R(hdc1080_read(&dev, &t, &h), 1, "unable to read hdc1080 values");
+	DEBUG_MSG("t: %f", t);
+	DEBUG_MSG("h: %f", h);
+
+	hdc1080_close(&dev);
+	i2c_master_close(&i2c);
 
 	log_quit();
 	os_quit();

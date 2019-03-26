@@ -13,7 +13,7 @@
 #ifdef TARGET_AVR
 #define I2C_DELAY()         _delay_us(5)
 #else
-#define I2C_DELAY()         os_sleepf(1 / dev->master->frequency)
+#define I2C_DELAY(delay)         os_sleepf(1 / dev->master->frequency)
 #endif
 
 #define I2C_START() \
@@ -72,18 +72,27 @@
 
 int i2c_master_open(struct i2c_master *master, void *context, uint32_t frequency, uint8_t scl, uint8_t sda)
 {
-	os_gpio_high(scl);
+	/* clock is always output */
 	os_gpio_output(scl);
-	os_gpio_high(sda);
+	/* data is input as default */
 	os_gpio_input(sda);
 
-	/* run a stop to the bus to clear it */
+	/* reset the bus by clocking enough cycles and then doing stop */
+	os_gpio_low(scl);
+	for (int i = 0; i < 9; i++) {
+		os_delay_us(5);
+		os_gpio_high(scl);
+		os_delay_us(5);
+		os_gpio_low(scl);
+	}
+	os_delay_us(5);
 	os_gpio_output(sda);
 	os_gpio_low(sda);
-	os_gpio_low(scl);
-	os_sleepf(1 / frequency);
+	os_delay_us(5);
+	os_gpio_high(sda);
+	os_delay_us(5);
 	os_gpio_high(scl);
-	os_sleepf(1 / frequency);
+	os_delay_us(5);
 	os_gpio_input(sda);
 
 	master->scl = scl;

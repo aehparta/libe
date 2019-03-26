@@ -40,7 +40,8 @@ endif
 ifneq ($(filter $(libe_DEFINES),USE_I2C),)
     libe_SRC += \
         $(LIBE_PATH)/libe/i2c.c \
-        $(LIBE_PATH)/libe/drivers/i2c/mcp3221.c
+        $(LIBE_PATH)/libe/drivers/i2c/mcp3221.c \
+        $(LIBE_PATH)/libe/drivers/i2c/hdc1080.c
     ifneq ($(filter $(libe_DEFINES),USE_I2C_BITBANG),)
         libe_SRC += $(LIBE_PATH)/libe/drivers/i2c/bitbang.c
     else ifdef TARGET_LINUX
