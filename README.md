@@ -1,4 +1,5 @@
 # libe
+***work in progress, not stable***
 
 Generic library targeted mostly for microcontrollers.
 
@@ -16,6 +17,10 @@ Especially 8-bit PIC with free xc8 generated code is slow since no proper optimi
 On other platforms, like AVR, GPIO functions are inline and will often optimize as well
 as directly written native code.
 
+#### Drivers
+
+* HD44780: Alphanumeric LCD in 4 bit mode
+
 ### Timing and delay
 
 Generic *"time elapsed since bootup"* and *sleep/delay* functions.
@@ -26,13 +31,15 @@ Generic SPI interface. Supports multiple SPI masters and multiple devices under 
 
 #### Drivers
 
-* NRF24L01+
+* NRF24L01+: RF transceiver IC
 
 ### I2C
 
 Generic I2C interface either in bitbang mode or using native hardware.
 
 #### Drivers
+
+* MCP3221: Microchip 12-bit ADC
 
 ***Coming but not yet available (already written though, need a bit of porting to new libe)***
 
