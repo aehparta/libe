@@ -1,0 +1,14 @@
+.build.*
+*.d
+*.p1
+*.s
+*.sdb
+*.elf
+*.hex
+*.cmf
+*.o
+*.sym
+*.lst
+*.rlf
+*.hxl
+*.sublime-workspace
