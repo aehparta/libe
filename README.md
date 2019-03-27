@@ -39,12 +39,12 @@ Generic I2C interface either in bitbang mode or using native hardware.
 #### Drivers
 
 * MCP3221: Microchip 12-bit ADC
+* HDC1080: Ti temperature and humidity sensor
 
 ***Coming but not yet available (already written though, need a bit of porting to new libe)***
 
 * CAP1293: Microchip touch sensor
 * FAN5702: Fairchild LED driver
-* HDC1080: Ti temperature and humidity sensor
 * SHT21: Sensirion temperature and humidity sensor
 * MCP39F521: Microchip power monitor
 
