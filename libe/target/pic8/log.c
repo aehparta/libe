@@ -10,6 +10,23 @@
 #include <libe/log.h>
 #include <libe/log.h>
 
+#if !defined(TX1IF) || !defined(TXIF)
+#warning "this mcu does not support serial port, disable logging"
+int log_init(void *context, uint32_t baud)
+{
+	return 0;
+}
+
+void log_quit(void)
+{
+
+}
+
+void log_msg(int level, const char *file, int line, const char *func, const char *msg, ...)
+{
+
+}
+#else
 
 void putch(char ch)
 {
@@ -81,3 +98,5 @@ void log_msg(int level, const char *file, int line, const char *func, const char
 	LOG_PRINTF(msg);
 	LOG_PRINTF("\r\n");
 }
+
+#endif

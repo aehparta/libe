@@ -27,6 +27,8 @@ int main(int argc, char *argv[])
 	os_init();
 	log_init(NULL, 0);
 
+	os_gpio_output(8);
+	
 	/* check i2c device if using linux */
 #ifdef USE_FTDI
 	ERROR_IF_R(os_ftdi_use(OS_FTDI_GPIO_0_TO_63, CFG_FTDI_VID, CFG_FTDI_PID, CFG_FTDI_DESC, CFG_FTDI_SERIAL), 1, "unable to open ftdi device for gpio 0-63");

@@ -10,6 +10,7 @@
 
 #include <stdint.h>
 #include <string.h>
+#include <libe/os.h>
 
 #ifdef __cplusplus
 extern "C" {
@@ -88,7 +89,7 @@ struct i2c_device {
 
 
 
-static inline int i2c_read(struct i2c_device *dev, void *data, size_t size)
+inline int i2c_read(struct i2c_device *dev, void *data, size_t size)
 {
 	/* start bit */
 	I2C_START();
@@ -132,7 +133,7 @@ static inline int i2c_read(struct i2c_device *dev, void *data, size_t size)
 	return 0;
 }
 
-static inline int i2c_write(struct i2c_device *dev, void *data, size_t size)
+inline int i2c_write(struct i2c_device *dev, void *data, size_t size)
 {
 	/* start bit */
 	I2C_START();
@@ -174,7 +175,7 @@ static inline int i2c_write(struct i2c_device *dev, void *data, size_t size)
 	return 0;
 }
 
-static inline int i2c_master_open(struct i2c_master *master, void *context, uint32_t frequency, uint8_t scl, uint8_t sda)
+inline int i2c_master_open(struct i2c_master *master, void *context, uint32_t frequency, uint8_t scl, uint8_t sda)
 {
 	/* clock is always output */
 	os_gpio_output(scl);
@@ -207,13 +208,13 @@ static inline int i2c_master_open(struct i2c_master *master, void *context, uint
 	return 0;
 }
 
-static inline void i2c_master_close(struct i2c_master *master)
+inline void i2c_master_close(struct i2c_master *master)
 {
 	os_gpio_input(master->scl);
 	os_gpio_input(master->sda);
 }
 
-static inline int i2c_open(struct i2c_device *dev, struct i2c_master *master, uint8_t address)
+inline int i2c_open(struct i2c_device *dev, struct i2c_master *master, uint8_t address)
 {
 	dev->master = master;
 	dev->address = address;
@@ -221,7 +222,7 @@ static inline int i2c_open(struct i2c_device *dev, struct i2c_master *master, ui
 	return i2c_write(dev, NULL, 0);
 }
 
-static inline void i2c_close(struct i2c_device *dev)
+inline void i2c_close(struct i2c_device *dev)
 {
 
 }

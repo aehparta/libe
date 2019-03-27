@@ -11,6 +11,8 @@ int app_main(int argc, char *argv[])
 int main(int argc, char *argv[])
 #endif
 {
+	PORTB &= ~(1 << 5);
+
 	uint8_t pin = 12, pin14 = 14;
 
 	/* low level init: initializes some system basics depending on platform */
