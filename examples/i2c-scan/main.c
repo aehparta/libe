@@ -26,8 +26,6 @@ int main(int argc, char *argv[])
 	/* base init */
 	os_init();
 	log_init(NULL, 0);
-
-	os_gpio_output(8);
 	
 	/* check i2c device if using linux */
 #ifdef USE_FTDI
