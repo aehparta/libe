@@ -15,7 +15,6 @@
 #endif
 #include <libe/os.h>
 
-
 #ifdef USE_I2C_BITBANG
 struct i2c_master {
 	uint8_t scl;
@@ -42,7 +41,11 @@ struct i2c_device {
  * I2C functions
  */
 
+#ifndef USE_I2C_BITBANG
 int i2c_master_open(struct i2c_master *master, void *context, uint32_t frequency, uint8_t scl, uint8_t sda);
+#else
+#include <libe/drivers/i2c/bitbang.h>
+#endif
 void i2c_master_close(struct i2c_master *master);
 
 int i2c_open(struct i2c_device *dev, struct i2c_master *master, uint8_t address);

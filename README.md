@@ -13,8 +13,7 @@ Same for PIC, MSP430 and others that do this kind of thing instead of having con
 GPIO pin numbers.
 
 GPIO implemented this way is more and less complex thing.
-Especially 8-bit PIC with free xc8 generated code is slow since no proper optimizations can be used.
-On other platforms, like AVR, GPIO functions are inline and will often optimize as well
+On most platforms, like AVR, GPIO functions are inline and will often optimize as well
 as directly written native code.
 
 #### Drivers

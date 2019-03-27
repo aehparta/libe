@@ -11,7 +11,7 @@ int app_main(int argc, char *argv[])
 int main(int argc, char *argv[])
 #endif
 {
-	uint8_t pin = 12;
+	uint8_t pin = 12, pin14 = 14;
 
 	/* low level init: initializes some system basics depending on platform */
 	os_init();

@@ -30,6 +30,11 @@
 
 
 #ifdef TARGET_PIC8
+/* i2c */
+#define CFG_I2C_CONTEXT     NULL
+#define CFG_I2C_FREQUENCY   100000
+#define CFG_I2C_SCL         0
+#define CFG_I2C_SDA         1
 /* spi */
 #define CFG_SPI_CONTEXT     NULL
 #define CFG_SPI_FREQUENCY   0

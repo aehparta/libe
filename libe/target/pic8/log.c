@@ -13,7 +13,7 @@
 
 void putch(char ch)
 {
-#ifdef TX1STA
+#ifdef TX1IF
 	/* wait till the transmitter register becomes empty */
 	while (!TX1IF);
 	/* clear transmitter flag and send character */

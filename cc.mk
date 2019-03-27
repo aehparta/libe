@@ -24,7 +24,7 @@ else ifeq ($(TARGET),avr)
 else ifeq ($(TARGET),pic8)
     # microchip pic 8-bit
     CC_PREFIX     ?= xc8-
-    MCU           ?= 18F26K20
+    MCU           ?= 16F84
     F_CPU         ?= 8000000L
 else ifeq ($(TARGET),pic16)
     # microchip pic 16-bit

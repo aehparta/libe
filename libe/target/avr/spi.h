@@ -22,6 +22,20 @@ struct spi_device {
 	uint8_t ss;
 };
 
+static inline int spi_transfer(struct spi_device *device, uint8_t *data, size_t size)
+{
+	os_gpio_low(device->ss);
+	for ( ; size > 0; size--) {
+		SPDR = *data;
+		while (!(SPSR & (1 << SPIF)));
+		*data = SPDR;
+		data++;
+	}
+	os_gpio_high(device->ss);
+
+	return 0;
+}
+
 #ifdef __cplusplus
 }
 #endif

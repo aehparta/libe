@@ -20,7 +20,7 @@ int os_init(void);
 #define os_delay_ms(x)      _delay_ms(x)
 #define os_delay_us(x)      _delay_us(x)
 
-inline int os_gpio_enable(uint8_t pin, bool direction)
+static inline int os_gpio_enable(uint8_t pin, bool direction)
 {
 	switch (pin >> 3) {
 #ifdef DDRA
@@ -57,7 +57,7 @@ inline int os_gpio_enable(uint8_t pin, bool direction)
 	return -1;
 }
 
-inline int os_gpio_set(uint8_t pin, bool state)
+static inline int os_gpio_set(uint8_t pin, bool state)
 {
 	switch (pin >> 3) {
 #ifdef PORTA
@@ -94,7 +94,7 @@ inline int os_gpio_set(uint8_t pin, bool state)
 	return -1;
 }
 
-inline int8_t os_gpio_read(uint8_t pin)
+static inline int8_t os_gpio_read(uint8_t pin)
 {
 	switch (pin >> 3) {
 #ifdef PINA
