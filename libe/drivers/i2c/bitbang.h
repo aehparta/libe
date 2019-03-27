@@ -8,9 +8,24 @@
 #ifndef _LIBE_BITBANG_H_
 #define _LIBE_BITBANG_H_
 
+#include <stdint.h>
+#include <string.h>
+
 #ifdef __cplusplus
 extern "C" {
 #endif
+
+struct i2c_master {
+	uint8_t scl;
+	uint8_t sda;
+#ifdef TARGET_LINUX
+	uint32_t frequency;
+#endif
+};
+struct i2c_device {
+	struct i2c_master *master;
+	uint8_t address;
+};
 
 #ifdef TARGET_LINUX
 #define I2C_DELAY()             os_sleepf(1 / dev->master->frequency)
@@ -39,7 +54,7 @@ extern "C" {
 
 #define I2C_WRITE(state) \
 	do { \
-		os_gpio_set(dev->master->sda, state ? true : false); \
+		os_gpio_set(dev->master->sda, state ? 1 : 0); \
 		I2C_DELAY(); \
 		os_gpio_high(dev->master->scl); \
 		I2C_DELAY(); \
