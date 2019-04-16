@@ -2,6 +2,8 @@
  * Basic pwm driver for esp32
  */
 
+#ifdef USE_PWM
+
 #include <driver/mcpwm.h>
 #include <libe/pwm.h>
 
@@ -149,3 +151,4 @@ void pwm_set_duty(uint8_t channel, float duty)
 	}
 }
 
+#endif

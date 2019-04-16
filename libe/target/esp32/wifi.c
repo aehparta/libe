@@ -2,6 +2,8 @@
  * WiFi support for esp32.
  */
 
+#ifdef USE_WIFI
+
 #include <freertos/FreeRTOS.h>
 #include <freertos/task.h>
 #include <freertos/event_groups.h>
@@ -99,3 +101,5 @@ int wifi_init(void)
 
 	return 0;
 }
+
+#endif

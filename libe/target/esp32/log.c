@@ -5,14 +5,14 @@
  *  Antti Partanen <aehparta@iki.fi>
  */
 
+#ifdef USE_LOG
+
 #include <stdio.h>
 #include <stdarg.h>
 #include <esp_log.h>
 #include <libe/log.h>
 
-
 #define ESP32_LOG_TAG   "libe"
-
 
 int log_init(void *context, uint32_t baud)
 {
@@ -47,3 +47,5 @@ void log_msg(int level, const char *file, int line, const char *func, const char
 
 	free(s);
 }
+
+#endif
