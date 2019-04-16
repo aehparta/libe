@@ -8,6 +8,8 @@
 #ifndef _LIBE_BITBANG_H_
 #define _LIBE_BITBANG_H_
 
+#ifdef USE_I2C_BITBANG
+
 #include <stdint.h>
 #include <string.h>
 #include <libe/os.h>
@@ -179,8 +181,10 @@ inline int i2c_master_open(struct i2c_master *master, void *context, uint32_t fr
 {
 	/* clock is always output */
 	os_gpio_output(scl);
+	os_gpio_pullup(scl);
 	/* data is input as default */
 	os_gpio_input(sda);
+	os_gpio_pullup(sda);
 
 	/* reset the bus by clocking enough cycles and then doing stop */
 	os_gpio_low(scl);
@@ -200,11 +204,13 @@ inline int i2c_master_open(struct i2c_master *master, void *context, uint32_t fr
 	os_delay_us(5);
 	os_gpio_input(sda);
 
+	/* save information */
 	master->scl = scl;
 	master->sda = sda;
 #ifdef TARGET_LINUX
 	master->frequency = frequency;
 #endif
+
 	return 0;
 }
 
@@ -231,5 +237,7 @@ inline void i2c_close(struct i2c_device *dev)
 #ifdef __cplusplus
 }
 #endif
+
+#endif /* USE_I2C_BITBANG */
 
 #endif /* _LIBE_BITBANG_H_ */

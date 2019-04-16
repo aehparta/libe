@@ -29,3 +29,7 @@
 * pic8 on pic16f87 without logging (in emulator)
     * RB4: First LED
     * RB5: Second LED
+
+* esp32 with ESP32 DEVKIT v1
+    * 12: First LED
+    * 13: Second LED

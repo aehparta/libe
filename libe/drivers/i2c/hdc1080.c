@@ -4,6 +4,8 @@
  * Authors: Antti Partanen <aehparta@iki.fi>
  */
 
+#ifdef USE_I2C
+
 #include <libe/log.h>
 #include "hdc1080.h"
 
@@ -63,3 +65,5 @@ int hdc1080_read(struct i2c_device *dev, float *t, float *h)
 
 	return 0;
 }
+
+#endif

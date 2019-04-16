@@ -3,3 +3,4 @@
 ## Tested targets
 
 * x86 with [i2c-tiny-usb](https://github.com/harbaum/I2C-Tiny-USB)
+* esp32 in bitbang mode

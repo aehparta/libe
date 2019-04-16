@@ -62,3 +62,18 @@ int8_t os_gpio_read(uint8_t pin)
 {
 	return gpio_get_level(pin);
 }
+
+int8_t os_gpio_pullup(uint8_t pin)
+{
+	return gpio_set_pull_mode(pin, GPIO_PULLUP_ONLY);
+}
+
+int8_t os_gpio_pulldown(uint8_t pin)
+{
+	return gpio_set_pull_mode(pin, GPIO_PULLDOWN_ONLY);
+}
+
+int8_t os_gpio_floating(uint8_t pin)
+{
+	return gpio_set_pull_mode(pin, GPIO_FLOATING);
+}

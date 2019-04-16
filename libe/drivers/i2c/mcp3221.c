@@ -4,6 +4,8 @@
  * Authors: Antti Partanen <aehparta@iki.fi>
  */
 
+#ifdef USE_I2C
+
 #include <libe/log.h>
 #include "mcp3221.h"
 
@@ -15,3 +17,4 @@ int16_t mcp3221_read(struct i2c_device *dev)
 	return (data[0] << 8) | data[1];
 }
 
+#endif
