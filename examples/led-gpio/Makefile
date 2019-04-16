@@ -12,10 +12,6 @@ BUILD_BINS = led_gpio
 PROGRAM_BIN = led_gpio
 led_gpio_SRC = main.c $(libe_SRC)
 
-# compile flags
-CFLAGS += $(libe_CFLAGS)
-LDFLAGS += $(libe_LDFLAGS)
-
 # build
 include $(LIBE_PATH)/build.mk
 

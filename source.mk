@@ -76,3 +76,4 @@ ifneq ($(filter $(libe_DEFINES),USE_FTDI),)
     libe_SRC += $(LIBE_PATH)/libe/target/linux/ftdi.c
 endif
 
+$(info $(libe_SRC))

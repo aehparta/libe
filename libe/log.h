@@ -122,7 +122,9 @@ void log_quit(void);
 #define LDC_BPURPLE
 #define LDC_BCYAN
 #define LDC_BWHITE
+#ifndef TARGET_ESP32
 #define LOG_COLOR(color)
+#endif
 #endif /* defined(USE_LOG_COLORS) && defined(USE_LOG) */
 
 
