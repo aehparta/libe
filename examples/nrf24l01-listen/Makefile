@@ -4,27 +4,19 @@ ifeq ($(LIBE_PATH),)
     $(error LIBE_PATH not set)
 endif
 
-# determine target
-include $(LIBE_PATH)/target.mk
-
 # enable spi
 libe_USE += SPI LOG
 ifdef TARGET_X86
     libe_USE += FTDI
 endif
 
-# flags and sources
-include $(LIBE_PATH)/flags.mk
-include $(LIBE_PATH)/source.mk
+# init make system
+include $(LIBE_PATH)/init.mk
 
 # our own sources etc
 BUILD_BINS = nrf24l01_listen
 PROGRAM_BIN = nrf24l01_listen
 nrf24l01_listen_SRC = main.c $(libe_SRC)
-
-# compile flags
-CFLAGS += -D_GNU_SOURCE $(libe_CFLAGS)
-LDFLAGS += $(libe_LDFLAGS)
 
 # build
 include $(LIBE_PATH)/build.mk

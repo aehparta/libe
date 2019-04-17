@@ -12,11 +12,8 @@
 #include <esp_wps.h>
 #include <esp_event_loop.h>
 #include <libe/log.h>
+#include <libe/wifi.h>
 #include "wifi.h"
-
-
-#define WIFI_MAXIMUM_RETRY      10
-#define WIFI_CONNECTED_BIT      BIT0
 
 
 static EventGroupHandle_t wifi_event_group;
@@ -98,6 +95,16 @@ int wifi_init(void)
 	ERROR_IF_R(esp_wifi_start(), -1, "unable to start wifi");
 
 	return 0;
+}
+
+void wifi_quit(void)
+{
+
+}
+
+bool wifi_connected(void)
+{
+	return xEventGroupGetBits(wifi_event_group) & WIFI_CONNECTED_BIT ? true : false;
 }
 
 #endif

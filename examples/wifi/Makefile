@@ -4,19 +4,15 @@ ifeq ($(LIBE_PATH),)
     $(error LIBE_PATH not set)
 endif
 
-# enable spi
-libe_USE += HD44780
-ifdef TARGET_X86
-    libe_USE += FTDI
-endif
+libe_USE += WIFI
 
-# init make system
+# init
 include $(LIBE_PATH)/init.mk
 
 # our own sources etc
-BUILD_BINS = hd44780
-PROGRAM_BIN = hd44780
-hd44780_SRC = main.c $(libe_SRC)
+BUILD_BINS = wifi
+PROGRAM_BIN = wifi
+wifi_SRC = main.c $(libe_SRC)
 
 # build
 include $(LIBE_PATH)/build.mk
