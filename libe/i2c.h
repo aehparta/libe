@@ -44,6 +44,9 @@ int i2c_write(struct i2c_device *i2c, void *data, size_t size);
 #include <libe/drivers/i2c/bitbang.h>
 #endif
 
+#include <libe/drivers/i2c/hdc1080.h>
+#include <libe/drivers/i2c/mcp3221.h>
+
 #ifdef __cplusplus
 }
 #endif

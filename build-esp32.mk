@@ -1,7 +1,4 @@
 
-$(info  $(libe_CFLAGS))
-$(info  $(LIBE_PATH))
-
 PROJECT_NAME            = $(PROGRAM_BIN)
 EXTRA_COMPONENT_DIRS    = . $(LIBE_PATH)
 BUILD_DIR_BASE          = .build.esp32
