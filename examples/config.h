@@ -26,6 +26,9 @@
 #define CFG_HD44780_EN      14
 #define CFG_HD44780_RW      13
 #define CFG_HD44780_RS      12
+/* led */
+#define CFG_LED_GPIO0       12
+#define CFG_LED_GPIO1       13
 #endif
 
 
@@ -44,6 +47,9 @@
 /* nrf24l01+ */
 #define CFG_NRF_SS          4
 #define CFG_NRF_CE          5
+/* led */
+#define CFG_LED_GPIO0       12
+#define CFG_LED_GPIO1       13
 #endif
 
 
@@ -57,6 +63,9 @@
 /* nrf24l01+ */
 #define CFG_NRF_SS          0
 #define CFG_NRF_CE          1
+/* led */
+#define CFG_LED_GPIO0       12
+#define CFG_LED_GPIO1       13
 #endif
 
 
@@ -88,6 +97,9 @@
 #define CFG_HD44780_EN      20
 #define CFG_HD44780_RW      21
 #define CFG_HD44780_RS      22
+/* led */
+#define CFG_LED_GPIO0       51
+#define CFG_LED_GPIO1       52
 #endif
 
 
@@ -101,6 +113,9 @@
 /* nrf24l01+ */
 #define CFG_NRF_SS          0
 #define CFG_NRF_CE          0
+/* led */
+#define CFG_LED_GPIO0       12
+#define CFG_LED_GPIO1       13
 #endif
 
 
@@ -114,6 +129,9 @@
 /* nrf24l01+ */
 #define CFG_NRF_SS          8
 #define CFG_NRF_CE          25
+/* led */
+#define CFG_LED_GPIO0       12
+#define CFG_LED_GPIO1       13
 #endif
 
 
@@ -132,5 +150,8 @@
 /* nrf24l01+ */
 #define CFG_NRF_SS          GPIO_NUM_26
 #define CFG_NRF_CE          GPIO_NUM_27
+/* led */
+#define CFG_LED_GPIO0       GPIO_NUM_12
+#define CFG_LED_GPIO1       GPIO_NUM_13
 #endif
 
