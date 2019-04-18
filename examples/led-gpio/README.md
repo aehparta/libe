@@ -33,3 +33,7 @@
 * esp32 with ESP32 DEVKIT v1
     * 12: First LED
     * 13: Second LED
+
+* x86 using FTDI FT4232H
+    * DDBUS3: First LED
+    * DDBUS4: Second LED
