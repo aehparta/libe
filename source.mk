@@ -34,6 +34,21 @@ ifneq ($(filter $(libe_DEFINES),USE_SPI),)
     libe_SRC += \
         $(LIBE_PATH)/libe/target/$(TARGET)/spi.c \
         $(LIBE_PATH)/libe/drivers/spi/nrf.c
+    ifneq ($(filter $(libe_DEFINES),USE_WIZNET),)
+        ifeq ($(wildcard ioLibrary_Driver),)
+            $(info Fetching WIZNET ioLibrary_Driver sources)
+            $(shell git clone https://github.com/Wiznet/ioLibrary_Driver.git)
+        endif
+        libe_SRC += ioLibrary_Driver/Ethernet/wizchip_conf.c
+        libe_SRC += ioLibrary_Driver/Ethernet/socket.c
+        libe_SRC += ioLibrary_Driver/Ethernet/W5500/w5500.c
+        libe_SRC += ioLibrary_Driver/Internet/DHCP/dhcp.c
+        libe_SRC += ioLibrary_Driver/Internet/DNS/dns.c
+        libe_CFLAGS += -D_WIZCHIP_=W5500 -D_WIZCHIP_IO_MODE_=0x0200
+        libe_CFLAGS += -IioLibrary_Driver/Ethernet
+#         libe_CFLAGS += -Wno-error=misleading-indentation
+        libe_CFLAGS += -Wno-error=pointer-to-int-cast
+    endif
 endif
 
 # add i2c and drivers for chips

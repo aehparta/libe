@@ -9,6 +9,7 @@
 
 
 #include <stdint.h>
+#include "os.h"
 #ifdef TARGET_AVR
 #include "target/avr/spi.h"
 #elif TARGET_PIC8
