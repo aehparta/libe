@@ -17,4 +17,19 @@ int16_t mcp3221_read(struct i2c_device *dev)
 	return (data[0] << 8) | data[1];
 }
 
+/* tool related functions */
+#ifdef COMPILE_TOOL_I2C
+
+void tool_i2c_mcp3221_help(void)
+{
+	printf("MCP3221\n");
+}
+
+void tool_i2c_mcp3221_exec(char *command, int argc, char *argv[])
+{
+	printf("exec command %s\n", command);
+}
+
+#endif
+
 #endif

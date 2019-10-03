@@ -66,4 +66,19 @@ int hdc1080_read(struct i2c_device *dev, float *t, float *h)
 	return 0;
 }
 
+/* tool related functions */
+#ifdef COMPILE_TOOL_I2C
+
+void tool_i2c_hdc1080_help(void)
+{
+	printf("HDC1080\n");
+}
+
+void tool_i2c_hdc1080_exec(char *command, int argc, char *argv[])
+{
+	printf("exec command %s\n", command);
+}
+
+#endif
+
 #endif

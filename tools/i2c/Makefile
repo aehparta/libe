@@ -20,7 +20,7 @@ PROGRAM_BIN = libe-i2c
 libe-i2c_SRC = main.c $(libe_SRC)
 
 # compile flags
-CFLAGS += $(libe_CFLAGS)
+CFLAGS += $(libe_CFLAGS) -DCOMPILE_TOOL_I2C
 LDFLAGS += $(libe_LDFLAGS)
 
 # build
