@@ -71,12 +71,34 @@ int hdc1080_read(struct i2c_device *dev, float *t, float *h)
 
 void tool_i2c_hdc1080_help(void)
 {
-	printf("HDC1080\n");
+	printf(
+		"Commands:\n"
+		"  read             Read temperature and humidity\n"
+		);
 }
 
-void tool_i2c_hdc1080_exec(char *command, int argc, char *argv[])
+int tool_i2c_hdc1080_exec(struct i2c_master *master, char *command, int argc, char *argv[])
 {
-	printf("exec command %s\n", command);
+	int err = 0;
+	struct i2c_device dev;
+
+	if (hdc1080_open(&dev, master)) {
+		fprintf(stderr, "Chip not found.\n");
+		return -1;
+	}
+
+	if (strcmp(command, "read") == 0) {
+		float t, h;
+		hdc1080_read(&dev, &t, &h);
+		printf("temperature: %f, humidity: %f\n", t, h);
+	} else {
+		fprintf(stderr, "Invalid command.\n");
+		err = -1;
+	}
+
+	hdc1080_close(&dev);
+
+	return err;
 }
 
 #endif
