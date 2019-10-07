@@ -19,6 +19,7 @@ extern "C" {
 #include <libe/nvm.h>
 #include <libe/aes.h>
 #include <libe/spi.h>
+#include <libe/error.h>
 
 #ifdef __cplusplus
 }

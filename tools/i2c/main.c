@@ -3,11 +3,9 @@
  */
 
 #include <getopt.h>
-#include <libe/os.h>
-#include <libe/log.h>
 
 #define tool_i2c_chips
-#include <libe/i2c.h>
+#include <libe/libe.h>
 
 #ifndef TARGET_LINUX
 #error "this tool is not meant to be compiled on other platforms than linux"
@@ -83,7 +81,6 @@ int p_options(int argc, char *argv[])
 {
 	int err = 0;
 	int longindex = 0, c;
-	int i;
 
 	while ((c = getopt_long(argc, argv, opts, longopts, &longindex)) > -1) {
 		switch (c) {
@@ -126,13 +123,13 @@ int main(int argc, char *argv[])
 	}
 	/* check that all required arguments were given */
 	if (!chip_name || !device || optind >= argc) {
-		fprintf(stderr, "\nChip, device and command must be specified.\n");
+		fprintf(stderr, "Chip, device and command must be specified.\n");
 		exit(EXIT_FAILURE);
 	}
 	/* check that chip is a valid one */
 	struct chip *chip = chip_find(chip_name);
 	if (!chip) {
-		fprintf(stderr, "\nUnsupported chip.\n");
+		fprintf(stderr, "Unsupported chip.\n");
 		exit(EXIT_FAILURE);
 	}
 	/* low level initialization */
@@ -142,7 +139,7 @@ int main(int argc, char *argv[])
 	/* open i2c */
 	struct i2c_master i2c;
 	if (i2c_master_open(&i2c, device, 100000, 0, 0)) {
-		fprintf(stderr, "Invalid I2C device.\n");
+		fprintf(stderr, "Invalid I2C device, reason: %s\n", error_last);
 	} else {
 		/* execute command */
 		err = chip->exec(&i2c, argv[optind], argc - optind, &argv[optind]) ? EXIT_FAILURE : EXIT_SUCCESS;

@@ -30,11 +30,10 @@ int hdc1080_open(struct i2c_device *dev, struct i2c_master *master)
 	IF_R(data[0] != 0x10 || data[1] != 0x50, -1);
 
 	/* configure sensor:
-	 *  - do software reset
 	 *  - heater: off
 	 *  - mode: temperature and humidity are acquired together
-	 *  - tres: 14 bits
-	 *  - hres: 14 bits
+	 *  - temperature resolution: 14 bits
+	 *  - humidity resolution: 14 bits
 	 */
 	data[0] = 0x02;
 	data[1] = 0x10;
@@ -90,7 +89,7 @@ int tool_i2c_hdc1080_exec(struct i2c_master *master, char *command, int argc, ch
 	if (strcmp(command, "read") == 0) {
 		float t, h;
 		hdc1080_read(&dev, &t, &h);
-		printf("temperature: %f, humidity: %f\n", t, h);
+		printf("%.1f °C\n%.1f %%RH\n", t, h);
 	} else {
 		fprintf(stderr, "Invalid command.\n");
 		err = -1;

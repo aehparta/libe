@@ -12,7 +12,7 @@
 #include <linux/i2c-dev.h>
 #include <linux/i2c.h>
 #include <libe/os.h>
-#include <libe/log.h>
+#include <libe/error.h>
 #include <libe/i2c.h>
 
 
@@ -21,13 +21,13 @@ int i2c_master_open(struct i2c_master *master, void *context, uint32_t frequency
 	struct stat st;
 
 	/* check that i2c device is valid character device */
-	IF_R(!context, -1);
-	IF_R(stat(context, &st), -1);
-	IF_R((st.st_mode & S_IFMT) != S_IFCHR, -1);
+	error_if(!context, -1, "invalid I2C device given");
+	error_if_errno(stat(context, &st), -2);
+	error_if_errno((st.st_mode & S_IFMT) != S_IFCHR, -3);
 
 	/* open device */
 	master->fd = open(context, O_RDWR);
-	IF_R(master->fd < 0, -1);
+	error_if_errno(master->fd < 0, -4);
 
 	return 0;
 }
@@ -65,7 +65,7 @@ int i2c_read(struct i2c_device *dev, void *data, size_t size)
     msgset[0].msgs = msgs;
     msgset[0].nmsgs = 1;
 
-    IF_R(ioctl(dev->master->fd, I2C_RDWR, &msgset) < 0, -1);
+    error_if_errno(ioctl(dev->master->fd, I2C_RDWR, &msgset) < 0, -1);
 
     return 0;
 }
@@ -83,7 +83,7 @@ int i2c_write(struct i2c_device *dev, void *data, size_t size)
     msgset[0].msgs = msgs;
     msgset[0].nmsgs = 1;
 
-    IF_R(ioctl(dev->master->fd, I2C_RDWR, &msgset) < 0, -1);
+    error_if_errno(ioctl(dev->master->fd, I2C_RDWR, &msgset) < 0, -1);
 
     return 0;
 }

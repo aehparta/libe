@@ -4,8 +4,10 @@ ifeq ($(LIBE_PATH),)
     $(error LIBE_PATH not set)
 endif
 
-# libe sources, only os is mandatory
-libe_SRC = $(LIBE_PATH)/libe/target/$(TARGET)/os.c
+# libe sources
+libe_SRC = \
+    $(LIBE_PATH)/libe/target/$(TARGET)/os.c \
+    $(LIBE_PATH)/libe/error.c
 
 # linux generic
 ifdef TARGET_LINUX
