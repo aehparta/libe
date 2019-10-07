@@ -1,5 +1,5 @@
 /*
- * libe cross-platform library: mcp3221 i2c driver
+ * Microchip MCP3221 12-bit ADC
  *
  * Authors: Antti Partanen <aehparta@iki.fi>
  */
@@ -37,7 +37,7 @@ int tool_i2c_mcp3221_exec(struct i2c_master *master, char *command, int argc, ch
 #pragma push_macro("tool_i2c_chips")
 #undef tool_i2c_chips
 #define tool_i2c_chips _Pragma("pop_macro(\"tool_i2c_chips\")") tool_i2c_chips \
-	{ "mcp3221", "Microchip 12-bit ADC", tool_i2c_mcp3221_help, tool_i2c_mcp3221_exec },
+	{ "mcp3221", "Microchip MCP3221 12-bit ADC", tool_i2c_mcp3221_help, tool_i2c_mcp3221_exec },
 #endif
 
 #ifdef __cplusplus

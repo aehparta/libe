@@ -1,5 +1,8 @@
 /*
  * Error handling.
+ *
+ * Authors:
+ *  Antti Partanen <aehparta@iki.fi>
  */
 
 #include <string.h>

@@ -1,5 +1,5 @@
 /*
- * libe cross-platform library: Ti HDC1080 driver
+ * Ti HDC1080 temperature and humidity sensor
  *
  * Authors: Antti Partanen <aehparta@iki.fi>
  */
@@ -8,7 +8,8 @@
 #define _LIBE_HDC1080_H_
 
 #include <stdint.h>
-#include <libe/i2c.h>
+#include <stdbool.h>
+#include <libe/libe.h>
 
 #ifdef __cplusplus
 extern "C" {
@@ -19,10 +20,13 @@ extern "C" {
 
 
 int hdc1080_open(struct i2c_device *dev, struct i2c_master *master);
+int hdc1080_conf(struct i2c_device *dev, bool heater, bool mode, uint8_t t_res, uint8_t h_res);
+
 #define hdc1080_close(dev) i2c_close(dev)
 
-/* Read temperature and humidity and then save them to each given pointer if they are not NULL */
 int hdc1080_read(struct i2c_device *dev, float *t, float *h);
+float hdc1080_read_temperature(struct i2c_device *dev);
+float hdc1080_read_humidity(struct i2c_device *dev);
 
 
 /* hook when compiling i2c tool */
@@ -32,7 +36,7 @@ int tool_i2c_hdc1080_exec(struct i2c_master *master, char *command, int argc, ch
 #pragma push_macro("tool_i2c_chips")
 #undef tool_i2c_chips
 #define tool_i2c_chips _Pragma("pop_macro(\"tool_i2c_chips\")") tool_i2c_chips \
-	{ "hdc1080", "Ti temperature and humidity sensor", tool_i2c_hdc1080_help, tool_i2c_hdc1080_exec },
+	{ "hdc1080", "Ti HDC1080 temperature and humidity sensor", tool_i2c_hdc1080_help, tool_i2c_hdc1080_exec },
 #endif
 
 #ifdef __cplusplus

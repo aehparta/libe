@@ -46,6 +46,9 @@ int i2c_write(struct i2c_device *i2c, void *data, size_t size);
 
 #include <libe/drivers/i2c/hdc1080.h>
 #include <libe/drivers/i2c/mcp3221.h>
+#include <libe/drivers/i2c/fan5702.h>
+#include <libe/drivers/i2c/sht21.h>
+#include <libe/drivers/i2c/sht31.h>
 
 #ifdef __cplusplus
 }

@@ -1,8 +1,7 @@
 /*
- * libe cross-platform library: I2C bitbang drivers
+ * I2C bitbang drivers
  *
- * Authors:
- *  Antti Partanen <aehparta@iki.fi>
+ * Authors: Antti Partanen <aehparta@iki.fi>
  */
 
 #ifdef USE_I2C

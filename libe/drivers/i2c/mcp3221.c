@@ -1,12 +1,11 @@
 /*
- * libe cross-platform library: mcp3221 i2c driver
+ * Microchip MCP3221 12-bit ADC
  *
  * Authors: Antti Partanen <aehparta@iki.fi>
  */
 
 #ifdef USE_I2C
 
-#include <libe/log.h>
 #include "mcp3221.h"
 
 
