@@ -30,6 +30,10 @@ int main(int argc, char *argv[])
 	hd44780_write_str(&lcd1, "Just testing");
 	hd44780_close(&lcd1);
 
+#ifndef TARGET_X86
+	while (1);
+#endif
+
 	log_quit();
 	os_quit();
 	return 0;

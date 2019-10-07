@@ -83,7 +83,7 @@ int hd44780_write_nibble(struct hd44780_device *display, int rs, uint8_t data)
 	os_gpio_set(display->en, 1);
 
 	/* sleep here but how much? */
-	os_delay_us(1);
+	os_delay_ms(1);
 
 	os_gpio_set(display->en, 0);
 
@@ -94,7 +94,7 @@ int hd44780_write_data(struct hd44780_device *display, uint8_t data)
 {
 	hd44780_write_nibble(display, 1, data >> 4);
 	hd44780_write_nibble(display, 1, data);
-	os_delay_us(37);
+	os_delay_us(40);
 	return 0;
 }
 

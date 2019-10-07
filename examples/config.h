@@ -150,6 +150,14 @@
 /* nrf24l01+ */
 #define CFG_NRF_SS          GPIO_NUM_26
 #define CFG_NRF_CE          GPIO_NUM_27
+/* hd44780 */
+#define CFG_HD44780_D4      GPIO_NUM_15
+#define CFG_HD44780_D5      GPIO_NUM_2
+#define CFG_HD44780_D6      GPIO_NUM_4
+#define CFG_HD44780_D7      GPIO_NUM_5
+#define CFG_HD44780_EN      GPIO_NUM_18
+#define CFG_HD44780_RW      GPIO_NUM_19
+#define CFG_HD44780_RS      GPIO_NUM_21
 /* led */
 #define CFG_LED_GPIO0       GPIO_NUM_12
 #define CFG_LED_GPIO1       GPIO_NUM_13
