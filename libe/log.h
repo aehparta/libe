@@ -185,7 +185,6 @@ do { \
 /** If condition is NULL, log critical level message. Use to check memory allocation failures. */
 #define NULL_IF_R(condition, ret) do { if (condition == NULL) { DEBUG_LOG_MSG(LOG_LEVEL_CRIT, "condition is NULL, memory allocation failed?"); return ret; } } while(0)
 
-
 /* dumping memory macros that are defined only in specific situations */
 #if defined(DEBUG) || defined(TARGET_LINUX) || defined(TARGET_ESP32)
 /** hex dumping. */

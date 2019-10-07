@@ -25,6 +25,16 @@ int hdc1080_open(struct i2c_device *dev, struct i2c_master *master);
 int hdc1080_read(struct i2c_device *dev, float *t, float *h);
 
 
+/* hook when compiling i2c tool */
+#ifdef COMPILE_TOOL_I2C
+void tool_i2c_hdc1080_help(void);
+int tool_i2c_hdc1080_exec(struct i2c_master *master, char *command, int argc, char *argv[]);
+#pragma push_macro("tool_i2c_chips")
+#undef tool_i2c_chips
+#define tool_i2c_chips _Pragma("pop_macro(\"tool_i2c_chips\")") tool_i2c_chips \
+	{ "hdc1080", "Ti temperature and humidity sensor", tool_i2c_hdc1080_help, tool_i2c_hdc1080_exec },
+#endif
+
 #ifdef __cplusplus
 }
 #endif

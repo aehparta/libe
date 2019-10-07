@@ -30,11 +30,10 @@ int hdc1080_open(struct i2c_device *dev, struct i2c_master *master)
 	IF_R(data[0] != 0x10 || data[1] != 0x50, -1);
 
 	/* configure sensor:
-	 *  - do software reset
 	 *  - heater: off
 	 *  - mode: temperature and humidity are acquired together
-	 *  - tres: 14 bits
-	 *  - hres: 14 bits
+	 *  - temperature resolution: 14 bits
+	 *  - humidity resolution: 14 bits
 	 */
 	data[0] = 0x02;
 	data[1] = 0x10;
@@ -65,5 +64,42 @@ int hdc1080_read(struct i2c_device *dev, float *t, float *h)
 
 	return 0;
 }
+
+/* tool related functions */
+#ifdef COMPILE_TOOL_I2C
+
+void tool_i2c_hdc1080_help(void)
+{
+	printf(
+		"Commands:\n"
+		"  read             Read temperature and humidity\n"
+		);
+}
+
+int tool_i2c_hdc1080_exec(struct i2c_master *master, char *command, int argc, char *argv[])
+{
+	int err = 0;
+	struct i2c_device dev;
+
+	if (hdc1080_open(&dev, master)) {
+		fprintf(stderr, "Chip not found.\n");
+		return -1;
+	}
+
+	if (strcmp(command, "read") == 0) {
+		float t, h;
+		hdc1080_read(&dev, &t, &h);
+		printf("%.1f °C\n%.1f %%RH\n", t, h);
+	} else {
+		fprintf(stderr, "Invalid command.\n");
+		err = -1;
+	}
+
+	hdc1080_close(&dev);
+
+	return err;
+}
+
+#endif
 
 #endif
