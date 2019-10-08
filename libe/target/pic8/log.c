@@ -31,7 +31,7 @@ int log_init(void *context, uint32_t baud)
 {
 	/* default baud */
 	if (baud < 1) {
-		baud = 9600;
+		baud = 38400;
 	}
 
 	/* if device supports mapping of pins, TX to RC6 as default */
@@ -46,13 +46,11 @@ int log_init(void *context, uint32_t baud)
 #ifdef TX1STA
 	TX1STA = 0x24;
 	RC1STA = 0x80;
-	// SP1BRG = (_XTAL_FREQ / (long)(16UL * baud)) - 1;
-	SP1BRGL = 0x19;
-	SP1BRGH = 0x00;
+	SP1BRG = _XTAL_FREQ / (long)(4 * (baud + 1));
 #else
 	TXSTA = 0x24;
 	RCSTA = 0x80;
-	SPBRG = (_XTAL_FREQ / (long)(16UL * baud)) - 1;
+	SPBRG = _XTAL_FREQ / (long)(4 * (baud + 1));
 #endif
 
 	return 0;

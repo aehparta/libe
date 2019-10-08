@@ -33,9 +33,6 @@
 
 
 #ifdef TARGET_PIC8
-#ifdef MCU_16f18345
-#pragma config RSTOSC = HFINT1 /* 1 MHz internal clock as default */
-#endif
 /* i2c */
 #define CFG_I2C_CONTEXT     NULL
 #define CFG_I2C_FREQUENCY   100000
