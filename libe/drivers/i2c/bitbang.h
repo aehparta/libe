@@ -91,7 +91,7 @@ struct i2c_device {
 
 
 
-inline int i2c_read(struct i2c_device *dev, void *data, size_t size)
+static inline int i2c_read(struct i2c_device *dev, void *data, size_t size)
 {
 	/* start bit */
 	I2C_START();
@@ -135,7 +135,7 @@ inline int i2c_read(struct i2c_device *dev, void *data, size_t size)
 	return 0;
 }
 
-inline int i2c_write(struct i2c_device *dev, void *data, size_t size)
+static inline int i2c_write(struct i2c_device *dev, void *data, size_t size)
 {
 	/* start bit */
 	I2C_START();
@@ -177,7 +177,7 @@ inline int i2c_write(struct i2c_device *dev, void *data, size_t size)
 	return 0;
 }
 
-inline int i2c_master_open(struct i2c_master *master, void *context, uint32_t frequency, uint8_t scl, uint8_t sda)
+static inline int i2c_master_open(struct i2c_master *master, void *context, uint32_t frequency, uint8_t scl, uint8_t sda)
 {
 	/* clock is always output */
 	os_gpio_output(scl);
@@ -214,13 +214,13 @@ inline int i2c_master_open(struct i2c_master *master, void *context, uint32_t fr
 	return 0;
 }
 
-inline void i2c_master_close(struct i2c_master *master)
+static inline void i2c_master_close(struct i2c_master *master)
 {
 	os_gpio_input(master->scl);
 	os_gpio_input(master->sda);
 }
 
-inline int i2c_open(struct i2c_device *dev, struct i2c_master *master, uint8_t address)
+static inline int i2c_open(struct i2c_device *dev, struct i2c_master *master, uint8_t address)
 {
 	dev->master = master;
 	dev->address = address;
@@ -228,7 +228,7 @@ inline int i2c_open(struct i2c_device *dev, struct i2c_master *master, uint8_t a
 	return i2c_write(dev, NULL, 0);
 }
 
-inline void i2c_close(struct i2c_device *dev)
+static inline void i2c_close(struct i2c_device *dev)
 {
 
 }

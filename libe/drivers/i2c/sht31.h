@@ -23,10 +23,10 @@ extern "C" {
 #define SHT31_ADDR          SHT31_ADDR_A
 #endif
 
-/* SHT31 repeatability */
-#define SHT31_REPEATABILITY_HIGH        0
-#define SHT31_REPEATABILITY_MEDIUM      1
-#define SHT31_REPEATABILITY_LOW         2
+/* SHT31 repeatability (no-hold mode) */
+#define SHT31_REPEATABILITY_HIGH        0x00
+#define SHT31_REPEATABILITY_MEDIUM      0x0b
+#define SHT31_REPEATABILITY_LOW         0x16
 
 
 int sht31_open(struct i2c_device *dev, struct i2c_master *master);

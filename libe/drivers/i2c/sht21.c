@@ -12,11 +12,8 @@
 int sht21_open(struct i2c_device *dev, struct i2c_master *master)
 {
 	/* try to detect sht21 */
-	IF_R(i2c_open(dev, master, SHT21_ADDR), -1);
-
+	return i2c_open(dev, master, SHT21_ADDR);
 	/* hdc1080 has the same address but there is no way to identify sht21 */
-	
-	return 0;
 }
 
 int sht21_conf(struct i2c_device *dev, bool heater, uint8_t res)

@@ -11,44 +11,32 @@
 
 int fan5702_open(struct i2c_device *dev, struct i2c_master *master)
 {
-	uint8_t data[2] = { 0x10, 0x18 };
-
 	/* try to detect fan5702 */
-	IF_R(i2c_open(dev, master, FAN5702_ADDR), -1);
-	/* drive current to 20 mA and EN pin as enable */
-	IF_R(i2c_write(dev, data, 2), -1);
-	data[0] = 0x20;
-	data[1] = 0x00;
-	IF_R(i2c_write(dev, data, 2), -1);
-	/* all leds off as default */
-	fan5702_set(dev, 3, 0);
-	fan5702_set(dev, 4, 0);
-	fan5702_set(dev, 5, 0);
-	fan5702_set(dev, 6, 0);
+	return i2c_open(dev, master, FAN5702_ADDR);
+}
 
+int fan5702_cfg(struct i2c_device *dev)
+{
+	/* drive current to 20 mA and EN pin as enable */
+	IF_R(i2c_write_reg_byte(dev, 0x10, 0x18), -1);
+	IF_R(i2c_write_reg_byte(dev, 0x20, 0x00), -1);
 	return 0;
 }
 
-// int fan5702_cfg(struct i2c_device *dev, )
-// {
-
-// }
-
 int fan5702_set(struct i2c_device *dev, uint8_t channel, uint8_t brightness)
 {
-	uint8_t data[2] = { 0xa0, brightness };
 	switch (channel) {
 	case 3:
 	case 4:
 	case 5:
 	case 6:
-		data[0] = channel << 4;
+		channel = channel << 4;
 		break;
 	default:
 		error_last = "invalid channel";
 		return -1;
 	}
-	return i2c_write(dev, data, 2);
+	return i2c_write_reg_byte(dev, channel, brightness);
 }
 
 /* tool related functions */
@@ -92,6 +80,9 @@ int tool_i2c_fan5702_exec(struct i2c_master *master, uint8_t address, char *comm
 	/* open chip */
 	if (fan5702_open(&dev, master)) {
 		fprintf(stderr, "Chip not found, reason: %s\n", error_last);
+		return -1;
+	} else if (fan5702_cfg(&dev)) {
+		fprintf(stderr, "Chip configuration failed, reason: %s\n", error_last);
 		return -1;
 	}
 

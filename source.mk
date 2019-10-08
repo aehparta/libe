@@ -61,7 +61,8 @@ ifneq ($(filter $(libe_DEFINES),USE_I2C),)
         $(LIBE_PATH)/libe/drivers/i2c/hdc1080.c \
         $(LIBE_PATH)/libe/drivers/i2c/sht21.c \
         $(LIBE_PATH)/libe/drivers/i2c/sht31.c \
-        $(LIBE_PATH)/libe/drivers/i2c/fan5702.c
+        $(LIBE_PATH)/libe/drivers/i2c/fan5702.c \
+        $(LIBE_PATH)/libe/drivers/i2c/cap1293.c
     ifneq ($(filter $(libe_DEFINES),USE_I2C_BITBANG),)
         libe_SRC += $(LIBE_PATH)/libe/drivers/i2c/bitbang.c
     else ifdef TARGET_LINUX

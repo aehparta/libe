@@ -23,8 +23,7 @@ int sht31_open(struct i2c_device *dev, struct i2c_master *master)
 int sht31_open_addr(struct i2c_device *dev, struct i2c_master *master, uint8_t address)
 {
 	/* try to detect sht31 */
-	IF_R(i2c_open(dev, master, address), -1);
-	return 0;
+	return i2c_open(dev, master, address);
 }
 
 int sht31_conf(struct i2c_device *dev, bool heater, uint8_t repeatability)
@@ -37,27 +36,18 @@ int sht31_conf(struct i2c_device *dev, bool heater, uint8_t repeatability)
 	IF_R(i2c_write(dev, data, 2), -1);
 
 	/* save repeatability */
-	switch (repeatability) {
-	case SHT31_REPEATABILITY_HIGH:
-		dev->driver_bits[0] = 0x00;
-		break;
-	case SHT31_REPEATABILITY_MEDIUM:
-		dev->driver_bits[0] = 0x0b;
-		break;
-	case SHT31_REPEATABILITY_LOW:
-		dev->driver_bits[0] = 0x16;
-		break;
-	}
+	dev->driver_bits[0] = repeatability;
 
 	return 0;
 }
 
 int sht31_read(struct i2c_device *dev, float *t, float *h)
 {
-	uint8_t data[6] = { 0x24 };
-	data[1] = dev->driver_bits[0];
+	uint8_t data[6];
 
 	/* issue read */
+	data[0] = 0x24;
+	data[1] = dev->driver_bits[0];
 	IF_R(i2c_write(dev, data, 2), -1);
 
 	/* wait for result */
