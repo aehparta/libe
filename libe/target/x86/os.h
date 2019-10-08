@@ -7,5 +7,6 @@
 
 int os_init(void);
 void os_quit(void);
+#define os_wdt_reset()
 
 #endif /* _TARGET_X86_OS_H_ */

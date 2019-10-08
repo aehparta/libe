@@ -43,6 +43,9 @@ int main(int argc, char *argv[])
 	os_gpio_output(CFG_LED_GPIO1);
 
 	while (1) {
+		/* clear watchdog, it is on as default example in pic8 */
+		os_wdt_reset();
+
 		NOTICE_MSG("toggling led...");
 		
 		/* using gpio with variable like this can be fast or slower depending on optimization

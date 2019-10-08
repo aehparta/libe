@@ -33,6 +33,9 @@
 
 
 #ifdef TARGET_PIC8
+#ifdef MCU_16f18345
+#pragma config RSTOSC = HFINT1
+#endif
 /* i2c */
 #define CFG_I2C_CONTEXT     NULL
 #define CFG_I2C_FREQUENCY   100000
@@ -48,8 +51,8 @@
 #define CFG_NRF_SS          4
 #define CFG_NRF_CE          5
 /* led */
-#define CFG_LED_GPIO0       12
-#define CFG_LED_GPIO1       13
+#define CFG_LED_GPIO0       12 /* 12 = RB5 */
+#define CFG_LED_GPIO1       13 /* 13 = RB6 */
 #endif
 
 

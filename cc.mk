@@ -12,10 +12,13 @@ TARGET_EXT ?= -$(TARGET)
 # target specific stuff
 ifeq ($(TARGET),x86)
     # pc
+    MCU           ?= X86
 else ifeq ($(TARGET),rpi)
     # raspberry
+    MCU           ?= RPI
 else ifeq ($(TARGET),esp32)
     # esp32
+    MCU           ?= ESP32
 else ifeq ($(TARGET),avr)
     # microchip avr
     CC_PREFIX     ?= avr-
@@ -128,4 +131,6 @@ else
     libe_CFLAGS += -D_GNU_SOURCE -O$(OPTIMIZATION) -std=gnu99 -g -Wall -Wstrict-prototypes
 #     libe_CFLAGS += -Werror -Wno-unused-variable
 endif
+
+libe_CFLAGS += -DMCU_$(MCU)
 

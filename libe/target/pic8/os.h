@@ -16,6 +16,8 @@ void *memcpy(void *dest, const void *src, size_t n);
 int os_init(void);
 #define os_quit()
 
+#define os_wdt_reset() __asm("clrwdt")
+
 #define _BV(_PIN)           (1 << (_PIN))
 
 #define os_delay_ms(x)      __delay_ms(x)

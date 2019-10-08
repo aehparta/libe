@@ -17,6 +17,8 @@
 int os_init(void);
 #define os_quit()
 
+#define os_wdt_reset() wdt_reset()
+
 #define os_delay_ms(x)      _delay_ms(x)
 #define os_delay_us(x)      _delay_us(x)
 
