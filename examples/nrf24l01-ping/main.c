@@ -7,9 +7,7 @@
  * since os_timef() cannot be properly implemented in those smaller platforms
  */
 
-#include <libe/os.h>
-#include <libe/log.h>
-#include <libe/drivers/spi/nrf.h>
+#include <libe/libe.h>
 #include "../config.h"
 
 

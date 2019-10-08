@@ -2,8 +2,7 @@
  * Blink LED using gpio calls.
  */
 
-#include <libe/os.h>
-#include <libe/log.h>
+#include <libe/libe.h>
 #include "../config.h"
 
 

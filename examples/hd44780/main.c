@@ -2,11 +2,7 @@
  * Random testing area for development.
  */
 
-#include <libe/os.h>
-#include <libe/log.h>
-#include <libe/drivers/gpio/hd44780.h>
-#include <libe/i2c.h>
-#include <libe/spi.h>
+#include <libe/libe.h>
 #include "../config.h"
 
 

@@ -2,9 +2,7 @@
  * nrf24l01+ example listener
  */
 
-#include <libe/os.h>
-#include <libe/log.h>
-#include <libe/drivers/spi/nrf.h>
+#include <libe/libe.h>
 #include "../config.h"
 
 

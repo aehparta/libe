@@ -2,9 +2,7 @@
  * Scan i2c bus for devices.
  */
 
-#include <libe/os.h>
-#include <libe/log.h>
-#include <libe/i2c.h>
+#include <libe/libe.h>
 #ifdef TARGET_LINUX
 #include <sys/types.h>
 #include <sys/stat.h>

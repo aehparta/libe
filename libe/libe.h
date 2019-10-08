@@ -15,11 +15,15 @@ extern "C" {
 #include <libe/os.h>
 #include <libe/log.h>
 #include <libe/wifi.h>
-#include <libe/i2c.h>
 #include <libe/nvm.h>
 #include <libe/aes.h>
-#include <libe/spi.h>
 #include <libe/error.h>
+/* i2c drivers */
+#include <libe/i2c.h>
+/* spi drivers */
+#include <libe/spi.h>
+/* gpio drivers */
+#include <libe/drivers/gpio/hd44780.h>
 
 #ifdef __cplusplus
 }

@@ -2,9 +2,7 @@
  * WiFi example.
  */
 
-#include <libe/os.h>
-#include <libe/log.h>
-#include <libe/wifi.h>
+#include <libe/libe.h>
 
 #ifdef TARGET_ESP32
 int app_main(int argc, char *argv[])
