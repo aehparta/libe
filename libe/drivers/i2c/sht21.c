@@ -132,7 +132,7 @@ void tool_i2c_sht21_help(void)
 	);
 }
 
-int tool_i2c_sht21_exec(struct i2c_master *master, char *command, int argc, char *argv[])
+int tool_i2c_sht21_exec(struct i2c_master *master, uint8_t address, char *command, int argc, char *argv[])
 {
 	int err = -1;
 	struct i2c_device dev;

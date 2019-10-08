@@ -32,7 +32,7 @@ float hdc1080_read_humidity(struct i2c_device *dev);
 /* hook when compiling i2c tool */
 #ifdef COMPILE_TOOL_I2C
 void tool_i2c_hdc1080_help(void);
-int tool_i2c_hdc1080_exec(struct i2c_master *master, char *command, int argc, char *argv[]);
+int tool_i2c_hdc1080_exec(struct i2c_master *master, uint8_t address, char *command, int argc, char *argv[]);
 #pragma push_macro("tool_i2c_chips")
 #undef tool_i2c_chips
 #define tool_i2c_chips _Pragma("pop_macro(\"tool_i2c_chips\")") tool_i2c_chips \

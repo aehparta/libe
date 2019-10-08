@@ -15,9 +15,9 @@ include $(LIBE_PATH)/flags.mk
 include $(LIBE_PATH)/source.mk
 
 # our own sources etc
-BUILD_BINS = libe-i2c
-PROGRAM_BIN = libe-i2c
-libe-i2c_SRC = main.c $(libe_SRC)
+BUILD_BINS = libe_i2c
+PROGRAM_BIN = libe_i2c
+libe_i2c_SRC = main.c $(libe_SRC)
 
 # compile flags
 CFLAGS += $(libe_CFLAGS) -DCOMPILE_TOOL_I2C

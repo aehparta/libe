@@ -24,7 +24,7 @@ void tool_i2c_mcp3221_help(void)
 	printf("MCP3221\n");
 }
 
-int tool_i2c_mcp3221_exec(struct i2c_master *master, char *command, int argc, char *argv[])
+int tool_i2c_mcp3221_exec(struct i2c_master *master, uint8_t address, char *command, int argc, char *argv[])
 {
 	int err = 0;
 	printf("exec command %s\n", command);

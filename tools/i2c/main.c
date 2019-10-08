@@ -11,22 +11,24 @@
 #error "this tool is not meant to be compiled on other platforms than linux"
 #endif
 
-const char opts[] = "hd:c:";
+const char opts[] = "hd:c:a:";
 struct option longopts[] = {
 	{ "help", no_argument, NULL, 'h' },
 	{ "device", required_argument, NULL, 'd' },
 	{ "chip", required_argument, NULL, 'c' },
+	{ "address", required_argument, NULL, 'a' },
 	{ 0, 0, 0, 0 },
 };
 
 char *device = NULL;
 char *chip_name = NULL;
+long int address = 0;
 
 struct chip {
 	char name[16];
 	char description[256];
 	void (*help)(void);
-	int (*exec)(struct i2c_master *master, char *command, int argc, char *argv[]);
+	int (*exec)(struct i2c_master *master, uint8_t address, char *command, int argc, char *argv[]);
 };
 
 struct chip chips[] = {
@@ -58,11 +60,12 @@ void p_help(int argc, char *argv[])
 	printf(
 	    "Execute command on an I2C slave attached to given bus.\n"
 	    "\n"
-	    "Use \"-c <chip> -h\" to show chip specific help.\n"
+	    "Use \"-c <CHIP> -h\" to show chip specific help.\n"
 	    "\n");
 	printf("Options:\n"
-	       "  -c, --chip=<chip>            chip (mandatory)\n"
-	       "  -d, --device=</dev/i2c-#>    I2C device (mandatory)\n"
+	       "  -c, --chip=<CHIP>            chip (mandatory)\n"
+	       "  -d, --device=<DEVICE>        I2C device (mandatory)\n"
+	       "  -a, --address=<HEX>          Optional I2C device address if selected chip can have multiple addresses\n"
 	       "\n"
 	      );
 	printf("Chip can be one of the following:\n");
@@ -90,12 +93,18 @@ int p_options(int argc, char *argv[])
 		case 'c':
 			chip_name = optarg;
 			break;
+		case 'a':
+			address = strtol(optarg, NULL, 16);
+			if (address < 1 || address > 0x7f) {
+				fprintf(stderr, "Address out of range.\n");
+				return -1;
+			}
+			break;
 		case 'h':
 			err = 1;
 			break;
 		default:
-			err = -1;
-			break;
+			return -1;
 		}
 	}
 
@@ -142,7 +151,7 @@ int main(int argc, char *argv[])
 		fprintf(stderr, "Invalid I2C device, reason: %s\n", error_last);
 	} else {
 		/* execute command */
-		err = chip->exec(&i2c, argv[optind], argc - optind, &argv[optind]) ? EXIT_FAILURE : EXIT_SUCCESS;
+		err = chip->exec(&i2c, address, argv[optind], argc - optind, &argv[optind]) ? EXIT_FAILURE : EXIT_SUCCESS;
 		i2c_master_close(&i2c);
 	}
 
