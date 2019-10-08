@@ -20,10 +20,6 @@
 extern "C" {
 #endif
 
-#if defined(TARGET_PIC8)
-#undef USE_LOG
-#endif
-
 /** Log level debug. */
 #define LOG_LEVEL_DEBUG     0
 /** Log level info. */

@@ -5,12 +5,10 @@
  *  Antti Partanen <aehparta@iki.fi>
  */
 
+#ifdef USE_LOG
+
 #include <stdarg.h>
 #include <libe/libe.h>
-
-#warning "pic8 serial port support not implemented, logging disabled"
-
-#if 0
 
 void putch(char ch)
 {
@@ -33,18 +31,30 @@ int log_init(void *context, uint32_t baud)
 {
 	/* default baud */
 	if (baud < 1) {
-		baud = 38400;
+		baud = 9600;
 	}
+
+	/* if device supports mapping of pins, TX to RC6 as default */
+#ifdef RC6PPS
+	RC6PPS = 0x14;
+#endif
+
 	/* enable uart transmit with baud rate multiplier and calculate baud rate setting */
+#ifdef BAUD1CON
+	BAUD1CON = 0x08;
+#endif
 #ifdef TX1STA
 	TX1STA = 0x24;
 	RC1STA = 0x80;
-	SP1BRG = (_XTAL_FREQ / (long)(16UL * baud)) - 1;
+	// SP1BRG = (_XTAL_FREQ / (long)(16UL * baud)) - 1;
+	SP1BRGL = 0x19;
+	SP1BRGH = 0x00;
 #else
 	TXSTA = 0x24;
 	RCSTA = 0x80;
 	SPBRG = (_XTAL_FREQ / (long)(16UL * baud)) - 1;
 #endif
+
 	return 0;
 }
 

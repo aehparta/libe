@@ -12,13 +12,13 @@ TARGET_EXT ?= -$(TARGET)
 # target specific stuff
 ifeq ($(TARGET),x86)
     # pc
-    MCU           ?= X86
+    MCU           ?= x86
 else ifeq ($(TARGET),rpi)
     # raspberry
-    MCU           ?= RPI
+    MCU           ?= rpi
 else ifeq ($(TARGET),esp32)
     # esp32
-    MCU           ?= ESP32
+    MCU           ?= esp32
 else ifeq ($(TARGET),avr)
     # microchip avr
     CC_PREFIX     ?= avr-
@@ -27,17 +27,17 @@ else ifeq ($(TARGET),avr)
 else ifeq ($(TARGET),pic8)
     # microchip pic 8-bit
     CC_PREFIX     ?= xc8-
-    MCU           ?= 16F84
+    MCU           ?= 16f18345
     F_CPU         ?= 1000000L
 else ifeq ($(TARGET),pic16)
     # microchip pic 16-bit
     CC_PREFIX     ?= xc16-
-    MCU           ?= 24F16KA102
+    MCU           ?= 24f16ka102
     F_CPU         ?= 16000000L
 else ifeq ($(TARGET),pic32)
     # microchip pic 32-bit
     CC_PREFIX     ?= xc32-
-    MCU           ?= 32MM0256GPM028
+    MCU           ?= 32mm0256gpm028
     F_CPU         ?= 16000000L
 else ifeq ($(TARGET),msp430)
     # ti msp430
