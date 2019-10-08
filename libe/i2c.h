@@ -7,6 +7,7 @@
 
 #ifndef _LIBE_I2C_H_
 #define _LIBE_I2C_H_
+#ifdef USE_I2C
 
 #include <stdint.h>
 #ifdef TARGET_LINUX
@@ -81,5 +82,6 @@ static inline int i2c_read_reg_byte(struct i2c_device *dev, uint8_t reg)
 }
 #endif
 
+#endif /* USE_I2C */
 #endif /* _LIBE_I2C_H_ */
 

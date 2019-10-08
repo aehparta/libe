@@ -6,27 +6,11 @@
  */
 
 #include <stdarg.h>
-#include <libe/os.h>
-#include <libe/log.h>
-#include <libe/log.h>
+#include <libe/libe.h>
 
-#if !defined(TX1IF) || !defined(TXIF)
-#warning "this mcu does not support serial port, disable logging"
-int log_init(void *context, uint32_t baud)
-{
-	return 0;
-}
+#warning "pic8 serial port support not implemented, logging disabled"
 
-void log_quit(void)
-{
-
-}
-
-void log_msg(int level, const char *file, int line, const char *func, const char *msg, ...)
-{
-
-}
-#else
+#if 0
 
 void putch(char ch)
 {

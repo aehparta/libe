@@ -51,5 +51,8 @@ int main(int argc, char *argv[])
 	/* close i2c */
 	i2c_master_close(&i2c);
 
+	log_quit();
+	os_quit();
+
 	return 0;
 }

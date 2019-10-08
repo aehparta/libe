@@ -6,6 +6,7 @@
 
 #ifndef _LIBE_SPI_H_
 #define _LIBE_SPI_H_
+#ifdef USE_SPI
 
 
 #include <stdint.h>
@@ -46,4 +47,5 @@ int spi_transfer(struct spi_device *device, uint8_t *data, size_t size);
 }
 #endif
 
+#endif /* USE_SPI */
 #endif /* _LIBE_SPI_H_ */
