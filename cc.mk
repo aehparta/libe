@@ -41,15 +41,14 @@ else ifeq ($(TARGET),pic32)
     F_CPU         ?= 16000000L
 else ifeq ($(TARGET),msp430)
     # ti msp430
-    ifeq ($(MSP430_BASE_DIR),)
-        $(error MSP430_BASE_DIR is not set, install example CCS and point this to msp430 base under it)
-    endif
-    ifeq ($(MSP430_TOOLS_DIR),)
-        $(error MSP430_TOOLS_DIR is not set, install example CCS and point this to msp430 tools under it)
-    endif
-    # MSP430_INC_DIR     ?= $(MSP430_BASE_DIR)/include_gcc/
-    # CC_PREFIX          ?= $(MSP430_TOOLS_DIR)/bin/msp430-elf-
-    CC_PREFIX          ?= msp430-
+#     ifeq ($(MSP430_BASE_DIR),)
+#         $(error MSP430_BASE_DIR is not set, install example CCS and point this to msp430 base under it)
+#     endif
+#     ifeq ($(MSP430_TOOLS_DIR),)
+#         $(error MSP430_TOOLS_DIR is not set, install example CCS and point this to msp430 tools under it)
+#     endif
+    MSP430_INC_DIR     ?= $(HOME)/ti/ccs920/ccs/ccs_base/msp430/include_gcc/
+    CC_PREFIX          ?= msp430-elf-
     MCU                ?= msp430f1121
     F_CPU              ?= 4000000L
 else
@@ -105,12 +104,12 @@ else ifeq ($(TARGET),pic32)
 else ifeq ($(TARGET),msp430)
     libe_CFLAGS  += -DF_CPU=$(F_CPU)
     libe_CFLAGS  += -mmcu=$(MCU)
-    # libe_CFLAGS  += -I$(MSP430_INC_DIR)
+    libe_CFLAGS  += -I$(MSP430_INC_DIR)
     libe_CFLAGS  += -ffunction-sections -fdata-sections
     #libe_CFLAGS  += -mlarge -mcode-region=either -mdata-region=either
     libe_LDFLAGS += -mmcu=$(MCU)
-    # libe_LDFLAGS += -L$(MSP430_INC_DIR)
-    # libe_LDFLAGS += -T$(MCU).ld
+    libe_LDFLAGS += -L$(MSP430_INC_DIR)
+    libe_LDFLAGS += -T$(MCU).ld
     libe_LDFLAGS += -Wl,--gc-sections -mhwmult=none
     #libe_LDFLAGS += -mlarge -mcode-region=either -mdata-region=either
 else ifeq ($(TARGET),x86)

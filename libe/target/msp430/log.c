@@ -11,6 +11,13 @@
 #include <libe/log.h>
 
 
+#ifndef MSP430_LOG_TX_PSEL
+#define MSP430_LOG_TX_PSEL P3SEL
+#endif
+#ifndef MSP430_LOG_TX_PIN
+#define MSP430_LOG_TX_PIN 4
+#endif
+
 // static int printchar(char c, FILE *stream)
 // {
 // 	return 0;
@@ -18,6 +25,26 @@
 
 int log_init(void)
 {
+	/* calibrate peripheral clock to 1 MHz */
+	DCOCTL = 0;
+	BCSCTL1 = CALBC1_1MHZ;
+	DCOCTL = CALDCO_1MHZ;
+
+	MSP430_LOG_TX_PSEL |= (1 << MSP430_LOG_TX_PIN);
+
+	UCA0CTL1 |= UCSSEL_2; // SMCLK
+	UCA0BR0 = 0x08; // 1MHz 115200
+	UCA0BR1 = 0x00; // 1MHz 115200
+	UCA0MCTL = UCBRS2 + UCBRS0; // Modulation UCBRSx = 5
+	UCA0CTL1 &= ~UCSWRST; // **Initialize USCI state machine**
+	UC0IE |= UCA0RXIE; // Enable USCI_A0 RX interrupt
+
+	while (1) {
+		while (UCA1TXIFG);
+		UCA0TXBUF = 'A';
+	}
+
+
 	return 0;
 }
 

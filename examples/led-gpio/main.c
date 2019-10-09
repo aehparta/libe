@@ -9,7 +9,7 @@
 #ifdef TARGET_ESP32
 int app_main(int argc, char *argv[])
 #else
-int main(int argc, char *argv[])
+int main(void)
 #endif
 {
 	uint8_t pin = CFG_LED_GPIO0;

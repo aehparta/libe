@@ -125,8 +125,8 @@
 #define CFG_NRF_SS          0
 #define CFG_NRF_CE          0
 /* led */
-#define CFG_LED_GPIO0       12
-#define CFG_LED_GPIO1       13
+#define CFG_LED_GPIO0       0
+#define CFG_LED_GPIO1       1
 #endif
 
 
