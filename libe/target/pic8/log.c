@@ -10,68 +10,77 @@
 #include <stdarg.h>
 #include <libe/libe.h>
 
+/* baud rate */
+#ifndef PIC8_LOG_BAUD
+#define PIC8_LOG_BAUD LOG_BAUD
+#endif
+
 /* RC6 as default TX pin */
 #if !defined(PIC8_LOG_TX_PPS) && defined(RC6PPS)
 #define PIC8_LOG_TX_PPS RC6PPS
 #endif
 
+/* registers */
+
+#ifndef PIC8_LOG_TXIF
+#define PIC8_LOG_TXIF TXIF
+#endif
+
+#ifndef PIC8_LOG_TXREG
+#define PIC8_LOG_TXREG TXREG
+#endif
+
+#ifndef PIC8_LOG_TXSTA
+#define PIC8_LOG_TXSTA TXSTA
+#endif
+
+#ifndef PIC8_LOG_RCSTA
+#define PIC8_LOG_RCSTA RCSTA
+#endif
+
+#ifndef PIC8_LOG_SPBRG
+#define PIC8_LOG_SPBRG SPBRG
+#endif
+
+#ifndef PIC8_LOG_BAUDCON
+#ifdef BAUDCON1
+#define PIC8_LOG_BAUDCON BAUDCON1
+#endif
+#endif
+
 
 void putch(char ch)
 {
-#ifdef TX1IF
 	/* wait till the transmitter register becomes empty */
-	while (!TX1IF);
+	while (!PIC8_LOG_TXIF);
 	/* clear transmitter flag and send character */
-	TX1IF = 0;
-	TX1REG = ch;
-#else
-	/* wait till the transmitter register becomes empty */
-	while (!TXIF);
-	/* clear transmitter flag and send character */
-	TXIF = 0;
-	TXREG = ch;
-#endif
+	PIC8_LOG_TXIF = 0;
+	PIC8_LOG_TXREG = ch;
 }
 
 int log_init(void)
 {
-	/* default baud */
-	if (baud < 1) {
-		baud = 38400;
-	}
-
 	/* if device supports mapping of pins, TX to RC6 as default */
 #ifdef PIC8_LOG_TX_PPS
 	PIC8_LOG_TX_PPS = 0x14;
 #endif
 
-	/* enable uart transmit with baud rate multiplier and calculate baud rate setting */
-#ifdef BAUD1CON
+	/* enable uart transmit only and calculate baud rate setting */
+#ifdef PIC8_LOG_BAUDCON
+	PIC8_LOG_BAUDCON = 0x00;
 #endif
-#ifdef TX1STA
-	BAUD1CON = 0x08;
-	TX1STA = 0x24;
-	RC1STA = 0x80;
-	SP1BRG = _XTAL_FREQ / (long)(4 * (baud + 1));
-#else
-	BAUDCON = 0x08;
-	TXSTA = 0x24;
-	RCSTA = 0x80;
-	SPBRG = _XTAL_FREQ / (long)(4 * (baud + 1));
-#endif
+	PIC8_LOG_TXSTA = 0x24;
+	PIC8_LOG_RCSTA = 0x80;
+	PIC8_LOG_SPBRG = _XTAL_FREQ / (16UL * (PIC8_LOG_BAUD + 1UL));
 
 	return 0;
 }
 
 void log_quit(void)
 {
-#ifdef TX1STA
-	TX1STA = 0;
-	SP1BRG = 0;
-#else
-	TXSTA = 0;
-	SPBRG = 0;
-#endif
+	PIC8_LOG_TXSTA = 0;
+	PIC8_LOG_RCSTA = 0;
+	PIC8_LOG_SPBRG = 0;
 }
 
 void log_msg(int level, const char *file, int line, const char *func, const char *msg, ...)

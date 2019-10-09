@@ -5,8 +5,8 @@
 #include <stdbool.h>
 #include <avr/io.h>
 #include <avr/interrupt.h>
+#include <avr/wdt.h>
 #include <util/delay.h>
-#include <libe/log.h>
 
 #ifndef _TARGET_OS_H_
 #define _TARGET_OS_H_

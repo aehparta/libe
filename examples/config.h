@@ -27,8 +27,8 @@
 #define CFG_HD44780_RW      13
 #define CFG_HD44780_RS      12
 /* led */
-#define CFG_LED_GPIO0       12
-#define CFG_LED_GPIO1       13
+#define CFG_LED_GPIO0       8 /* = PB0 */
+#define CFG_LED_GPIO1       9 /* = PB1 */
 #endif
 
 
@@ -48,8 +48,13 @@
 #define CFG_NRF_SS          4
 #define CFG_NRF_CE          5
 /* led */
-#define CFG_LED_GPIO0       12 /* 12 = RB5 */
-#define CFG_LED_GPIO1       13 /* 13 = RB6 */
+#ifdef MCU_pic18f13k22
+#define CFG_LED_GPIO0       16 /* = RC0 */
+#define CFG_LED_GPIO1       17 /* = RC1 */
+#else
+#define CFG_LED_GPIO0       8 /* = RB0 */
+#define CFG_LED_GPIO1       9 /* = RB1 */
+#endif
 #endif
 
 

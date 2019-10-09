@@ -23,24 +23,44 @@
 ### Emulator tests
 
 * avr on atmega8
-    * PB4: First LED
-    * PB5: Second LED
-    * PD0/PD1: Serial port logging, 38400 8N1
+    * PB0: First LED
+    * PB1: Second LED
+    * PD1: Serial port TX, 9600 8N1
 
 * avr on attiny85 without logging
-    * PB4: First LED
-    * PB5: Second LED, with reset disabled
+    * PB0: First LED
+    * PB1: Second LED
 
-* pic8 on pic18f2410
-    * RB4: First LED
-    * RB5: Second LED
-    * RC6/RC7: Serial port logging, 38400 8N1
+#### pic8
 
-* pic8 on pic18f26k20
-    * RB4: First LED
-    * RB5: Second LED
-    * RC6/RC7: Serial port logging, 38400 8N1
-
-* pic8 on pic16f87 without logging
-    * RB4: First LED
-    * RB5: Second LED
+* pic16f84a without logging
+    * RB0: First LED
+    * RB1: Second LED
+* pic16f87
+    * RB0: First LED
+    * RB1: Second LED
+    * RB5: Serial port TX, 9600 8N1
+* pic16f882
+    * RB0: First LED, **NOT working**, some odd bug, fix!
+    * RB1: Second LED
+    * RC6: Serial port TX, 9600 8N1
+* pic16f946
+    * RB0: First LED
+    * RB1: Second LED
+    * RC6: Serial port TX, 9600 8N1
+* pic16f1934
+    * RB0: First LED
+    * RB1: Second LED
+    * RC6: Serial port TX, 9600 8N1
+* pic18f13k22
+    * RC0: First LED
+    * RC1: Second LED
+    * RB7: Serial port TX, 9600 8N1
+* pic18f1330
+    * RB0: First LED
+    * RB1: Second LED
+    * RA2: Serial port TX, 9600 8N1
+* pic18f6622
+    * RB0: First LED
+    * RB1: Second LED
+    * RC6: Serial port TX, 9600 8N1

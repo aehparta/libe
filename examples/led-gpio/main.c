@@ -54,13 +54,13 @@ int main(int argc, char *argv[])
 		os_gpio_low(CFG_LED_GPIO1);
 #ifdef TARGET_AVR
 		/* previous is same in AVR as writing this */
-		PORTB &= ~(1 << 5);
+		PORTB &= ~(1 << 1);
 #elif defined(LATB) && defined(TARGET_PIC8)
 		/* or in PIC with LATB */
-		LATB &= ~(1 << 5);
+		LATB &= ~(1 << 1);
 #elif defined(PORTB) && defined(TARGET_PIC8)
 		/* or in older PIC with PORTB */
-		PORTB &= ~(1 << 5);
+		PORTB &= ~(1 << 1);
 #endif
 
 		/* this will call _delay_ms() in AVR, __delay_ms() in PIC, something else in other platforms */

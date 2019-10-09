@@ -12,22 +12,6 @@
 
 int os_init(void)
 {
-#ifdef OSCCONbits
-	/* pll multiplier, 0=4x, 1=3x */
-	OSCCONbits.SPLLMULT = 0;
-	/* pll enable, if enabled by config then this is ignored */
-	OSCCONbits.SPLLEN = 0;
-	/* internal oscillator frequency */
-	OSCCONbits.IRCF = 0xf;
-
-	/* wait for internal oscillator and pll to start and stabilize */
-	while (!OSCSTATbits.HFIOFR || !OSCSTATbits.HFIOFS || !!OSCSTATbits.PLLRDY);
-	/* start using internal oscillator */
-	OSCCONbits.SCS = 0x2;
-#elif OSCCON
-	OSCCON = 0x72;
-#endif
-
 	return 0;
 }
 

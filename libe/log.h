@@ -53,13 +53,16 @@ extern "C" {
 
 #ifdef USE_LOG /* logging functions */
 
-/** Initialize logging. */
+/* default baud rate for devices using uart */
+#ifndef LOG_BAUD
+#define LOG_BAUD 9600
+#endif
+
+/* initialize logging */
 int log_init(void);
-/**
- * Write message to log.
- */
+/* write message to log */
 void log_msg(int level, const char *file, int line, const char *func, const char *msg, ...);
-/** Quit logging */
+/* quit logging */
 void log_quit(void);
 
 #else

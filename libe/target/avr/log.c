@@ -5,10 +5,14 @@
  *  Antti Partanen <aehparta@iki.fi>
  */
 
-#include <libe/os.h>
-#include <libe/log.h>
-#include <libe/log.h>
+#ifdef USE_LOG
 
+#include <libe/libe.h>
+
+/* baud rate */
+#ifndef AVR_LOG_BAUD
+#define AVR_LOG_BAUD LOG_BAUD
+#endif
 
 #if defined(AVR_LOG_UDR)
 /* already defined outside of this */
@@ -36,7 +40,6 @@
 #error "no support for serial port in this mcu, maybe disable logging with USE=NOT_LOG"
 #endif
 
-#ifdef AVR_LOG_UDR
 
 static int log_putchar(char c, FILE *stream)
 {
@@ -46,15 +49,10 @@ static int log_putchar(char c, FILE *stream)
 	return 0;
 }
 
-int log_init(void *context, uint32_t baud)
+int log_init()
 {
-	/* default baud */
-	if (baud < 1) {
-		baud = 38400;
-	}
-
 	/* calculate ubrr register value from baud */
-	AVR_LOG_UBRR = (F_CPU / (16 * baud) - 1) & 0x0fff;
+	AVR_LOG_UBRR = (F_CPU / (16UL * AVR_LOG_BAUD) - 1UL) & 0x0fff;
 
 	/* disable double */
 	AVR_LOG_UCSRA = 0;
