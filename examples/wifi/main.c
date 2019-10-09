@@ -13,7 +13,7 @@ int main(int argc, char *argv[])
 	/* low level init: initializes some system basics depending on platform */
 	os_init();
 	/* debug/log init */
-	log_init(NULL, 0);
+	log_init();
 	/* wifi base init */
 	wifi_init();
 

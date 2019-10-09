@@ -48,7 +48,7 @@ int main(int argc, char *argv[])
 #endif
 {
 	os_init();
-	log_init(NULL, 0);
+	log_init();
 	// void *context = NULL;
 
 #ifdef USE_FTDI

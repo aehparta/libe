@@ -143,7 +143,7 @@ int main(int argc, char *argv[])
 	}
 	/* low level initialization */
 	os_init();
-	log_init(NULL, 0);
+	log_init();
 	err = EXIT_FAILURE;
 	/* open i2c */
 	struct i2c_master i2c;

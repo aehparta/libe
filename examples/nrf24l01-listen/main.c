@@ -15,7 +15,7 @@ int p_init(int argc, char *argv[])
 	/* very low level platform initialization */
 	os_init();
 	/* debug/log init */
-	log_init(NULL, 0);
+	log_init();
 
 	/* initialize spi master */
 #ifdef USE_FTDI

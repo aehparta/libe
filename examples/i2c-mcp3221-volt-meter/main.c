@@ -24,7 +24,7 @@ int main(int argc, char *argv[])
 
 	/* base init */
 	os_init();
-	log_init(NULL, 0);
+	log_init();
 
 	/* check i2c device if using linux */
 #ifdef USE_FTDI

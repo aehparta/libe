@@ -13,7 +13,7 @@ int main(int argc, char *argv[])
 #endif
 {
 	os_init();
-	log_init(NULL, 0);
+	log_init();
 
 #ifdef USE_FTDI
 	ERROR_IF_R(os_ftdi_use(OS_FTDI_GPIO_0_TO_63, CFG_FTDI_VID, CFG_FTDI_PID, CFG_FTDI_DESC, CFG_FTDI_SERIAL), -1, "unable to open ftdi device for gpio 0-63");
