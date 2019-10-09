@@ -91,21 +91,15 @@ int8_t os_gpio_read(uint8_t pin);
 #endif
 
 #ifdef OS_GPIO_HAS_PULLUP
-int8_t os_gpio_pullup(uint8_t pin);
+int8_t os_gpio_pullup(uint8_t pin, bool enable);
 #else
-#define os_gpio_pullup(pin)
+#define os_gpio_pullup(pin, enable)
 #endif
 
-#ifdef OS_GPIO_HAS_PULLDOWN
-int8_t os_gpio_pulldown(uint8_t pin);
+#ifdef OS_GPIO_HAS_OPEN_DRAIN
+int8_t os_gpio_open_drain(uint8_t pin, bool enable);
 #else
-#define os_gpio_pulldown(pin)
-#endif
-
-#ifdef OS_GPIO_HAS_FLOATING
-int8_t os_gpio_floating(uint8_t pin);
-#else
-#define os_gpio_floating(pin)
+#define os_gpio_open_drain(pin)
 #endif
 
 #define os_gpio_output(pin) os_gpio_enable(pin, OS_GPIO_OUTPUT)

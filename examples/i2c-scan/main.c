@@ -40,13 +40,14 @@ int main(int argc, char *argv[])
 	/* scan i2c bus */
 	int found = 0;
 	for (int a = 0; a < 128; a++) {
+		os_wdt_reset();
 		if (i2c_open(&dev, &i2c, a) == 0) {
-			INFO_MSG("Device found at address %02x", a);
+			printf("Device found at address %02x\r\n", a);
 			found++;
 		}
 		i2c_close(&dev);
 	}
-	INFO_MSG("Found %d devices.", found);
+	printf("Found %d devices.\r\n", found);
 
 	/* close i2c */
 	i2c_master_close(&i2c);

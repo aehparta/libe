@@ -11,7 +11,9 @@
 void *memcpy(void *dest, const void *src, size_t n);
 
 // #define OS_GPIO_AS_MACROS_OR_INLINE     1
-#define OS_DELAY_AS_MACROS_OR_INLINE    1
+#define OS_DELAY_AS_MACROS_OR_INLINE 1
+#define OS_GPIO_HAS_PULLUP 1
+#define OS_GPIO_HAS_OPEN_DRAIN 1
 
 int os_init(void);
 #define os_quit()

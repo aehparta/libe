@@ -170,6 +170,80 @@ int8_t os_gpio_read(uint8_t pin)
 	return -1;
 }
 
+int8_t os_gpio_pullup(uint8_t pin, bool enable)
+{
+	switch (pin >> 3) {
+#ifdef WPUA
+	case 0:
+		WPUA = !enable ? (WPUA & ~_BV(pin & 7)) : (WPUA | _BV(pin & 7));
+		return 0;
+#endif
+#ifdef WPUB
+	case 1:
+		WPUB = !enable ? (WPUB & ~_BV(pin & 7)) : (WPUB | _BV(pin & 7));
+		return 0;
+#endif
+#ifdef WPUC
+	case 2:
+		WPUC = !enable ? (WPUC & ~_BV(pin & 7)) : (WPUC | _BV(pin & 7));
+		return 0;
+#endif
+#ifdef WPUD
+	case 3:
+		WPUD = !enable ? (WPUD & ~_BV(pin & 7)) : (WPUD | _BV(pin & 7));
+		return 0;
+#endif
+#ifdef WPUE
+	case 4:
+		WPUE = !enable ? (WPUE & ~_BV(pin & 7)) : (WPUE | _BV(pin & 7));
+		return 0;
+#endif
+#ifdef WPUF
+	case 5:
+		WPUF = !enable ? (WPUF & ~_BV(pin & 7)) : (WPUF | _BV(pin & 7));
+		return 0;
+#endif
+	}
+	return -1;
+}
+
+int8_t os_gpio_open_drain(uint8_t pin, bool enable)
+{
+	switch (pin >> 3) {
+#ifdef ODCONA
+	case 0:
+		ODCONA = !enable ? (ODCONA & ~_BV(pin & 7)) : (ODCONA | _BV(pin & 7));
+		return 0;
+#endif
+#ifdef ODCONB
+	case 1:
+		ODCONB = !enable ? (ODCONB & ~_BV(pin & 7)) : (ODCONB | _BV(pin & 7));
+		return 0;
+#endif
+#ifdef ODCONC
+	case 2:
+		ODCONC = !enable ? (ODCONC & ~_BV(pin & 7)) : (ODCONC | _BV(pin & 7));
+		return 0;
+#endif
+#ifdef ODCOND
+	case 3:
+		ODCOND = !enable ? (ODCOND & ~_BV(pin & 7)) : (ODCOND | _BV(pin & 7));
+		return 0;
+#endif
+#ifdef ODCONE
+	case 4:
+		ODCONE = !enable ? (ODCONE & ~_BV(pin & 7)) : (ODCONE | _BV(pin & 7));
+		return 0;
+#endif
+#ifdef ODCONF
+	case 5:
+		ODCONF = !enable ? (ODCONF & ~_BV(pin & 7)) : (ODCONF | _BV(pin & 7));
+		return 0;
+#endif
+	}
+	return -1;
+}
+
 
 /* pic8 specific stuff */
 

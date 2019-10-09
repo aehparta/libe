@@ -79,4 +79,6 @@ int main(void)
 		 */
 		// pin++;
 	}
+
+	return 0;
 }

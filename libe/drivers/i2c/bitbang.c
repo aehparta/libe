@@ -13,10 +13,12 @@ int i2c_master_open(struct i2c_master *master, void *context, uint32_t frequency
 {
 	/* clock is always output */
 	os_gpio_output(scl);
-	os_gpio_pullup(scl);
+	os_gpio_pullup(scl, true);
+	os_gpio_open_drain(scl, true);
 	/* data is input as default */
 	os_gpio_input(sda);
-	os_gpio_pullup(sda);
+	os_gpio_pullup(sda, true);
+	os_gpio_open_drain(sda, true);
 
 	/* reset the bus by clocking enough cycles and then doing stop */
 	os_gpio_low(scl);
