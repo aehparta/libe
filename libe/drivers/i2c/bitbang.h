@@ -10,23 +10,11 @@
 #ifdef USE_I2C_BITBANG
 
 #include <stdint.h>
+#include <string.h>
 
 #ifdef __cplusplus
 extern "C" {
 #endif
-
-struct i2c_master {
-	uint8_t scl;
-	uint8_t sda;
-#ifdef TARGET_LINUX
-	uint32_t frequency;
-#endif
-};
-struct i2c_device {
-	struct i2c_master *master;
-	uint8_t address;
-	uint8_t driver_bits[4];
-};
 
 #ifdef TARGET_LINUX
 #define I2C_DELAY()             os_sleepf(1 / dev->master->frequency)

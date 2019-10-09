@@ -127,6 +127,6 @@ OPTIMIZATION ?= s
 ifeq ($(TARGET),pic8)
     libe_CFLAGS += -O$(OPTIMIZATION)
 else
-    libe_CFLAGS += -D_GNU_SOURCE -O$(OPTIMIZATION) -std=gnu99 -g -Wall -Wstrict-prototypes
+    libe_CFLAGS += -D_GNU_SOURCE -O$(OPTIMIZATION) -std=c11 -g -Wall -Wstrict-prototypes
 #     libe_CFLAGS += -Werror -Wno-unused-variable
 endif

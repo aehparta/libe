@@ -22,7 +22,7 @@ int os_init(void);
 #define os_delay_ms(x)      _delay_ms(x)
 #define os_delay_us(x)      _delay_us(x)
 
-inline int os_gpio_enable(uint8_t pin, bool direction)
+inline int8_t os_gpio_enable_inline(uint8_t pin, bool direction)
 {
 	switch (pin >> 3) {
 #ifdef DDRA
@@ -59,7 +59,7 @@ inline int os_gpio_enable(uint8_t pin, bool direction)
 	return -1;
 }
 
-inline int os_gpio_set(uint8_t pin, bool state)
+inline int8_t os_gpio_set_inline(uint8_t pin, bool state)
 {
 	switch (pin >> 3) {
 #ifdef PORTA
@@ -96,7 +96,7 @@ inline int os_gpio_set(uint8_t pin, bool state)
 	return -1;
 }
 
-inline int8_t os_gpio_read(uint8_t pin)
+inline int8_t os_gpio_read_inline(uint8_t pin)
 {
 	switch (pin >> 3) {
 #ifdef PINA
@@ -126,5 +126,19 @@ inline int8_t os_gpio_read(uint8_t pin)
 	}
 	return -1;
 }
+
+int8_t os_gpio_enable_callable(uint8_t pin, bool direction);
+int8_t os_gpio_set_callable(uint8_t pin, bool state);
+int8_t os_gpio_read_callable(uint8_t pin);
+
+#if __STDC_VERSION__ >= 201112L
+#define os_gpio_enable(pin, direction) _Generic((pin), uint8_t: os_gpio_enable_callable, default: os_gpio_enable_inline)(pin, direction)
+#define os_gpio_set(pin, state) _Generic((pin), uint8_t: os_gpio_set_callable, default: os_gpio_set_inline)(pin, state)
+#define os_gpio_read(pin) _Generic((pin), uint8_t: os_gpio_read_callable, default: os_gpio_read_inline)(pin)
+#else
+#define os_gpio_enable(pin, direction) os_gpio_enable_callable(pin, direction)
+#define os_gpio_set(pin, state) os_gpio_set_callable(pin, state)
+#define os_gpio_read(pin) os_gpio_read_callable(pin)
+#endif
 
 #endif /* _TARGET_OS_H_ */

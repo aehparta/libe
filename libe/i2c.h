@@ -20,19 +20,21 @@
 extern "C" {
 #endif
 
-#ifdef USE_I2C_BITBANG
-#include <libe/drivers/i2c/bitbang.h>
-#else
-#ifdef TARGET_LINUX
+#if defined(USE_I2C_BITBANG) || defined(TARGET_LINUX)
 struct i2c_master {
+#ifdef USE_I2C_BITBANG
+	uint8_t scl;
+	uint8_t sda;
+	uint32_t frequency;
+#else
 	int fd;
+#endif
 };
 struct i2c_device {
 	struct i2c_master *master;
 	uint8_t address;
 	uint8_t driver_bits[4];
 };
-#endif
 #endif
 
 /*
@@ -68,6 +70,8 @@ static inline int i2c_read_reg_byte(struct i2c_device *dev, uint8_t reg)
 	}
 	return value;
 }
+
+#include <libe/drivers/i2c/bitbang.h>
 
 /* drivers */
 #include <libe/drivers/i2c/hdc1080.h>
