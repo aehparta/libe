@@ -52,18 +52,23 @@ extern "C" {
 
 
 #ifdef USE_LOG /* logging functions */
+
 /** Initialize logging. */
-int log_init(void *context, uint32_t baud);
+int log_init(void);
 /**
  * Write message to log.
  */
 void log_msg(int level, const char *file, int line, const char *func, const char *msg, ...);
 /** Quit logging */
 void log_quit(void);
-#else /* if logging is disabled, define empty ones */
-#define log_init(context, baud)
+
+#else
+
+/* if logging is disabled, define empty ones */
+#define log_init()
 #define log_msg(level, file, line, func, msg, ...)
 #define log_quit()
+
 #endif /* USE_LOG */
 
 

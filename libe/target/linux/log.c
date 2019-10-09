@@ -8,28 +8,27 @@
 #include <stdio.h>
 #include <stdarg.h>
 #include <pthread.h>
-#include <libe/os.h>
-#include <libe/log.h>
-#include <libe/log.h>
+#include <threads.h>
+#include <libe/libe.h>
 
 
-static pthread_mutex_t log_mutex;
+static mtx_t log_mutex;
 
 
-int log_init(void *context, uint32_t baud)
+int log_init(void)
 {
-	pthread_mutex_init(&log_mutex, NULL);
+	mtx_init(&log_mutex, mtx_plain);
 	return 0;
 }
 
 void log_quit(void)
 {
-	pthread_mutex_destroy(&log_mutex);
+	mtx_destroy(&log_mutex);
 }
 
 void log_msg(int level, const char *file, int line, const char *func, const char *msg, ...)
 {
-	pthread_mutex_lock(&log_mutex);
+	mtx_lock(&log_mutex);
 
 	if (level == LOG_LEVEL_DEBUG) {
 		LOG_PRINTF(LDC_PURPLE "D:");
@@ -56,5 +55,5 @@ void log_msg(int level, const char *file, int line, const char *func, const char
 	va_end(args);
 	LOG_PRINTF("\r\n");
 
-	pthread_mutex_unlock(&log_mutex);
+	mtx_unlock(&log_mutex);
 }

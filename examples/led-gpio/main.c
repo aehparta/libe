@@ -17,14 +17,11 @@ int main(int argc, char *argv[])
 	/* low level init: initializes some system basics depending on platform */
 	os_init();
 	/* debug/log init:
-	 * first argument is context and should be usually set to NULL
-	 * second argument is baud rate when using serial port type logging,
-	 * zero is default which depends on platform but is usually 38400
 	 *
-	 * example in AVR log_init() initializes logging into USART0 with speed
+	 * example in AVR as default, log_init() initializes logging into USART0 with speed
 	 * as close to 38400 as possible with given CPU clock
 	 */
-	log_init(NULL, 0);
+	log_init();
 
 	/* ftdi init */
 #ifdef USE_FTDI

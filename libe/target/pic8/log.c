@@ -10,6 +10,12 @@
 #include <stdarg.h>
 #include <libe/libe.h>
 
+/* RC6 as default TX pin */
+#if !defined(PIC8_LOG_TX_PPS) && defined(RC6PPS)
+#define PIC8_LOG_TX_PPS RC6PPS
+#endif
+
+
 void putch(char ch)
 {
 #ifdef TX1IF
@@ -27,7 +33,7 @@ void putch(char ch)
 #endif
 }
 
-int log_init(void *context, uint32_t baud)
+int log_init(void)
 {
 	/* default baud */
 	if (baud < 1) {
@@ -35,19 +41,20 @@ int log_init(void *context, uint32_t baud)
 	}
 
 	/* if device supports mapping of pins, TX to RC6 as default */
-#ifdef RC6PPS
-	RC6PPS = 0x14;
+#ifdef PIC8_LOG_TX_PPS
+	PIC8_LOG_TX_PPS = 0x14;
 #endif
 
 	/* enable uart transmit with baud rate multiplier and calculate baud rate setting */
 #ifdef BAUD1CON
-	BAUD1CON = 0x08;
 #endif
 #ifdef TX1STA
+	BAUD1CON = 0x08;
 	TX1STA = 0x24;
 	RC1STA = 0x80;
 	SP1BRG = _XTAL_FREQ / (long)(4 * (baud + 1));
 #else
+	BAUDCON = 0x08;
 	TXSTA = 0x24;
 	RCSTA = 0x80;
 	SPBRG = _XTAL_FREQ / (long)(4 * (baud + 1));
