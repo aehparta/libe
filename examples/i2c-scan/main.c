@@ -25,6 +25,17 @@ int main(int argc, char *argv[])
 	os_init();
 	log_init();
 	
+	// TRISA = 0xff;
+	// ANSELA = 0x00;
+	// // SLRCONA = 0x00;
+	// // INLVLA = 0x00;
+
+	// while (1) {
+	// 	os_wdt_reset();
+	// 	printf("%02x\n", PORTA);
+	// 	__delay_ms(500);
+	// }
+
 	/* check i2c device if using linux */
 #ifdef USE_FTDI
 	ERROR_IF_R(os_ftdi_use(OS_FTDI_GPIO_0_TO_63, CFG_FTDI_VID, CFG_FTDI_PID, CFG_FTDI_DESC, CFG_FTDI_SERIAL), 1, "unable to open ftdi device for gpio 0-63");

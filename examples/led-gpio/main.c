@@ -44,7 +44,7 @@ int main(void)
 		os_wdt_reset();
 
 		NOTICE_MSG("toggling led...");
-		
+
 		/* using gpio with variable like this can be fast or slower depending on optimization
 		 * in compiler and whether or not the variable is changed or is "static"
 		 */

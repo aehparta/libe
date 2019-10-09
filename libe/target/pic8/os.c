@@ -12,6 +12,43 @@
 
 int os_init(void)
 {
+	/* all as digital inputs as default */
+#ifdef TRISA
+	TRISA = 0xff;
+#endif
+#ifdef ANSELA
+	ANSELA = 0x00;
+#endif
+#ifdef TRISB
+	TRISB = 0xff;
+#endif
+#ifdef ANSELB
+	ANSELB = 0x00;
+#endif
+#ifdef TRISC
+	TRISC = 0xff;
+#endif
+#ifdef ANSELC
+	ANSELC = 0x00;
+#endif
+#ifdef TRISD
+	TRISD = 0xff;
+#endif
+#ifdef ANSELD
+	ANSELD = 0x00;
+#endif
+#ifdef TRISE
+	TRISE = 0xff;
+#endif
+#ifdef ANSELE
+	ANSELE = 0x00;
+#endif
+#ifdef TRISF
+	TRISF = 0xff;
+#endif
+#ifdef ANSELF
+	ANSELF = 0x00;
+#endif
 	return 0;
 }
 
