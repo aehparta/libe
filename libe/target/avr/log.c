@@ -49,7 +49,7 @@ static int log_putchar(char c, FILE *stream)
 	return 0;
 }
 
-int log_init()
+int log_init(void)
 {
 	/* calculate ubrr register value from baud */
 	AVR_LOG_UBRR = (F_CPU / (16UL * AVR_LOG_BAUD) - 1UL) & 0x0fff;

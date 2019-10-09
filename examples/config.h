@@ -58,6 +58,12 @@
 #endif
 
 
+#ifdef TARGET_PIC16
+/* led */
+#define CFG_LED_GPIO0       8 /* = RA0 */
+#define CFG_LED_GPIO1       9 /* = RA1 */
+#endif
+
 #ifdef TARGET_PIC32
 /* spi */
 #define CFG_SPI_CONTEXT     NULL

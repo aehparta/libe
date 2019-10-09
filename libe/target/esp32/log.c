@@ -10,11 +10,13 @@
 #include <stdio.h>
 #include <stdarg.h>
 #include <esp_log.h>
-#include <libe/log.h>
+#include <libe/libe.h>
 
+#ifndef ESP32_LOG_TAG
 #define ESP32_LOG_TAG   "libe"
+#endif
 
-int log_init(void *context, uint32_t baud)
+int log_init(void)
 {
 	return 0;
 }

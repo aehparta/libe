@@ -11,7 +11,7 @@
 #include <libe/log.h>
 
 
-int log_init(void *context, uint32_t baud)
+int log_init(void)
 {
 	return 0;
 }

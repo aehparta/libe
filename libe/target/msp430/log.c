@@ -16,13 +16,8 @@
 // 	return 0;
 // }
 
-int log_init(void *context, uint32_t baud)
+int log_init(void)
 {
-	/* default baud */
-	if (baud < 1) {
-		baud = 38400;
-	}
-
 	return 0;
 }
 

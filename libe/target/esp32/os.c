@@ -6,11 +6,9 @@
  */
 
 #include <unistd.h>
-#include <driver/gpio.h>
 #include <freertos/FreeRTOS.h>
 #include <freertos/task.h>
-#include <libe/os.h>
-#include <libe/log.h>
+#include <libe/libe.h>
 #include <sdkconfig.h>
 
 

@@ -5,7 +5,7 @@
 * avr on atmega328
     * PB4: First LED
     * PB5: Second LED
-    * PD0/PD1: Serial port logging, 38400 8N1
+    * PD1: Serial port TX, 9600 8N1
 
 * esp32 with ESP32 DEVKIT v1
     * 12: First LED
