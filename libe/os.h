@@ -99,7 +99,7 @@ int8_t os_gpio_pullup(uint8_t pin, bool enable);
 #ifdef OS_GPIO_HAS_OPEN_DRAIN
 int8_t os_gpio_open_drain(uint8_t pin, bool enable);
 #else
-#define os_gpio_open_drain(pin)
+#define os_gpio_open_drain(pin, enable)
 #endif
 
 #define os_gpio_output(pin) os_gpio_enable(pin, OS_GPIO_OUTPUT)
