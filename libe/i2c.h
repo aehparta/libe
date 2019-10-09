@@ -10,17 +10,19 @@
 #ifdef USE_I2C
 
 #include <stdint.h>
+#include <string.h>
 #ifdef TARGET_LINUX
 #include <linux/i2c-dev.h>
 #include <sys/ioctl.h>
 #endif
-#include <libe/os.h>
 
 #ifdef __cplusplus
 extern "C" {
 #endif
 
-#ifndef USE_I2C_BITBANG
+#ifdef USE_I2C_BITBANG
+#include <libe/drivers/i2c/bitbang.h>
+#else
 #ifdef TARGET_LINUX
 struct i2c_master {
 	int fd;
@@ -37,16 +39,12 @@ struct i2c_device {
  * I2C functions
  */
 
-#ifndef USE_I2C_BITBANG
 int i2c_master_open(struct i2c_master *master, void *context, uint32_t frequency, uint8_t scl, uint8_t sda);
 void i2c_master_close(struct i2c_master *master);
 int i2c_open(struct i2c_device *dev, struct i2c_master *master, uint8_t address);
 void i2c_close(struct i2c_device *dev);
 int i2c_read(struct i2c_device *dev, void *data, size_t size);
 int i2c_write(struct i2c_device *dev, void *data, size_t size);
-#else
-#include <libe/drivers/i2c/bitbang.h>
-#endif
 
 static inline int i2c_write_byte(struct i2c_device *dev, uint8_t value)
 {
@@ -71,6 +69,7 @@ static inline int i2c_read_reg_byte(struct i2c_device *dev, uint8_t reg)
 	return value;
 }
 
+/* drivers */
 #include <libe/drivers/i2c/hdc1080.h>
 #include <libe/drivers/i2c/mcp3221.h>
 #include <libe/drivers/i2c/fan5702.h>

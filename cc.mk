@@ -24,7 +24,6 @@ else ifeq ($(TARGET),avr)
     CC_PREFIX       ?= avr-
     MCU             ?= atmega8
     F_CPU           ?= 8000000L
-    AVR_LIB_PRINTF  ?= printf_min
 else ifeq ($(TARGET),pic8)
     # microchip pic 8-bit
     CC_PREFIX     ?= xc8-
@@ -70,7 +69,7 @@ ifeq ($(TARGET),avr)
     libe_CFLAGS  += -DF_CPU=$(F_CPU)
     libe_CFLAGS  += -mmcu=$(MCU)
     libe_CFLAGS  += -ffunction-sections -fdata-sections
-    libe_LDFLAGS += -mmcu=$(MCU) -l$(AVR_LIB_PRINTF)
+    libe_LDFLAGS += -mmcu=$(MCU)
     libe_LDFLAGS += -Wl,--gc-sections
 else ifeq ($(TARGET),pic8)
     libe_CFLAGS  += -DF_CPU=$(F_CPU)
