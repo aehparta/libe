@@ -21,9 +21,10 @@ else ifeq ($(TARGET),esp32)
     MCU           ?= esp32
 else ifeq ($(TARGET),avr)
     # microchip avr
-    CC_PREFIX     ?= avr-
-    MCU           ?= atmega328p
-    F_CPU         ?= 8000000L
+    CC_PREFIX       ?= avr-
+    MCU             ?= atmega8
+    F_CPU           ?= 8000000L
+    AVR_LIB_PRINTF  ?= printf_min
 else ifeq ($(TARGET),pic8)
     # microchip pic 8-bit
     CC_PREFIX     ?= xc8-
@@ -69,7 +70,7 @@ ifeq ($(TARGET),avr)
     libe_CFLAGS  += -DF_CPU=$(F_CPU)
     libe_CFLAGS  += -mmcu=$(MCU)
     libe_CFLAGS  += -ffunction-sections -fdata-sections
-    libe_LDFLAGS += -mmcu=$(MCU) -Wl,-u,vfprintf -lprintf_flt
+    libe_LDFLAGS += -mmcu=$(MCU) -l$(AVR_LIB_PRINTF)
     libe_LDFLAGS += -Wl,--gc-sections
 else ifeq ($(TARGET),pic8)
     libe_CFLAGS  += -DF_CPU=$(F_CPU)
@@ -130,6 +131,3 @@ else
     libe_CFLAGS += -D_GNU_SOURCE -O$(OPTIMIZATION) -std=gnu99 -g -Wall -Wstrict-prototypes
 #     libe_CFLAGS += -Werror -Wno-unused-variable
 endif
-
-libe_CFLAGS += -DMCU_$(MCU)
-

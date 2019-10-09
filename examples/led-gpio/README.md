@@ -16,8 +16,8 @@
     * DDBUS4: Second LED
 
 * pic8 on pic16f18345 xpress board
-    * RB0: First LED
-    * RB1: Second LED
+    * RB4: First LED
+    * RB5: Second LED
     * RC6: Serial port TX, 9600 8N1
 
 ### Emulator tests
