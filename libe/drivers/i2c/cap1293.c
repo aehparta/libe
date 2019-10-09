@@ -63,7 +63,7 @@ int cap1293_conf(struct i2c_device *dev, uint8_t channels_mask)
 
 int cap1293_read(struct i2c_device *dev)
 {
-	uint8_t value;
+	int value;
 	/* read */
 	value = i2c_read_reg_byte(dev, 0x00);
 	IF_R(value < 0, -1);
