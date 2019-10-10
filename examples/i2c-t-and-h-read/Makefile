@@ -20,6 +20,14 @@ ifdef TARGET_AVR
     libe_LDFLAGS += -Wl,-u,vfprintf -lprintf_flt
 endif
 
+# include config or define things for pic8 xc8 compiler manually
+ifeq ($(TARGET),pic8)
+CFLAGS += -DI2C_BITBANG_SCL=0
+CFLAGS += -DI2C_BITBANG_SDA=1
+else
+CFLAGS += -include ../config.h
+endif
+
 # build
 include $(LIBE_PATH)/build.mk
 

@@ -8,7 +8,10 @@
 #include <sys/stat.h>
 #include <unistd.h>
 #endif
+/* cannot include a file globally in xc8 */
+#ifdef TARGET_PIC8
 #include "../config.h"
+#endif
 
 
 struct driver {

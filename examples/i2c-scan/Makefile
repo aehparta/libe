@@ -15,8 +15,13 @@ BUILD_BINS = i2c_scan
 PROGRAM_BIN = i2c_scan
 i2c_scan_SRC = main.c $(libe_SRC)
 
-# include config
-include ../config.mk
+# include config or define things for pic8 xc8 compiler manually
+ifeq ($(TARGET),pic8)
+CFLAGS += -DI2C_BITBANG_SCL=0
+CFLAGS += -DI2C_BITBANG_SDA=1
+else
+CFLAGS += -include ../config.h
+endif
 
 # build
 include $(LIBE_PATH)/build.mk

@@ -8,7 +8,10 @@
 #include <sys/stat.h>
 #include <unistd.h>
 #endif
+/* cannot include a file globally in xc8 */
+#ifdef TARGET_PIC8
 #include "../config.h"
+#endif
 
 
 #ifdef TARGET_ESP32
@@ -24,17 +27,6 @@ int main(int argc, char *argv[])
 	/* base init */
 	os_init();
 	log_init();
-	
-	// TRISA = 0xff;
-	// ANSELA = 0x00;
-	// // SLRCONA = 0x00;
-	// // INLVLA = 0x00;
-
-	// while (1) {
-	// 	os_wdt_reset();
-	// 	printf("%02x\n", PORTA);
-	// 	__delay_ms(500);
-	// }
 
 	/* check i2c device if using linux */
 #ifdef USE_FTDI
