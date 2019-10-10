@@ -54,7 +54,7 @@ extern "C" {
 
 #define I2C_WRITE(state) \
 	do { \
-		gpio_set(I2C_BITBANG_SDA, ((state) != 0)); \
+		gpio_set(I2C_BITBANG_SDA, (state)); \
 		I2C_DELAY(); \
 		gpio_high(I2C_BITBANG_SCL); \
 		I2C_DELAY(); \

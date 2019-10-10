@@ -71,13 +71,9 @@ int i2c_read(struct i2c_device *dev, void *data, size_t size)
 	I2C_START();
 
 	/* address */
-	I2C_WRITE(dev->address & 0x40);
-	I2C_WRITE(dev->address & 0x20);
-	I2C_WRITE(dev->address & 0x10);
-	I2C_WRITE(dev->address & 0x08);
-	I2C_WRITE(dev->address & 0x04);
-	I2C_WRITE(dev->address & 0x02);
-	I2C_WRITE(dev->address & 0x01);
+	for (uint8_t i = 0x40; i; i = i >> 1) {
+		I2C_WRITE(dev->address & i);
+	}
 
 	/* read mode bit */
 	I2C_WRITE(1);
@@ -115,13 +111,9 @@ int i2c_write(struct i2c_device *dev, void *data, size_t size)
 	I2C_START();
 
 	/* address */
-	I2C_WRITE(dev->address & 0x40);
-	I2C_WRITE(dev->address & 0x20);
-	I2C_WRITE(dev->address & 0x10);
-	I2C_WRITE(dev->address & 0x08);
-	I2C_WRITE(dev->address & 0x04);
-	I2C_WRITE(dev->address & 0x02);
-	I2C_WRITE(dev->address & 0x01);
+	for (uint8_t i = 0x40; i; i = i >> 1) {
+		I2C_WRITE(dev->address & i);
+	}
 
 	/* write mode bit */
 	I2C_WRITE(0);
@@ -132,15 +124,9 @@ int i2c_write(struct i2c_device *dev, void *data, size_t size)
 	/* write data */
 	for (uint8_t *p = data; size > 0; size--, p++) {
 		gpio_output(I2C_BITBANG_SDA);
-		I2C_WRITE(*p & 0x80);
-		I2C_WRITE(*p & 0x40);
-		I2C_WRITE(*p & 0x20);
-		I2C_WRITE(*p & 0x10);
-		I2C_WRITE(*p & 0x08);
-		I2C_WRITE(*p & 0x04);
-		I2C_WRITE(*p & 0x02);
-		I2C_WRITE(*p & 0x01);
-
+		for (uint8_t i = 0x80; i; i = i >> 1) {
+			I2C_WRITE(*p & i);
+		}
 		/* read ack */
 		I2C_READ_ACK();
 	}
