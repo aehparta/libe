@@ -11,7 +11,23 @@ int app_main(int argc, char *argv[])
 int main(void)
 #endif
 {
-	uint8_t x = os_gpio_read(1);
+	struct i2c_master master;
+	struct i2c_device dev;
+	char data[2] = { 0, 0 };
+
+	os_delay_ms(100);
+	
+	i2c_master_open(&master, NULL, 0, 0, 0);
+
+	i2c_open(&dev, &master, 0x55);
+	i2c_write_byte(&dev, 0);
+	i2c_close(&dev);
+
+	i2c_open(&dev, &master, 0x66);
+	i2c_write(&dev, data, 2);
+	i2c_close(&dev);
+
+	while(1);
 
 	// os_init();
 	// log_init();

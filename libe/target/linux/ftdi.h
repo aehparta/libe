@@ -39,7 +39,7 @@ int os_ftdi_has_pin(uint8_t pin);
 struct ftdi_context *ftdi_direct_open(uint16_t vid, uint16_t pid, int interface, const char *description, const char *serial, int reset);
 
 void os_ftdi_gpio_enable(uint8_t pin, bool direction);
-void os_ftdi_gpio_set(uint8_t pin, bool state);
+void os_ftdi_gpio_set(uint8_t pin, uint8_t state);
 uint8_t os_ftdi_gpio_read(uint8_t pin);
 
 

@@ -23,10 +23,14 @@ extern "C" {
 #error "I2C_BITBANG_SDA pin definition missing, it must be set when using I2C bitbang"
 #endif
 
-#ifdef TARGET_LINUX
+#if defined(TARGET_LINUX) || defined(TARGET_ESP32) || defined(TARGET_PIC32)
+/* on linux and other more powerfull platforms allow bitbang frequency to be defined */
 #define I2C_DELAY()             os_sleepf(1 / dev->master->frequency)
+#elif defined(TARGET_AVR)
+#define I2C_DELAY()             _delay_loop_1(F_CPU / 200000 / 3)
 #else
-#define I2C_DELAY()             os_delay_us(5)
+/* on other less powerfull platforms lock i2c clock to approximately 100 kHz */
+#define I2C_DELAY()             os_delay_ms(1)
 #endif
 
 #define I2C_START() \
@@ -50,7 +54,7 @@ extern "C" {
 
 #define I2C_WRITE(state) \
 	do { \
-		gpio_set(I2C_BITBANG_SDA, state ? 1 : 0); \
+		gpio_set(I2C_BITBANG_SDA, ((state) != 0)); \
 		I2C_DELAY(); \
 		gpio_high(I2C_BITBANG_SCL); \
 		I2C_DELAY(); \

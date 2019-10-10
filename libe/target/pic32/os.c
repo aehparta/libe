@@ -70,7 +70,7 @@ int8_t os_gpio_enable(uint8_t pin, bool direction)
 	return -1;
 }
 
-int8_t os_gpio_set(uint8_t pin, bool state)
+int8_t os_gpio_set(uint8_t pin, uint8_t state)
 {
 	return -1;
 }

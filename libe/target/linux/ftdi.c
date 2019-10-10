@@ -232,7 +232,7 @@ void os_ftdi_gpio_enable(uint8_t pin, bool direction)
 	}
 }
 
-void os_ftdi_gpio_set(uint8_t pin, bool state)
+void os_ftdi_gpio_set(uint8_t pin, uint8_t state)
 {
 	uint8_t pin_range, ud, p;
 

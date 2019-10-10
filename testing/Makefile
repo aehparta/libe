@@ -22,6 +22,9 @@ BUILD_BINS = testing
 PROGRAM_BIN = testing
 testing_SRC = main.c $(libe_SRC)
 
+# other
+CFLAGS += -DI2C_BITBANG_SCL=28 -DI2C_BITBANG_SDA=27
+
 # build
 include $(LIBE_PATH)/build.mk
 

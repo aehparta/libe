@@ -13,6 +13,9 @@ extern "C" {
 #include <stdbool.h>
 #include <avr/io.h>
 
+#define OS_GPIO_HAS_PULLUP 1
+#define OS_GPIO_HAS_OPEN_DRAIN 1
+
 
 inline void gpio_enable_inline(uint8_t pin, bool direction)
 {
@@ -50,7 +53,7 @@ inline void gpio_enable_inline(uint8_t pin, bool direction)
 	}
 }
 
-inline void gpio_set_inline(uint8_t pin, bool state)
+inline void gpio_set_inline(uint8_t pin, uint8_t state)
 {
 	switch (pin >> 3) {
 #ifdef PORTA
@@ -118,8 +121,12 @@ inline uint8_t gpio_read_inline(uint8_t pin)
 }
 
 void gpio_enable_callable(uint8_t pin, bool direction);
-void gpio_set_callable(uint8_t pin, bool state);
+void gpio_set_callable(uint8_t pin, uint8_t state);
 uint8_t gpio_read_callable(uint8_t pin);
+// void gpio_pullup_callable(uint8_t pin, bool enable);
+// void gpio_open_drain_callable(uint8_t pin, bool enable);
+#define gpio_pullup(pin, enable)
+#define gpio_open_drain(pin, enable)
 
 #if __STDC_VERSION__ >= 201112L
 #define gpio_enable(pin, direction) _Generic((pin), uint8_t: gpio_enable_callable, default: gpio_enable_inline)(pin, direction)

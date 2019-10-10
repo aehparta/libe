@@ -59,7 +59,7 @@ static inline int8_t os_gpio_enable(uint8_t pin, bool direction)
 	return -1;
 }
 
-static inline int8_t os_gpio_set(uint8_t pin, bool state)
+static inline int8_t os_gpio_set(uint8_t pin, uint8_t state)
 {
 	switch (pin >> 3) {
 #ifdef LATA

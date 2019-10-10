@@ -39,7 +39,7 @@ int os_gpio_enable(uint8_t pin, bool direction)
 	return 0;
 }
 
-int os_gpio_set(uint8_t pin, bool state)
+int os_gpio_set(uint8_t pin, uint8_t state)
 {
 	char *buf;
 	int fd;

@@ -40,17 +40,21 @@ int main(int argc, char *argv[])
 	/* open i2c */
 	ERROR_IF_R(i2c_master_open(&i2c, context, CFG_I2C_FREQUENCY, CFG_I2C_SCL, CFG_I2C_SDA), 1, "unable to open i2c device");
 
-	/* scan i2c bus */
-	int found = 0;
-	for (int a = 0; a < 128; a++) {
-		os_wdt_reset();
-		if (i2c_open(&dev, &i2c, a) == 0) {
-			printf("Device found at address %02x\r\n", a);
-			found++;
+	while (1) {
+		/* scan i2c bus */
+		int found = 0;
+		for (int a = 0; a < 128; a++) {
+			os_wdt_reset();
+			if (i2c_open(&dev, &i2c, a) == 0) {
+				printf("Device found at address %02x\r\n", a);
+				found++;
+			}
+			i2c_close(&dev);
 		}
-		i2c_close(&dev);
+		printf("Found %d devices.\r\n", found);
+		/* re-scan after timeout */
+		os_delay_ms(1000);
 	}
-	printf("Found %d devices.\r\n", found);
 
 	/* close i2c */
 	i2c_master_close(&i2c);

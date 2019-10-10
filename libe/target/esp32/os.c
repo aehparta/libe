@@ -50,7 +50,7 @@ int8_t os_gpio_enable(uint8_t pin, bool direction)
 	return 0;
 }
 
-int8_t os_gpio_set(uint8_t pin, bool state)
+int8_t os_gpio_set(uint8_t pin, uint8_t state)
 {
 	gpio_set_level(pin, state ? 1 : 0);
 	return 0;
