@@ -14,17 +14,14 @@ int main(void)
 	struct i2c_master master;
 	struct i2c_device dev;
 	char data[2] = { 0, 0 };
-
-	os_delay_ms(100);
 	
 	i2c_master_open(&master, NULL, 0, 0, 0);
 
-	i2c_open(&dev, &master, 0x55);
-	i2c_write_byte(&dev, 0);
-	i2c_close(&dev);
+	os_delay_ms(1);
 
-	i2c_open(&dev, &master, 0x66);
-	i2c_write(&dev, data, 2);
+	i2c_open(&dev, &master, 0x50);
+	os_delay_us(50);
+	i2c_write_byte(&dev, 0xa5);
 	i2c_close(&dev);
 
 	while(1);

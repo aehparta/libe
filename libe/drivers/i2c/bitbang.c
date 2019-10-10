@@ -32,9 +32,9 @@ int i2c_master_open(struct i2c_master *master, void *context, uint32_t frequency
 	gpio_output(I2C_BITBANG_SDA);
 	gpio_low(I2C_BITBANG_SDA);
 	os_delay_us(5);
-	gpio_high(I2C_BITBANG_SDA);
-	os_delay_us(5);
 	gpio_high(I2C_BITBANG_SCL);
+	os_delay_us(5);
+	gpio_high(I2C_BITBANG_SDA);
 	os_delay_us(5);
 	gpio_input(I2C_BITBANG_SDA);
 
@@ -85,15 +85,9 @@ int i2c_read(struct i2c_device *dev, void *data, size_t size)
 	for (uint8_t *p = data; size > 0; size--, p++) {
 		gpio_input(I2C_BITBANG_SDA);
 		*p = 0xff;
-		I2C_READ(*p, ~0x80);
-		I2C_READ(*p, ~0x40);
-		I2C_READ(*p, ~0x20);
-		I2C_READ(*p, ~0x10);
-		I2C_READ(*p, ~0x08);
-		I2C_READ(*p, ~0x04);
-		I2C_READ(*p, ~0x02);
-		I2C_READ(*p, ~0x01);
-
+		for (uint8_t i = 0x80; i; i = i >> 1) {
+			I2C_READ(*p, ~i);
+		}
 		/* send ack/nack */
 		gpio_output(I2C_BITBANG_SDA);
 		I2C_WRITE(size > 1 ? 0 : 1);
