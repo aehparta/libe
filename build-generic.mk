@@ -48,7 +48,7 @@ $(BUILDDIR)/%$(OBJ_EXT): %
 
 clean:
 	@$(REMOVE) -rf .build.*
-	@$(REMOVE) -f *.a *.lpp *.hex *.eep *.obj *.cof *.elf *.map *.obj *.a90 *.sym *.lnk *.lss *.bin *.elf
+	@$(REMOVE) -f *.d *.p1 *.lst *.o *.rlf *.s *.a *.lpp *.hex *.eep *.obj *.cof *.elf *.map *.obj *.a90 *.sym *.lnk *.lss *.bin *.elf
 
 hex:
 ifneq ($(OBJCOPY),)

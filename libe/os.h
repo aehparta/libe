@@ -90,15 +90,11 @@ int8_t os_gpio_set(uint8_t pin, bool state);
 int8_t os_gpio_read(uint8_t pin);
 #endif
 
-#ifdef OS_GPIO_HAS_PULLUP
-int8_t os_gpio_pullup(uint8_t pin, bool enable);
-#else
+#ifndef OS_GPIO_HAS_PULLUP
 #define os_gpio_pullup(pin, enable)
 #endif
 
-#ifdef OS_GPIO_HAS_OPEN_DRAIN
-int8_t os_gpio_open_drain(uint8_t pin, bool enable);
-#else
+#ifndef OS_GPIO_HAS_OPEN_DRAIN
 #define os_gpio_open_drain(pin, enable)
 #endif
 

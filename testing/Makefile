@@ -22,10 +22,6 @@ BUILD_BINS = testing
 PROGRAM_BIN = testing
 testing_SRC = main.c $(libe_SRC)
 
-# compile flags
-CFLAGS += $(libe_CFLAGS)
-LDFLAGS += $(libe_LDFLAGS)
-
 # build
 include $(LIBE_PATH)/build.mk
 
