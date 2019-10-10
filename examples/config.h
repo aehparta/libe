@@ -92,6 +92,8 @@
 #define CFG_FTDI_DESC       NULL
 #define CFG_FTDI_SERIAL     NULL
 /* i2c */
+#define I2C_BITBANG_SCL     0
+#define I2C_BITBANG_SDA     1
 #define CFG_I2C_CONTEXT     NULL
 #define CFG_I2C_FREQUENCY   100000
 #define CFG_I2C_SCL         0

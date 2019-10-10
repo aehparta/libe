@@ -38,15 +38,9 @@ int os_ftdi_has_pin(uint8_t pin);
 
 struct ftdi_context *ftdi_direct_open(uint16_t vid, uint16_t pid, int interface, const char *description, const char *serial, int reset);
 
-/* enable ftdi gpio only in x86 pc platform since ftdi could be used
- * on other platforms that already have another way for gpio,
- * like for example raspberry pi has
- */
-#ifdef TARGET_X86
-#define os_gpio_enable(pin, direction) os_ftdi_gpio_enable(pin, direction)
-#define os_gpio_set(pin, state) os_ftdi_gpio_set(pin, state)
-#define os_gpio_read(pin) os_ftdi_gpio_read(pin)
-#endif
+void os_ftdi_gpio_enable(uint8_t pin, bool direction);
+void os_ftdi_gpio_set(uint8_t pin, bool state);
+uint8_t os_ftdi_gpio_read(uint8_t pin);
 
 
 #ifdef __cplusplus

@@ -12,18 +12,18 @@
 extern "C" {
 #endif
 
-#include <libe/os.h>
-#include <libe/log.h>
-#include <libe/wifi.h>
-#include <libe/nvm.h>
-#include <libe/aes.h>
-#include <libe/error.h>
+#include "os.h"
+#include "log.h"
+#include "wifi.h"
+#include "nvm.h"
+#include "aes.h"
+#include "error.h"
+/* gpio */
+#include "gpio.h"
 /* i2c drivers */
-#include <libe/i2c.h>
+#include "i2c.h"
 /* spi drivers */
-#include <libe/spi.h>
-/* gpio drivers */
-#include <libe/drivers/gpio/hd44780.h>
+#include "spi.h"
 
 #ifdef __cplusplus
 }

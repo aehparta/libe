@@ -5,10 +5,10 @@
  *  Antti Partanen <aehparta@iki.fi>
  */
 
+#ifdef USE_FTDI
+
 #include <string.h>
-#include <libe/log.h>
-#include <libe/os.h>
-#include "ftdi.h"
+#include <libe/libe.h>
 
 
 struct os_ftdi {
@@ -204,18 +204,18 @@ static int os_ftdi_gpio_check_pin(uint8_t pin, uint8_t *pin_range, uint8_t *ud, 
 	return 0;
 }
 
-int8_t os_ftdi_gpio_enable(uint8_t pin, bool direction)
+void os_ftdi_gpio_enable(uint8_t pin, bool direction)
 {
 	uint8_t pin_range, ud, p;
 
-	IF_R(os_ftdi_gpio_check_pin(pin, &pin_range, &ud, &p), -1);
+	IF_R(os_ftdi_gpio_check_pin(pin, &pin_range, &ud, &p),);
 
-	if ((fdevs[pin_range].dirs[ud] & p) == (direction == OS_GPIO_OUTPUT ? p : 0)) {
+	if ((fdevs[pin_range].dirs[ud] & p) == (direction == GPIO_OUTPUT ? p : 0)) {
 		/* no changes, just return */
-		return 0;
+		return;
 	}
 
-	if (direction == OS_GPIO_OUTPUT) {
+	if (direction == GPIO_OUTPUT) {
 		fdevs[pin_range].dirs[ud] |= p;
 	} else {
 		fdevs[pin_range].dirs[ud] &= ~p;
@@ -230,19 +230,17 @@ int8_t os_ftdi_gpio_enable(uint8_t pin, bool direction)
 	} else {
 		ERROR_MSG("invalid mode for pin %d", pin);
 	}
-
-	return 0;
 }
 
-int8_t os_ftdi_gpio_set(uint8_t pin, bool state)
+void os_ftdi_gpio_set(uint8_t pin, bool state)
 {
 	uint8_t pin_range, ud, p;
 
-	IF_R(os_ftdi_gpio_check_pin(pin, &pin_range, &ud, &p), -1);
+	IF_R(os_ftdi_gpio_check_pin(pin, &pin_range, &ud, &p),);
 
 	if ((fdevs[pin_range].pins[ud] & p) == (state ? p : 0)) {
 		/* no changes, just return */
-		return 0;
+		return;
 	}
 
 	if (state) {
@@ -259,15 +257,14 @@ int8_t os_ftdi_gpio_set(uint8_t pin, bool state)
 	} else {
 		ERROR_MSG("invalid mode for pin %d", pin);
 	}
-
-	return 0;
 }
 
-int8_t os_ftdi_gpio_read(uint8_t pin)
+uint8_t os_ftdi_gpio_read(uint8_t pin)
 {
 	uint8_t pin_range, ud, p, pins;
-	IF_R(os_ftdi_gpio_check_pin(pin, &pin_range, &ud, &p), -1);
+	IF_R(os_ftdi_gpio_check_pin(pin, &pin_range, &ud, &p), 0);
 	ftdi_read_pins(fdevs[pin_range].ftdi, &pins);
 	return (pins & p) ? 1 : 0;
 }
 
+#endif

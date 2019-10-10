@@ -22,12 +22,9 @@ extern "C" {
 
 #if defined(USE_I2C_BITBANG) || defined(TARGET_LINUX)
 struct i2c_master {
-#ifdef USE_I2C_BITBANG
-	uint8_t scl;
-	uint8_t sda;
-	uint32_t frequency;
-#else
+#ifdef TARGET_LINUX
 	int fd;
+	uint32_t frequency;
 #endif
 };
 struct i2c_device {

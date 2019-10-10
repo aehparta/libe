@@ -31,55 +31,55 @@ extern "C" {
 
 #define I2C_START() \
 	do { \
-		os_gpio_output(I2C_BITBANG_SDA); \
-		os_gpio_high(I2C_BITBANG_SCL); \
-		os_gpio_low(I2C_BITBANG_SDA); \
+		gpio_output(I2C_BITBANG_SDA); \
+		gpio_high(I2C_BITBANG_SCL); \
+		gpio_low(I2C_BITBANG_SDA); \
 		I2C_DELAY(); \
-		os_gpio_low(I2C_BITBANG_SCL); \
+		gpio_low(I2C_BITBANG_SCL); \
 	} while (0)
 
 #define I2C_STOP() \
 	do { \
-		os_gpio_output(I2C_BITBANG_SDA); \
-		os_gpio_low(I2C_BITBANG_SDA); \
+		gpio_output(I2C_BITBANG_SDA); \
+		gpio_low(I2C_BITBANG_SDA); \
 		I2C_DELAY(); \
-		os_gpio_high(I2C_BITBANG_SCL); \
+		gpio_high(I2C_BITBANG_SCL); \
 		I2C_DELAY(); \
-		os_gpio_input(I2C_BITBANG_SDA); \
+		gpio_input(I2C_BITBANG_SDA); \
 	} while (0)
 
 #define I2C_WRITE(state) \
 	do { \
-		os_gpio_set(I2C_BITBANG_SDA, state ? 1 : 0); \
+		gpio_set(I2C_BITBANG_SDA, state ? 1 : 0); \
 		I2C_DELAY(); \
-		os_gpio_high(I2C_BITBANG_SCL); \
+		gpio_high(I2C_BITBANG_SCL); \
 		I2C_DELAY(); \
-		os_gpio_low(I2C_BITBANG_SCL); \
+		gpio_low(I2C_BITBANG_SCL); \
 	} while (0)
 
 #define I2C_READ(var, mask) \
 	do { \
 		I2C_DELAY(); \
-		os_gpio_high(I2C_BITBANG_SCL); \
+		gpio_high(I2C_BITBANG_SCL); \
 		I2C_DELAY(); \
-		if (!os_gpio_read(I2C_BITBANG_SDA)) { \
+		if (!gpio_read(I2C_BITBANG_SDA)) { \
 			(var) &= mask; \
 		} \
-		os_gpio_low(I2C_BITBANG_SCL); \
+		gpio_low(I2C_BITBANG_SCL); \
 	} while (0)
 
 #define I2C_READ_ACK() \
 	do { \
-		os_gpio_input(I2C_BITBANG_SDA); \
+		gpio_input(I2C_BITBANG_SDA); \
 		I2C_DELAY(); \
-		os_gpio_high(I2C_BITBANG_SCL); \
+		gpio_high(I2C_BITBANG_SCL); \
 		I2C_DELAY(); \
-		if (os_gpio_read(I2C_BITBANG_SDA)) { \
+		if (gpio_read(I2C_BITBANG_SDA)) { \
 			/* no ack received */ \
 			I2C_STOP(); \
 			return -1; \
 		} \
-		os_gpio_low(I2C_BITBANG_SCL); \
+		gpio_low(I2C_BITBANG_SCL); \
 	} while (0)
 
 

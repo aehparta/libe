@@ -2,16 +2,18 @@
  * AVR specific os routines as macros.
  */
 
+#ifndef _TARGET_OS_H_
+#define _TARGET_OS_H_
+
 #include <stdbool.h>
-#include <avr/io.h>
 #include <avr/interrupt.h>
 #include <avr/wdt.h>
 #include <util/delay.h>
 
-#ifndef _TARGET_OS_H_
-#define _TARGET_OS_H_
+#ifdef __cplusplus
+extern "C" {
+#endif
 
-#define OS_GPIO_AS_MACROS_OR_INLINE     1
 #define OS_DELAY_AS_MACROS_OR_INLINE    1
 
 int os_init(void);
@@ -22,122 +24,8 @@ int os_init(void);
 #define os_delay_ms(x)      _delay_ms(x)
 #define os_delay_us(x)      _delay_us(x)
 
-
-inline void os_gpio_enable_inline(uint8_t pin, bool direction)
-{
-	switch (pin >> 3) {
-#ifdef DDRA
-	case 0:
-		DDRA = direction ? (DDRA | _BV(pin & 7)) : (DDRA & ~_BV(pin & 7));
-		return;
-#endif
-#ifdef DDRB
-	case 1:
-		DDRB = direction ? (DDRB | _BV(pin & 7)) : (DDRB & ~_BV(pin & 7));
-		return;
-#endif
-#ifdef DDRC
-	case 2:
-		DDRC = direction ? (DDRC | _BV(pin & 7)) : (DDRC & ~_BV(pin & 7));
-		return;
-#endif
-#ifdef DDRD
-	case 3:
-		DDRD = direction ? (DDRD | _BV(pin & 7)) : (DDRD & ~_BV(pin & 7));
-		return;
-#endif
-#ifdef DDRE
-	case 4:
-		DDRE = direction ? (DDRE | _BV(pin & 7)) : (DDRE & ~_BV(pin & 7));
-		return;
-#endif
-#ifdef DDRF
-	case 5:
-		DDRF = direction ? (DDRF | _BV(pin & 7)) : (DDRF & ~_BV(pin & 7));
-		return;
-#endif
-	}
+#ifdef __cplusplus
 }
-
-inline void os_gpio_set_inline(uint8_t pin, bool state)
-{
-	switch (pin >> 3) {
-#ifdef PORTA
-	case 0:
-		PORTA = state ? (PORTA | _BV(pin & 7)) : (PORTA & ~_BV(pin & 7));
-		return;
-#endif
-#ifdef PORTB
-	case 1:
-		PORTB = state ? (PORTB | _BV(pin & 7)) : (PORTB & ~_BV(pin & 7));
-		return;
-#endif
-#ifdef PORTC
-	case 2:
-		PORTC = state ? (PORTC | _BV(pin & 7)) : (PORTC & ~_BV(pin & 7));
-		return;
-#endif
-#ifdef PORTD
-	case 3:
-		PORTD = state ? (PORTD | _BV(pin & 7)) : (PORTD & ~_BV(pin & 7));
-		return;
-#endif
-#ifdef PORTE
-	case 4:
-		PORTE = state ? (PORTE | _BV(pin & 7)) : (PORTE & ~_BV(pin & 7));
-		return;
-#endif
-#ifdef PORTF
-	case 5:
-		PORTF = state ? (PORTF | _BV(pin & 7)) : (PORTF & ~_BV(pin & 7));
-		return;
-#endif
-	}
-}
-
-inline uint8_t os_gpio_read_inline(uint8_t pin)
-{
-	switch (pin >> 3) {
-#ifdef PINA
-	case 0:
-		return PINA & _BV(pin & 7) ? 1 : 0;
-#endif
-#ifdef PINB
-	case 1:
-		return PINB & _BV(pin & 7) ? 1 : 0;
-#endif
-#ifdef PINC
-	case 2:
-		return PINC & _BV(pin & 7) ? 1 : 0;
-#endif
-#ifdef PIND
-	case 3:
-		return PIND & _BV(pin & 7) ? 1 : 0;
-#endif
-#ifdef PINE
-	case 4:
-		return PINE & _BV(pin & 7) ? 1 : 0;
-#endif
-#ifdef PINF
-	case 5:
-		return PINF & _BV(pin & 7) ? 1 : 0;
-#endif
-	}
-	return 0;
-}
-
-void os_gpio_enable_callable(uint8_t pin, bool direction);
-void os_gpio_set_callable(uint8_t pin, bool state);
-uint8_t os_gpio_read_callable(uint8_t pin);
-
-#if __STDC_VERSION__ >= 201112L
-#define os_gpio_enable(pin, direction) _Generic((pin), uint8_t: os_gpio_enable_callable, default: os_gpio_enable_inline)(pin, direction)
-#define os_gpio_set(pin, state) _Generic((pin), uint8_t: os_gpio_set_callable, default: os_gpio_set_inline)(pin, state)
-#define os_gpio_read(pin) _Generic((pin), uint8_t: os_gpio_read_callable, default: os_gpio_read_inline)(pin)
-#else
-#define os_gpio_enable(pin, direction) os_gpio_enable_callable(pin, direction)
-#define os_gpio_set(pin, state) os_gpio_set_callable(pin, state)
-#define os_gpio_read(pin) os_gpio_read_callable(pin)
 #endif
 
 #endif /* _TARGET_OS_H_ */

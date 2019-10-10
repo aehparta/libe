@@ -1,3 +1,6 @@
+/*
+ * x86 specific os routines.
+ */
 
 /*
  * not needed for now, just a placeholder

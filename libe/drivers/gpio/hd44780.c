@@ -17,18 +17,18 @@ int hd44780_open(struct hd44780_device *display, uint8_t d4, uint8_t d5, uint8_t
 	display->d6 = d6;
 	display->d7 = d7;
 
-	os_gpio_output(display->d4);
-	os_gpio_output(display->d5);
-	os_gpio_output(display->d6);
-	os_gpio_output(display->d7);
+	gpio_output(display->d4);
+	gpio_output(display->d5);
+	gpio_output(display->d6);
+	gpio_output(display->d7);
 
 	display->en = en;
 	display->rw = rw;
 	display->rs = rs;
 
-	os_gpio_output(display->en);
-	os_gpio_output(display->rw);
-	os_gpio_output(display->rs);
+	gpio_output(display->en);
+	gpio_output(display->rw);
+	gpio_output(display->rs);
 
 	hd44780_write_nibble(display, 0, 0x3);
 	os_delay_ms(5);
@@ -53,13 +53,13 @@ int hd44780_open(struct hd44780_device *display, uint8_t d4, uint8_t d5, uint8_t
 
 void hd44780_close(struct hd44780_device *display)
 {
-	os_gpio_input(display->d4);
-	os_gpio_input(display->d5);
-	os_gpio_input(display->d6);
-	os_gpio_input(display->d7);
-	os_gpio_input(display->en);
-	os_gpio_input(display->rw);
-	os_gpio_input(display->rs);
+	gpio_input(display->d4);
+	gpio_input(display->d5);
+	gpio_input(display->d6);
+	gpio_input(display->d7);
+	gpio_input(display->en);
+	gpio_input(display->rw);
+	gpio_input(display->rs);
 }
 
 int hd44780_cmd(struct hd44780_device *display, uint8_t command)
@@ -72,20 +72,20 @@ int hd44780_cmd(struct hd44780_device *display, uint8_t command)
 
 int hd44780_write_nibble(struct hd44780_device *display, int rs, uint8_t data)
 {
-	os_gpio_set(display->d4, data & 0x1);
-	os_gpio_set(display->d5, data & 0x2);
-	os_gpio_set(display->d6, data & 0x4);
-	os_gpio_set(display->d7, data & 0x8);
+	gpio_set(display->d4, data & 0x1);
+	gpio_set(display->d5, data & 0x2);
+	gpio_set(display->d6, data & 0x4);
+	gpio_set(display->d7, data & 0x8);
 	
-	os_gpio_set(display->rw, 0);
-	os_gpio_set(display->rs, rs);
+	gpio_set(display->rw, 0);
+	gpio_set(display->rs, rs);
 	
-	os_gpio_set(display->en, 1);
+	gpio_set(display->en, 1);
 
 	/* sleep here but how much? */
 	os_delay_ms(1);
 
-	os_gpio_set(display->en, 0);
+	gpio_set(display->en, 0);
 
 	return 0;
 }

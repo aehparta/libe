@@ -59,18 +59,3 @@ void os_sleepf(os_time_t t)
 		os_delay_us(999);
 	}
 }
-
-void os_gpio_enable_callable(uint8_t pin, bool direction)
-{
-	return os_gpio_enable_inline(pin, direction);
-}
-
-void os_gpio_set_callable(uint8_t pin, bool state)
-{
-	return os_gpio_set_inline(pin, state);
-}
-
-uint8_t os_gpio_read_callable(uint8_t pin)
-{
-	return os_gpio_read_inline(pin);
-}

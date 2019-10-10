@@ -7,6 +7,7 @@ endif
 # libe sources
 libe_SRC = \
     $(LIBE_PATH)/libe/target/$(TARGET)/os.c \
+    $(LIBE_PATH)/libe/target/$(TARGET)/gpio.c \
     $(LIBE_PATH)/libe/error.c
 
 # linux generic
