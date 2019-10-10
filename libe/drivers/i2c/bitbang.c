@@ -12,35 +12,33 @@
 int i2c_master_open(struct i2c_master *master, void *context, uint32_t frequency, uint8_t scl, uint8_t sda)
 {
 	/* clock is always output */
-	os_gpio_output(scl);
-	os_gpio_pullup(scl, true);
-	os_gpio_open_drain(scl, true);
+	os_gpio_output(I2C_BITBANG_SCL);
+	os_gpio_pullup(I2C_BITBANG_SCL, true);
+	os_gpio_open_drain(I2C_BITBANG_SCL, true);
 	/* data is input as default */
-	os_gpio_input(sda);
-	os_gpio_pullup(sda, true);
-	os_gpio_open_drain(sda, true);
+	os_gpio_input(I2C_BITBANG_SDA);
+	os_gpio_pullup(I2C_BITBANG_SDA, true);
+	os_gpio_open_drain(I2C_BITBANG_SDA, true);
 
 	/* reset the bus by clocking enough cycles and then doing stop */
-	os_gpio_low(scl);
+	os_gpio_low(I2C_BITBANG_SCL);
 	for (int i = 0; i < 9; i++) {
 		os_delay_us(5);
-		os_gpio_high(scl);
+		os_gpio_high(I2C_BITBANG_SCL);
 		os_delay_us(5);
-		os_gpio_low(scl);
+		os_gpio_low(I2C_BITBANG_SCL);
 	}
 	os_delay_us(5);
-	os_gpio_output(sda);
-	os_gpio_low(sda);
+	os_gpio_output(I2C_BITBANG_SDA);
+	os_gpio_low(I2C_BITBANG_SDA);
 	os_delay_us(5);
-	os_gpio_high(sda);
+	os_gpio_high(I2C_BITBANG_SDA);
 	os_delay_us(5);
-	os_gpio_high(scl);
+	os_gpio_high(I2C_BITBANG_SCL);
 	os_delay_us(5);
-	os_gpio_input(sda);
+	os_gpio_input(I2C_BITBANG_SDA);
 
 	/* save information */
-	master->scl = scl;
-	master->sda = sda;
 #ifdef TARGET_LINUX
 	master->frequency = frequency;
 #endif
@@ -50,8 +48,8 @@ int i2c_master_open(struct i2c_master *master, void *context, uint32_t frequency
 
 void i2c_master_close(struct i2c_master *master)
 {
-	os_gpio_input(master->scl);
-	os_gpio_input(master->sda);
+	os_gpio_input(I2C_BITBANG_SCL);
+	os_gpio_input(I2C_BITBANG_SDA);
 }
 
 int i2c_open(struct i2c_device *dev, struct i2c_master *master, uint8_t address)
@@ -89,7 +87,7 @@ int i2c_read(struct i2c_device *dev, void *data, size_t size)
 
 	/* read data */
 	for (uint8_t *p = data; size > 0; size--, p++) {
-		os_gpio_input(dev->master->sda);
+		os_gpio_input(I2C_BITBANG_SDA);
 		*p = 0xff;
 		I2C_READ(*p, ~0x80);
 		I2C_READ(*p, ~0x40);
@@ -101,7 +99,7 @@ int i2c_read(struct i2c_device *dev, void *data, size_t size)
 		I2C_READ(*p, ~0x01);
 
 		/* send ack/nack */
-		os_gpio_output(dev->master->sda);
+		os_gpio_output(I2C_BITBANG_SDA);
 		I2C_WRITE(size > 1 ? 0 : 1);
 	}
 
@@ -133,7 +131,7 @@ int i2c_write(struct i2c_device *dev, void *data, size_t size)
 
 	/* write data */
 	for (uint8_t *p = data; size > 0; size--, p++) {
-		os_gpio_output(dev->master->sda);
+		os_gpio_output(I2C_BITBANG_SDA);
 		I2C_WRITE(*p & 0x80);
 		I2C_WRITE(*p & 0x40);
 		I2C_WRITE(*p & 0x20);

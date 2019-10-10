@@ -22,81 +22,80 @@ int os_init(void);
 #define os_delay_ms(x)      _delay_ms(x)
 #define os_delay_us(x)      _delay_us(x)
 
-inline int8_t os_gpio_enable_inline(uint8_t pin, bool direction)
+
+inline void os_gpio_enable_inline(uint8_t pin, bool direction)
 {
 	switch (pin >> 3) {
 #ifdef DDRA
 	case 0:
 		DDRA = direction ? (DDRA | _BV(pin & 7)) : (DDRA & ~_BV(pin & 7));
-		return 0;
+		return;
 #endif
 #ifdef DDRB
 	case 1:
 		DDRB = direction ? (DDRB | _BV(pin & 7)) : (DDRB & ~_BV(pin & 7));
-		return 0;
+		return;
 #endif
 #ifdef DDRC
 	case 2:
 		DDRC = direction ? (DDRC | _BV(pin & 7)) : (DDRC & ~_BV(pin & 7));
-		return 0;
+		return;
 #endif
 #ifdef DDRD
 	case 3:
 		DDRD = direction ? (DDRD | _BV(pin & 7)) : (DDRD & ~_BV(pin & 7));
-		return 0;
+		return;
 #endif
 #ifdef DDRE
 	case 4:
 		DDRE = direction ? (DDRE | _BV(pin & 7)) : (DDRE & ~_BV(pin & 7));
-		return 0;
+		return;
 #endif
 #ifdef DDRF
 	case 5:
 		DDRF = direction ? (DDRF | _BV(pin & 7)) : (DDRF & ~_BV(pin & 7));
-		return 0;
+		return;
 #endif
 	}
-	return -1;
 }
 
-inline int8_t os_gpio_set_inline(uint8_t pin, bool state)
+inline void os_gpio_set_inline(uint8_t pin, bool state)
 {
 	switch (pin >> 3) {
 #ifdef PORTA
 	case 0:
 		PORTA = state ? (PORTA | _BV(pin & 7)) : (PORTA & ~_BV(pin & 7));
-		return 0;
+		return;
 #endif
 #ifdef PORTB
 	case 1:
 		PORTB = state ? (PORTB | _BV(pin & 7)) : (PORTB & ~_BV(pin & 7));
-		return 0;
+		return;
 #endif
 #ifdef PORTC
 	case 2:
 		PORTC = state ? (PORTC | _BV(pin & 7)) : (PORTC & ~_BV(pin & 7));
-		return 0;
+		return;
 #endif
 #ifdef PORTD
 	case 3:
 		PORTD = state ? (PORTD | _BV(pin & 7)) : (PORTD & ~_BV(pin & 7));
-		return 0;
+		return;
 #endif
 #ifdef PORTE
 	case 4:
 		PORTE = state ? (PORTE | _BV(pin & 7)) : (PORTE & ~_BV(pin & 7));
-		return 0;
+		return;
 #endif
 #ifdef PORTF
 	case 5:
 		PORTF = state ? (PORTF | _BV(pin & 7)) : (PORTF & ~_BV(pin & 7));
-		return 0;
+		return;
 #endif
 	}
-	return -1;
 }
 
-inline int8_t os_gpio_read_inline(uint8_t pin)
+inline uint8_t os_gpio_read_inline(uint8_t pin)
 {
 	switch (pin >> 3) {
 #ifdef PINA
@@ -124,12 +123,12 @@ inline int8_t os_gpio_read_inline(uint8_t pin)
 		return PINF & _BV(pin & 7) ? 1 : 0;
 #endif
 	}
-	return -1;
+	return 0;
 }
 
-int8_t os_gpio_enable_callable(uint8_t pin, bool direction);
-int8_t os_gpio_set_callable(uint8_t pin, bool state);
-int8_t os_gpio_read_callable(uint8_t pin);
+void os_gpio_enable_callable(uint8_t pin, bool direction);
+void os_gpio_set_callable(uint8_t pin, bool state);
+uint8_t os_gpio_read_callable(uint8_t pin);
 
 #if __STDC_VERSION__ >= 201112L
 #define os_gpio_enable(pin, direction) _Generic((pin), uint8_t: os_gpio_enable_callable, default: os_gpio_enable_inline)(pin, direction)

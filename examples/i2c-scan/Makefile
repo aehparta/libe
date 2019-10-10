@@ -15,6 +15,9 @@ BUILD_BINS = i2c_scan
 PROGRAM_BIN = i2c_scan
 i2c_scan_SRC = main.c $(libe_SRC)
 
+# include config
+include ../config.mk
+
 # build
 include $(LIBE_PATH)/build.mk
 

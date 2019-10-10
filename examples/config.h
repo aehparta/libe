@@ -5,6 +5,8 @@
 
 #ifdef TARGET_AVR
 /* i2c */
+#define I2C_BITBANG_SCL     28
+#define I2C_BITBANG_SDA     27
 #define CFG_I2C_CONTEXT     NULL
 #define CFG_I2C_FREQUENCY   100000
 #define CFG_I2C_SCL         30

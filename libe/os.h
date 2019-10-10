@@ -85,9 +85,9 @@ const char *os_get_revision(void);
 
 
 #ifndef OS_GPIO_AS_MACROS_OR_INLINE
-int8_t os_gpio_enable(uint8_t pin, bool direction);
-int8_t os_gpio_set(uint8_t pin, bool state);
-int8_t os_gpio_read(uint8_t pin);
+void os_gpio_enable(uint8_t pin, bool direction);
+void os_gpio_set(uint8_t pin, bool state);
+void os_gpio_read(uint8_t pin);
 #endif
 
 #ifndef OS_GPIO_HAS_PULLUP

@@ -11,13 +11,13 @@ int app_main(int argc, char *argv[])
 int main(void)
 #endif
 {
-	int x = 1;
+	uint8_t x = os_gpio_read(1);
 
 	// os_init();
 	// log_init();
 
 	// os_gpio_output(x);
-	os_gpio_set(0, 1);
+	// os_gpio_set(0, 1);
 	// LATA |= 2;
 
 	// log_quit();

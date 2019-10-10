@@ -60,17 +60,17 @@ void os_sleepf(os_time_t t)
 	}
 }
 
-int8_t os_gpio_enable_callable(uint8_t pin, bool direction)
+void os_gpio_enable_callable(uint8_t pin, bool direction)
 {
 	return os_gpio_enable_inline(pin, direction);
 }
 
-int8_t os_gpio_set_callable(uint8_t pin, bool state)
+void os_gpio_set_callable(uint8_t pin, bool state)
 {
 	return os_gpio_set_inline(pin, state);
 }
 
-int8_t os_gpio_read_callable(uint8_t pin)
+uint8_t os_gpio_read_callable(uint8_t pin)
 {
 	return os_gpio_read_inline(pin);
 }

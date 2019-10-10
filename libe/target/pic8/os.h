@@ -199,37 +199,43 @@ void os_pin_pps(uint8_t pin, uint8_t action);
 // 	return;
 // }
 
-// static inline int8_t os_gpio_read(uint8_t pin)
-// {
-// 	switch (pin >> 3) {
-// #ifdef PORTA
-// 	case 0:
-// 		return PORTA & _BV(pin & 7) ? 1 : 0;
-// #endif
-// #ifdef PORTB
-// 	case 1:
-// 		return PORTB & _BV(pin & 7) ? 1 : 0;
-// #endif
-// #ifdef PORTC
-// 	case 2:
-// 		return PORTC & _BV(pin & 7) ? 1 : 0;
-// #endif
-// #ifdef PORTD
-// 	case 3:
-// 		return PORTD & _BV(pin & 7) ? 1 : 0;
-// #endif
-// #ifdef PORTE
-// 	case 4:
-// 		return PORTE & _BV(pin & 7) ? 1 : 0;
-// #endif
-// #ifdef PORTF
-// 	case 5:
-// 		return PORTF & _BV(pin & 7) ? 1 : 0;
-// #endif
-// 	}
-// 	return -1;
-// }
+static inline uint8_t os_gpio_read(uint8_t pin)
+{
+	if (0) {}
+#ifdef PORTA
+	else if ((pin & 0xf8) == 0x00) {
+		return PORTA & _BV(pin & 7);
+	}
+#endif
+#ifdef PORTB
+	else if ((pin & 0xf8) == 0x08) {
+		return PORTB & _BV(pin & 7);
+	}
+#endif
+#ifdef PORTC
+	else if ((pin & 0xf8) == 0x10) {
+		return PORTC & _BV(pin & 7);
+	}
+#endif
+#ifdef PORTD
+	else if ((pin & 0xf8) == 0x10) {
+		return PORTD & _BV(pin & 7);
+	}
+#endif
+#ifdef PORTE
+	else if ((pin & 0xf8) == 0x10) {
+		return PORTE & _BV(pin & 7);
+	}
+#endif
+#ifdef PORTF
+	else if ((pin & 0xf8) == 0x10) {
+		return PORTF & _BV(pin & 7);
+	}
+#endif
+	return 0;
+}
 
+#ifdef WPUA
 #define os_gpio_pullup(pin, enable) \
 	do { \
 		if (0) {} \
@@ -240,6 +246,9 @@ void os_pin_pps(uint8_t pin, uint8_t action);
 		else _PIN_IF_E(pin, enable, WPU) \
 		else _PIN_IF_F(pin, enable, WPU) \
 	} while (0)
+#else
+#define os_gpio_pullup(pin, enable)
+#endif
 
 // static inline int8_t os_gpio_pullup(uint8_t pin, bool enable)
 // {
@@ -278,6 +287,7 @@ void os_pin_pps(uint8_t pin, uint8_t action);
 // 	return -1;
 // }
 
+#ifdef ODCONA
 #define os_gpio_open_drain(pin, enable) \
 	do { \
 		if (0) {} \
@@ -288,6 +298,9 @@ void os_pin_pps(uint8_t pin, uint8_t action);
 		else _PIN_IF_E(pin, enable, ODCON) \
 		else _PIN_IF_F(pin, enable, ODCON) \
 	} while (0)
+#else
+#define os_gpio_open_drain(pin, enable)
+#endif
 
 // static inline int8_t os_gpio_open_drain(uint8_t pin, bool enable)
 // {
