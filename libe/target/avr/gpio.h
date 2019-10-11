@@ -129,9 +129,15 @@ uint8_t gpio_read_callable(uint8_t pin);
 #define gpio_open_drain(pin, enable)
 
 #if __STDC_VERSION__ >= 201112L
-#define gpio_enable(pin, direction) _Generic((pin), uint8_t: gpio_enable_callable, default: gpio_enable_inline)(pin, direction)
-#define gpio_set(pin, state) _Generic((pin), uint8_t: gpio_set_callable, default: gpio_set_inline)(pin, state)
-#define gpio_read(pin) _Generic((pin), uint8_t: gpio_read_callable, default: gpio_read_inline)(pin)
+#define gpio_enable(pin, direction) _Generic((pin), \
+	uint8_t: gpio_enable_callable, \
+	default: gpio_enable_inline)(pin, direction)
+#define gpio_set(pin, state) _Generic((pin), \
+	uint8_t: gpio_set_callable, \
+	default: gpio_set_inline)(pin, state)
+#define gpio_read(pin) _Generic((pin), \
+	uint8_t: gpio_read_callable, \
+	default: gpio_read_inline)(pin)
 #else
 #define gpio_enable(pin, direction) gpio_enable_callable(pin, direction)
 #define gpio_set(pin, state) gpio_set_callable(pin, state)

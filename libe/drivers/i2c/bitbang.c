@@ -9,6 +9,62 @@
 #include <libe/libe.h>
 
 
+#define I2C_START() \
+	do { \
+		gpio_output(I2C_BITBANG_SDA); \
+		gpio_high(I2C_BITBANG_SCL); \
+		gpio_low(I2C_BITBANG_SDA); \
+		I2C_DELAY(); \
+		gpio_low(I2C_BITBANG_SCL); \
+	} while (0)
+
+#define I2C_STOP() \
+	do { \
+		gpio_output(I2C_BITBANG_SDA); \
+		gpio_low(I2C_BITBANG_SDA); \
+		I2C_DELAY(); \
+		gpio_high(I2C_BITBANG_SCL); \
+		I2C_DELAY(); \
+		gpio_high(I2C_BITBANG_SDA); /* this sets pull-up on in avr */ \
+		gpio_input(I2C_BITBANG_SDA); \
+	} while (0)
+
+#define I2C_WRITE(state) \
+	do { \
+		gpio_set(I2C_BITBANG_SDA, (state)); \
+		I2C_DELAY(); \
+		gpio_high(I2C_BITBANG_SCL); \
+		I2C_DELAY(); \
+		gpio_low(I2C_BITBANG_SCL); \
+	} while (0)
+
+#define I2C_READ(var, mask) \
+	do { \
+		I2C_DELAY(); \
+		gpio_high(I2C_BITBANG_SCL); \
+		I2C_DELAY(); \
+		if (!gpio_read(I2C_BITBANG_SDA)) { \
+			(var) &= mask; \
+		} \
+		gpio_low(I2C_BITBANG_SCL); \
+	} while (0)
+
+#define I2C_READ_ACK() \
+	do { \
+		gpio_high(I2C_BITBANG_SDA); /* this sets pull-up on in avr */ \
+		gpio_input(I2C_BITBANG_SDA); \
+		I2C_DELAY(); \
+		gpio_high(I2C_BITBANG_SCL); \
+		I2C_DELAY(); \
+		if (gpio_read(I2C_BITBANG_SDA)) { \
+			/* no ack received */ \
+			I2C_STOP(); \
+			return -1; \
+		} \
+		gpio_low(I2C_BITBANG_SCL); \
+	} while (0)
+
+
 int i2c_master_open(struct i2c_master *master, void *context, uint32_t frequency, uint8_t scl, uint8_t sda)
 {
 	/* clock is always output */
@@ -37,7 +93,7 @@ int i2c_master_open(struct i2c_master *master, void *context, uint32_t frequency
 	gpio_input(I2C_BITBANG_SDA);
 
 	/* save information */
-#ifdef TARGET_LINUX
+#if defined(TARGET_LINUX) || defined(TARGET_ESP32) || defined(TARGET_PIC32)
 	master->frequency = frequency;
 #endif
 
@@ -81,6 +137,7 @@ int i2c_read(struct i2c_device *dev, void *data, size_t size)
 
 	/* read data */
 	for (uint8_t *p = data; size > 0; size--, p++) {
+		gpio_high(I2C_BITBANG_SDA); /* this sets pull-up on in avr */
 		gpio_input(I2C_BITBANG_SDA);
 		*p = 0xff;
 		for (uint8_t i = 0x80; i; i = i >> 1) {

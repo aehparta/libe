@@ -24,6 +24,8 @@ extern "C" {
 struct i2c_master {
 #ifdef TARGET_LINUX
 	int fd;
+#endif
+#if defined(TARGET_LINUX) || defined(TARGET_ESP32) || defined(TARGET_PIC32)
 	uint32_t frequency;
 #endif
 };
