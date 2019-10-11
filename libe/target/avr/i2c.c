@@ -22,6 +22,12 @@ int i2c_master_open(struct i2c_master *master, void *context, uint32_t frequency
 	TWSR = 0x00;
 	TWCR = TWCR_BASE;
 
+	/* reset bus */
+	TWCR = TWCR_BASE | (1 << TWSTA);
+	while (!(TWCR & (1 << TWINT)));
+	TWCR = TWCR_BASE | (1 << TWSTO);
+	while (!(TWCR & (1 << TWINT)));
+
 	return 0;
 }
 
@@ -49,6 +55,8 @@ int i2c_read(struct i2c_device *dev, void *data, size_t size)
 
 int i2c_write(struct i2c_device *dev, void *data, size_t size)
 {
+	int err = -1;
+
 	TWCR = TWCR_BASE | (1 << TWSTA);
 	while (!(TWCR & (1 << TWINT)));
 	/* send address + write (zero) */
@@ -57,30 +65,32 @@ int i2c_write(struct i2c_device *dev, void *data, size_t size)
 	TWCR = TWCR_BASE;
 	while (!(TWCR & (1 << TWINT)));
 	if ((TWSR & 0xf8) != 0x18) {
-		error_last = "no ack received";
-		TWCR = TWCR_BASE | (1 << TWSTO);
-		return -1;
-	}
-
-	uint8_t *b = data;
-	for (size_t i = 0; i < size; i++) {
-		TWDR = *b;
-		/* clear interrupt flag and start transmission */
-		TWCR = TWCR_BASE;
-		/* wait for transmission */
-		while (!(TWCR & (1 << TWINT)));
-		/* check status */
-		if ((TWSR & 0xf8) != 0x28) {
-			error_last = "no ack received after sending data";
-			TWCR = TWCR_BASE | (1 << TWSTO);
-			return -1;
+		error_set_last("no ack received");
+		goto out_err;
+	} else {
+		uint8_t *b = data;
+		for (size_t i = 0; i < size; i++) {
+			TWDR = *b;
+			/* clear interrupt flag and start transmission */
+			TWCR = TWCR_BASE;
+			/* wait for transmission */
+			while (!(TWCR & (1 << TWINT)));
+			/* check status */
+			if ((TWSR & 0xf8) != 0x28) {
+				error_set_last("no ack received after sending data");
+				goto out_err;
+			}
+			b++;
 		}
-		b++;
 	}
 
-	TWCR = TWCR_BASE | (1 << TWSTO);
+	err = 0;
 
-	return 0;
+out_err:
+	TWCR = TWCR_BASE | (1 << TWSTO);
+	while (!(TWCR & (1 << TWINT)));
+	TWCR = TWCR_BASE;
+	return err;
 }
 
 #endif

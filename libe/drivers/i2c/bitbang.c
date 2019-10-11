@@ -8,6 +8,26 @@
 
 #include <libe/libe.h>
 
+#ifdef I2C_BITBANG_IS_STATIC
+#ifndef I2C_BITBANG_SCL
+#error "I2C_BITBANG_SCL pin definition missing, it must be set when using I2C bitbang"
+#endif
+#ifndef I2C_BITBANG_SDA
+#error "I2C_BITBANG_SDA pin definition missing, it must be set when using I2C bitbang"
+#endif
+#endif
+
+#if !defined(I2C_DELAY)
+#ifndef I2C_BITBANG_IS_STATIC
+/* on linux and other more powerfull platforms allow bitbang frequency to be defined */
+#define I2C_DELAY()             os_sleepf(1 / master->frequency)
+#elif TARGET_AVR
+#define I2C_DELAY()             _delay_loop_1(F_CPU / 200000 / 3)
+#else
+/* on other less powerfull platforms lock i2c clock to approximately 100 kHz */
+#define I2C_DELAY()             os_delay_us(4)
+#endif
+#endif
 
 #define I2C_START() \
 	do { \
