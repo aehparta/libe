@@ -10,11 +10,11 @@ libe_DEFINES += TARGET=$(shell echo $(TARGET) | tr '[:lower:]' '[:upper:]') TARG
 libe_DEFINES += MCU=$(shell echo $(MCU) | tr '[:lower:]' '[:upper:]') MCU_$(shell echo $(MCU) | tr '[:lower:]' '[:upper:]')
 
 # unravel uses from environment and libe_USE
-libe_USE += $(foreach use,$(use),$(use))
+libe_USE += $(foreach use,$(USE),$(use))
 libe_DEFINES += $(foreach use,$(libe_USE),USE_$(use))
 
 # unravel defines from environment
-libe_DEFINES += $(foreach define,$(defines),$(define))
+libe_DEFINES += $(foreach define,$(DEFINES),$(define))
 
 # debug
 DEBUG ?= 1

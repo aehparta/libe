@@ -4,21 +4,6 @@ ifeq ($(LIBE_PATH),)
     $(error LIBE_PATH not set)
 endif
 
-# check user given lower case
-ifneq ($(target),)
-    TARGET=$(target)
-endif
-
-# check user given lower case mcu
-ifneq ($(mcu),)
-    MCU=$(mcu)
-endif
-
-# check user given lower case clock
-ifneq ($(clock),)
-    F_CPU=$(clock)
-endif
-
 # default to autodetection
 ifeq ($(TARGET),)
     ifeq ($(shell uname -p),x86_64)

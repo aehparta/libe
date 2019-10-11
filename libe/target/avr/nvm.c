@@ -2,6 +2,8 @@
  * Non-volatile memory handler for avr.
  */
 
+#ifdef USE_NVM
+
 #include <math.h>
 #include <avr/eeprom.h>
 #include <libe/nvm.h>
@@ -71,3 +73,5 @@ void nvm_write_float(void *address, float value)
 {
 	eeprom_write_float(address, value);
 }
+
+#endif

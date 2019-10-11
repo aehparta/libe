@@ -4,6 +4,8 @@
  * Authors: Antti Partanen <aehparta@iki.fi>
  */
 
+#ifdef USE_I2C
+
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <sys/ioctl.h>
@@ -86,3 +88,4 @@ int i2c_write(struct i2c_device *dev, void *data, size_t size)
     return 0;
 }
 
+#endif

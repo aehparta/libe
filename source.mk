@@ -18,6 +18,13 @@ ifdef TARGET_LINUX
     endif
 endif
 
+# add gpio
+ifneq ($(filter $(libe_DEFINES),USE_GPIO),)
+    libe_SRC += $(LIBE_PATH)/libe/target/$(TARGET)/gpio.c
+    # gpio drivers
+    libe_SRC += $(LIBE_PATH)/libe/drivers/gpio/hd44780.c
+endif
+
 # add logging
 ifneq ($(filter $(libe_DEFINES),USE_LOG),)
     ifdef TARGET_LINUX
@@ -25,11 +32,6 @@ ifneq ($(filter $(libe_DEFINES),USE_LOG),)
     else
         libe_SRC += $(LIBE_PATH)/libe/target/$(TARGET)/log.c
     endif
-endif
-
-# gpio drivers
-ifneq ($(filter $(libe_DEFINES),USE_HD44780),)
-    libe_SRC += $(LIBE_PATH)/libe/drivers/gpio/hd44780.c
 endif
 
 # add spi and drivers for chips

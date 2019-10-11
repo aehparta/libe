@@ -4,15 +4,15 @@ ifeq ($(LIBE_PATH),)
     $(error LIBE_PATH not set)
 endif
 
-# init
-include $(LIBE_PATH)/init.mk
-
 # enable gpio
 libe_USE += GPIO
 # enable log always on x86
 ifeq ($(TARGET),x86)
 	libe_USE += LOG
 endif
+
+# init
+include $(LIBE_PATH)/init.mk
 
 # our own sources etc
 BUILD_BINS = led_gpio

@@ -5,8 +5,10 @@
  *  Antti Partanen <aehparta@iki.fi>
  */
 
-#include <libe/os.h>
-#include <libe/log.h>
-#include <libe/i2c.h>
+#if defined(USE_I2C) && !defined(USE_I2C_BITBANG)
 
-/* NOT DONE */
+#include <libe/libe.h>
+
+#error "i2c native drivers for avr not implemented"
+
+#endif

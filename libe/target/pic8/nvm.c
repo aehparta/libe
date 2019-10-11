@@ -2,8 +2,9 @@
  * Non-volatile memory handler for pic 8-bit
  */
 
-#include <libe/os.h>
-#include <libe/nvm.h>
+#ifdef USE_NVM
+
+#include <libe/libe.h>
 
 
 #ifdef EEADR
@@ -85,5 +86,7 @@ float nvm_read_float(void *address, float default_value)
 void nvm_write_float(void *address, float value)
 {
 }
+
+#endif
 
 #endif

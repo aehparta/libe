@@ -2,6 +2,8 @@
  * AVR specific gpio.
  */
 
+#ifdef USE_GPIO
+
 #include <libe/libe.h>
 
 
@@ -19,3 +21,5 @@ uint8_t gpio_read_callable(uint8_t pin)
 {
 	return gpio_read_inline(pin);
 }
+
+#endif

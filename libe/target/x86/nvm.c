@@ -2,6 +2,8 @@
  * Non-volatile memory handler for x86.
  */
 
+#ifdef USE_NWM
+
 #include <stdlib.h>
 #include <string.h>
 #include <math.h>
@@ -90,3 +92,5 @@ void nvm_write_float(void *address, float value)
 	float *p = (float *)&nvm_data[(uint64_t)address];
 	*p = value;
 }
+
+#endif

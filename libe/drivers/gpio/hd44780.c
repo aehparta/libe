@@ -5,9 +5,7 @@
  * Authors: Antti Partanen <aehparta@iki.fi>
  */
 
-#include <string.h>
-#include <libe/os.h>
-#include "hd44780.h"
+#include <libe/libe.h>
 
 
 int hd44780_open(struct hd44780_device *display, uint8_t d4, uint8_t d5, uint8_t d6, uint8_t d7, uint8_t en, uint8_t rw, uint8_t rs)

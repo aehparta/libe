@@ -1,14 +1,13 @@
 /*
- * libe cross-platform library
+ * pic8 SPI driver
  *
  * Authors: Antti Partanen <aehparta@iki.fi>
  */
 
+#ifdef USE_SPI
+
 #include <stdlib.h>
-// #include <string.h>
-#include <libe/spi.h>
-#include <libe/log.h>
-#include <libe/os.h>
+#include <libe/libe.h>
 
 
 int spi_master_open(struct spi_master *master, void *context, uint32_t frequency, uint8_t miso, uint8_t mosi, uint8_t sclk)
@@ -131,3 +130,5 @@ int spi_transfer(struct spi_device *device, uint8_t *data, size_t size)
 // 		PORTD = data;
 // 	}
 // }
+
+#endif

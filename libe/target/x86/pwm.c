@@ -4,6 +4,8 @@
 
 /* not implemented and may never be implemented */
 
+#ifdef USE_PWM
+
 #include <libe/pwm.h>
 
 
@@ -21,3 +23,5 @@ void pwm_set_duty(uint8_t channel, float duty)
 {
 
 }
+
+#endif

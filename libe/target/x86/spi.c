@@ -4,6 +4,8 @@
  * Authors: Antti Partanen <aehparta@iki.fi>
  */
 
+#ifdef USE_SPI
+
 #ifdef USE_FTDI
 
 #include <stdlib.h>
@@ -140,5 +142,7 @@ int spi_ftdi_clr(struct spi_master *master, uint8_t pins)
 {
 	return -1;
 }
+
+#endif
 
 #endif

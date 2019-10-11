@@ -5,6 +5,8 @@
  *  Antti Partanen <aehparta@iki.fi>
  */
 
+#ifdef USE_LOG
+
 #include <stdio.h>
 #include <stdarg.h>
 #include <pthread.h>
@@ -57,3 +59,5 @@ void log_msg(int level, const char *file, int line, const char *func, const char
 
 	mtx_unlock(&log_mutex);
 }
+
+#endif

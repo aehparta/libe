@@ -2,6 +2,8 @@
  * Basic pwm driver for avr
  */
 
+#ifdef USE_PWM
+
 #include <stdint.h>
 #include <libe/pwm.h>
 #include <libe/os.h>
@@ -76,3 +78,5 @@ void pwm_set_duty(uint8_t channel, float duty)
 		break;
 	}
 }
+
+#endif

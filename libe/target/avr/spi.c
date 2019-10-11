@@ -4,6 +4,8 @@
  * Authors: Antti Partanen <aehparta@iki.fi>
  */
 
+#ifdef USE_SPI
+
 #include <stdlib.h>
 #include <string.h>
 #include <libe/libe.h>
@@ -60,3 +62,5 @@ int spi_transfer(struct spi_device *device, uint8_t *data, size_t size)
 
 	return 0;
 }
+
+#endif

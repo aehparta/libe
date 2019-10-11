@@ -13,8 +13,6 @@
 #ifndef _DRIVERS_GPIO_HD44780_H_
 #define _DRIVERS_GPIO_HD44780_H_
 
-#include <stdint.h>
-
 struct hd44780_device {
 	uint8_t d4;
 	uint8_t d5;
