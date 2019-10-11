@@ -39,9 +39,7 @@ void nrf_close(struct nrf_device *nrf)
 int nrf_simple_cmd(struct nrf_device *nrf, uint8_t command)
 {
 	uint8_t cmd[] = { command };
-	if (spi_transfer(&nrf->spi, cmd, sizeof(cmd))) {
-		return -1;
-	}
+	IF_R(spi_transfer(&nrf->spi, cmd, sizeof(cmd)), -1);
 	return cmd[0];
 }
 
@@ -53,9 +51,7 @@ int nrf_read_status(struct nrf_device *nrf)
 int nrf_read_reg(struct nrf_device *nrf, uint8_t reg, uint8_t *status)
 {
 	uint8_t cmd[] = { reg & 0x1f, 0x00 };
-	if (spi_transfer(&nrf->spi, cmd, sizeof(cmd))) {
-		return -1;
-	}
+	IF_R(spi_transfer(&nrf->spi, cmd, sizeof(cmd)), -1);
 	if (status) {
 		*status = cmd[0];
 	}
@@ -65,9 +61,7 @@ int nrf_read_reg(struct nrf_device *nrf, uint8_t reg, uint8_t *status)
 int nrf_write_reg(struct nrf_device *nrf, uint8_t reg, uint8_t data)
 {
 	uint8_t cmd[] = { (reg & 0x1f) | 0x20, data & 0xff };
-	if (spi_transfer(&nrf->spi, cmd, sizeof(cmd))) {
-		return -1;
-	}
+	IF_R(spi_transfer(&nrf->spi, cmd, sizeof(cmd)), -1);
 	return cmd[0];
 }
 
@@ -88,16 +82,12 @@ int nrf_set_address(struct nrf_device *nrf, uint8_t pipe, uint8_t a0, uint8_t a1
 	} else if (pipe >= NRF_REG_RX_ADDR_P2 && pipe <= NRF_REG_RX_ADDR_P5) {
 		/* single byte secondary pipes */
 		uint8_t cmd[] = { pipe | 0x20, a0 };
-		if (spi_transfer(&nrf->spi, cmd, sizeof(cmd))) {
-			return -1;
-		}
+		IF_R(spi_transfer(&nrf->spi, cmd, sizeof(cmd)), -1);
 		return cmd[0];
 	} else {
 		/* full 5 byte primary channels (0, 1 and transmit) */
 		uint8_t cmd[] = { pipe | 0x20, a0, a1, a2, a3, a4 };
-		if (spi_transfer(&nrf->spi, cmd, sizeof(cmd))) {
-			return -1;
-		}
+		IF_R(spi_transfer(&nrf->spi, cmd, sizeof(cmd)), -1);
 		return cmd[0];
 	}
 	return -1;
@@ -197,9 +187,7 @@ int nrf_recv(struct nrf_device *nrf, void *data)
 		/* rx buffer read command */
 		0x61,
 	};
-	if (spi_transfer(&nrf->spi, cmd, sizeof(cmd))) {
-		return -1;
-	}
+	IF_R(spi_transfer(&nrf->spi, cmd, sizeof(cmd)), -1);
 	memcpy(data, cmd + 1, 32);
 	nrf_flush_rx(nrf);
 	return 32;
@@ -213,9 +201,7 @@ int nrf_send(struct nrf_device *nrf, void *data)
 		0xa0,
 	};
 	memcpy(cmd + 1, data, 32);
-	if (spi_transfer(&nrf->spi, cmd, sizeof(cmd))) {
-		return -1;
-	}
+	IF_R(spi_transfer(&nrf->spi, cmd, sizeof(cmd)), -1);
 	/* switch to transmit mode */
 	nrf_disable_radio(nrf);
 	nrf_mode_tx(nrf);

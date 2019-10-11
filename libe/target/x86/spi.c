@@ -4,14 +4,12 @@
  * Authors: Antti Partanen <aehparta@iki.fi>
  */
 
+#ifdef USE_FTDI
+
 #include <stdlib.h>
 #include <string.h>
-#include <libe/spi.h>
-#include <libe/log.h>
-#include "spi.h"
+#include <libe/libe.h>
 
-
-#ifdef USE_FTDI
 
 int spi_master_open(struct spi_master *master, void *context, uint32_t frequency, uint8_t miso, uint8_t mosi, uint8_t sclk)
 {

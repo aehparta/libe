@@ -9,9 +9,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <esp_heap_caps.h>
-#include <libe/spi.h>
-#include <libe/log.h>
-#include <libe/os.h>
+#include <libe/libe.h>
 
 
 int spi_master_open(struct spi_master *master, void *context, uint32_t frequency, uint8_t miso, uint8_t mosi, uint8_t sclk)
@@ -29,7 +27,10 @@ int spi_master_open(struct spi_master *master, void *context, uint32_t frequency
 	buscfg.sclk_io_num = sclk;
 	buscfg.quadwp_io_num = -1;
 	buscfg.quadhd_io_num = -1;
-	ERROR_IF_R(spi_bus_initialize(master->host, &buscfg, 1) != ESP_OK, -1, "spi bus initialization failed");
+	if (spi_bus_initialize(master->host, &buscfg, 1) != ESP_OK) {
+		error_last = "spi bus initialization failed";
+		return -1;
+	}
 
 	return 0;
 }
@@ -49,7 +50,9 @@ int spi_open(struct spi_device *device, struct spi_master *master, uint8_t ss)
 	devcfg.queue_size = 1;
 	devcfg.spics_io_num = ss;
 
-	ERROR_IF_R(spi_bus_add_device(master->host, &devcfg, &device->device) != ESP_OK, -1, "spi bus device add failed");
+	if (spi_bus_add_device(master->host, &devcfg, &device->device) != ESP_OK) {
+		error_last = "spi bus device add failed";
+	}
 
 	return 0;
 }
@@ -71,7 +74,10 @@ int spi_transfer(struct spi_device *device, uint8_t *data, size_t size)
 	tr.rxlength = size * 8;
 
 	/* transmit */
-	ERROR_IF_R(spi_device_transmit(device->device, &tr) != ESP_OK, -1, "spi transmit failed");
+	if (spi_device_transmit(device->device, &tr) != ESP_OK) {
+		error_last = "spi transmit failed";
+		return -1;
+	}
 
 	return 0;
 }
