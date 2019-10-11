@@ -12,30 +12,28 @@
 int i2c_master_open(struct i2c_master *master, void *context, uint32_t frequency, uint8_t scl, uint8_t sda)
 {
 	/* clock is always output */
-	gpio_output(I2C_BITBANG_SCL);
+	gpio_high(I2C_BITBANG_SCL);
 	gpio_pullup(I2C_BITBANG_SCL, true);
 	gpio_open_drain(I2C_BITBANG_SCL, true);
-	/* data is input as default */
-	gpio_input(I2C_BITBANG_SDA);
+	gpio_output(I2C_BITBANG_SCL);
+	/* data is input as default, but output at start */
+	gpio_high(I2C_BITBANG_SDA);
 	gpio_pullup(I2C_BITBANG_SDA, true);
 	gpio_open_drain(I2C_BITBANG_SDA, true);
-
-	/* reset the bus by clocking enough cycles and then doing stop */
-	gpio_low(I2C_BITBANG_SCL);
-	for (int i = 0; i < 9; i++) {
-		os_delay_us(5);
-		gpio_high(I2C_BITBANG_SCL);
-		os_delay_us(5);
-		gpio_low(I2C_BITBANG_SCL);
-	}
-	os_delay_us(5);
 	gpio_output(I2C_BITBANG_SDA);
-	gpio_low(I2C_BITBANG_SDA);
-	os_delay_us(5);
+
+	/* reset the bus by sending a start and stop */
 	gpio_high(I2C_BITBANG_SCL);
-	os_delay_us(5);
 	gpio_high(I2C_BITBANG_SDA);
-	os_delay_us(5);
+	os_delay_us(10);
+	gpio_low(I2C_BITBANG_SDA);
+	os_delay_us(10);
+	gpio_low(I2C_BITBANG_SCL);
+	os_delay_us(10);
+	gpio_high(I2C_BITBANG_SCL);
+	os_delay_us(10);
+	gpio_high(I2C_BITBANG_SDA);
+	os_delay_us(10);
 	gpio_input(I2C_BITBANG_SDA);
 
 	/* save information */
