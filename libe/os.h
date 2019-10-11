@@ -45,8 +45,6 @@ extern "C" {
 typedef double os_time_t;
 #elif TARGET_PIC8
 typedef double os_time_t;
-// #elif TARGET_ESP32
-// typedef double os_time_t;
 #else
 typedef long double os_time_t;
 #endif
