@@ -23,7 +23,12 @@ PROGRAM_BIN = testing
 testing_SRC = main.c $(libe_SRC)
 
 # other
-CFLAGS += -DI2C_BITBANG_SCL=28 -DI2C_BITBANG_SDA=27
+ifeq ($(TARGET), avr)
+	CFLAGS += -DI2C_BITBANG_SCL=28 -DI2C_BITBANG_SDA=27
+endif
+ifeq ($(TARGET), pic8)
+	CFLAGS += -DI2C_BITBANG_SCL=0 -DI2C_BITBANG_SDA=1
+endif
 
 # build
 include $(LIBE_PATH)/build.mk

@@ -81,10 +81,6 @@ void os_sleepf(os_time_t t);
 const char *os_get_revision(void);
 
 
-#ifndef OS_HAS_PPS
-#define os_pin_pps(pin, action)
-#endif
-
 #ifdef __cplusplus
 }
 #endif

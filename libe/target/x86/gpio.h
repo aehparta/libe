@@ -14,7 +14,7 @@ extern "C" {
 #define gpio_set(pin, state) os_ftdi_gpio_set(pin, state)
 #define gpio_read(pin) os_ftdi_gpio_read(pin)
 #else
-#warning "no gpio available, empty macros being used for gpio_*() functions"
+#warning "no gpio available, empty macros being used for gpio_*() functions, maybe add use=FTDI?"
 #define gpio_enable(pin, direction)
 #define gpio_set(pin, state)
 #define gpio_read(pin)

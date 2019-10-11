@@ -36,14 +36,6 @@ extern "C" {
 #include "target/rpi/gpio.h"
 #endif
 
-#ifndef GPIO_HAS_PULLUP
-#define gpio_pullup(pin, enable)
-#endif
-
-#ifndef GPIO_HAS_OPEN_DRAIN
-#define gpio_open_drain(pin, enable)
-#endif
-
 #define gpio_output(pin) gpio_enable(pin, GPIO_OUTPUT)
 #define gpio_input(pin) gpio_enable(pin, GPIO_INPUT)
 #define gpio_high(pin) gpio_set(pin, 1)

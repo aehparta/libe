@@ -13,9 +13,6 @@ extern "C" {
 #include <stdbool.h>
 #include <avr/io.h>
 
-#define OS_GPIO_HAS_PULLUP 1
-#define OS_GPIO_HAS_OPEN_DRAIN 1
-
 
 inline void gpio_enable_inline(uint8_t pin, bool direction)
 {
@@ -149,4 +146,4 @@ uint8_t gpio_read_callable(uint8_t pin);
 }
 #endif
 
-#endif /* _TARGET_OS_H_ */
+#endif /* _TARGET_GPIO_H_ */
