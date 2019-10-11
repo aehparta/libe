@@ -28,7 +28,7 @@ int spi_master_open(struct spi_master *master, void *context, uint32_t frequency
 	buscfg.quadwp_io_num = -1;
 	buscfg.quadhd_io_num = -1;
 	if (spi_bus_initialize(master->host, &buscfg, 1) != ESP_OK) {
-		error_last = "spi bus initialization failed";
+		error_set_last("spi bus initialization failed");
 		return -1;
 	}
 
@@ -51,7 +51,7 @@ int spi_open(struct spi_device *device, struct spi_master *master, uint8_t ss)
 	devcfg.spics_io_num = ss;
 
 	if (spi_bus_add_device(master->host, &devcfg, &device->device) != ESP_OK) {
-		error_last = "spi bus device add failed";
+		error_set_last("spi bus device add failed");
 	}
 
 	return 0;
@@ -75,7 +75,7 @@ int spi_transfer(struct spi_device *device, uint8_t *data, size_t size)
 
 	/* transmit */
 	if (spi_device_transmit(device->device, &tr) != ESP_OK) {
-		error_last = "spi transmit failed";
+		error_set_last("spi transmit failed");
 		return -1;
 	}
 

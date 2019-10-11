@@ -46,7 +46,7 @@ int sht21_conf(struct i2c_device *dev, bool heater, uint8_t res)
 		data[1] |= 0x81;
 		break;
 	default:
-		error_last = "invalid resolution setting";
+		error_set_last("invalid resolution setting");
 		return -1;
 	}
 

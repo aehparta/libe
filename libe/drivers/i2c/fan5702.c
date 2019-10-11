@@ -33,7 +33,7 @@ int fan5702_set(struct i2c_device *dev, uint8_t channel, uint8_t brightness)
 		channel = channel << 4;
 		break;
 	default:
-		error_last = "invalid channel";
+		error_set_last("invalid channel");
 		return -1;
 	}
 	return i2c_write_reg_byte(dev, channel, brightness);

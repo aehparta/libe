@@ -17,7 +17,7 @@ int cap1293_open(struct i2c_device *dev, struct i2c_master *master)
 	IF_R(i2c_write_byte(dev, 0xfd), -1);
 	IF_R(i2c_read(dev, data, 2), -1);
 	if (data[0] != 0x6f || data[1] != 0x5d) {
-		error_last = "product ID or manufacturer ID does not match";
+		error_set_last("product ID or manufacturer ID does not match");
 		return -1;
 	}
 	return 0;
