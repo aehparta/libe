@@ -67,6 +67,13 @@
 
 int i2c_master_open(struct i2c_master *master, void *context, uint32_t frequency, uint8_t scl, uint8_t sda)
 {
+	/* save information */
+#ifndef I2C_BITBANG_IS_STATIC
+	master->scl = scl;
+	master->sda = sda;
+	master->frequency = frequency;
+#endif
+
 	/* clock is always output */
 	gpio_high(I2C_BITBANG_SCL);
 	gpio_pullup(I2C_BITBANG_SCL, true);
@@ -92,11 +99,6 @@ int i2c_master_open(struct i2c_master *master, void *context, uint32_t frequency
 	os_delay_us(10);
 	gpio_input(I2C_BITBANG_SDA);
 
-	/* save information */
-#if defined(TARGET_LINUX) || defined(TARGET_ESP32) || defined(TARGET_PIC32)
-	master->frequency = frequency;
-#endif
-
 	return 0;
 }
 
@@ -121,6 +123,10 @@ void i2c_close(struct i2c_device *dev)
 
 int i2c_read(struct i2c_device *dev, void *data, size_t size)
 {
+#ifndef I2C_BITBANG_IS_STATIC
+	struct i2c_master *master = dev->master;
+#endif
+
 	/* start bit */
 	I2C_START();
 
@@ -156,6 +162,10 @@ int i2c_read(struct i2c_device *dev, void *data, size_t size)
 
 int i2c_write(struct i2c_device *dev, void *data, size_t size)
 {
+#ifndef I2C_BITBANG_IS_STATIC
+	struct i2c_master *master = dev->master;
+#endif
+	
 	/* start bit */
 	I2C_START();
 

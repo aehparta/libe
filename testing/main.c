@@ -14,11 +14,6 @@ int main(void)
 	struct i2c_master master;
 	struct i2c_device dev;
 	
-	gpio_output(8);
-	gpio_output(9);
-	gpio_high(8);
-	gpio_low(9);
-	
 	i2c_master_open(&master, NULL, 0, 0, 0);
 
 	os_delay_ms(1);

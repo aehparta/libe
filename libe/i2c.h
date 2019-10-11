@@ -9,31 +9,27 @@
 #define _LIBE_I2C_H_
 #ifdef USE_I2C
 
-#include <stdint.h>
-#include <string.h>
-#ifdef TARGET_LINUX
-#include <linux/i2c-dev.h>
-#include <sys/ioctl.h>
-#endif
-
 #ifdef __cplusplus
 extern "C" {
 #endif
 
-#if defined(USE_I2C_BITBANG) || defined(TARGET_LINUX)
-struct i2c_master {
-#ifdef TARGET_LINUX
-	int fd;
-#endif
-#if defined(TARGET_LINUX) || defined(TARGET_ESP32) || defined(TARGET_PIC32)
-	uint32_t frequency;
-#endif
-};
-struct i2c_device {
-	struct i2c_master *master;
-	uint8_t address;
-	uint8_t driver_bits[4];
-};
+#ifdef USE_I2C_BITBANG
+#include "drivers/i2c/bitbang.h"
+#elif TARGET_AVR
+#include "target/avr/i2c.h"
+#elif TARGET_PIC8
+#include "target/pic8/i2c.h"
+#elif TARGET_PIC16
+#include "target/pic16/i2c.h"
+#elif TARGET_PIC32
+#include "target/pic32/i2c.h"
+#elif TARGET_MSP430
+#include "target/msp430/i2c.h"
+#define time_t uint32_t
+#elif TARGET_ESP32
+#include "target/esp32/i2c.h"
+#elif TARGET_LINUX
+#include "target/linux/i2c.h"
 #endif
 
 /*
@@ -70,15 +66,13 @@ static inline int i2c_read_reg_byte(struct i2c_device *dev, uint8_t reg)
 	return value;
 }
 
-#include <libe/drivers/i2c/bitbang.h>
-
 /* drivers */
-#include <libe/drivers/i2c/hdc1080.h>
-#include <libe/drivers/i2c/mcp3221.h>
-#include <libe/drivers/i2c/fan5702.h>
-#include <libe/drivers/i2c/sht21.h>
-#include <libe/drivers/i2c/sht31.h>
-#include <libe/drivers/i2c/cap1293.h>
+#include "drivers/i2c/hdc1080.h"
+#include "drivers/i2c/mcp3221.h"
+#include "drivers/i2c/fan5702.h"
+#include "drivers/i2c/sht21.h"
+#include "drivers/i2c/sht31.h"
+#include "drivers/i2c/cap1293.h"
 
 #ifdef __cplusplus
 }

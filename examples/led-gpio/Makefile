@@ -7,6 +7,13 @@ endif
 # init
 include $(LIBE_PATH)/init.mk
 
+# enable gpio
+libe_USE += GPIO
+# enable log always on x86
+ifeq ($(TARGET),x86)
+	libe_USE += LOG
+endif
+
 # our own sources etc
 BUILD_BINS = led_gpio
 PROGRAM_BIN = led_gpio

@@ -13,11 +13,15 @@ extern "C" {
 #define gpio_enable(pin, direction) os_ftdi_gpio_enable(pin, direction)
 #define gpio_set(pin, state) os_ftdi_gpio_set(pin, state)
 #define gpio_read(pin) os_ftdi_gpio_read(pin)
+#define gpio_pullup(pin, enable)
+#define gpio_open_drain(pin, enable)
 #else
 #warning "no gpio available, empty macros being used for gpio_*() functions, maybe add use=FTDI?"
 #define gpio_enable(pin, direction)
 #define gpio_set(pin, state)
 #define gpio_read(pin)
+#define gpio_pullup(pin, enable)
+#define gpio_open_drain(pin, enable)
 #endif
 
 #ifdef __cplusplus

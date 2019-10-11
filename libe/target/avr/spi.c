@@ -6,19 +6,16 @@
 
 #include <stdlib.h>
 #include <string.h>
-#include <avr/io.h>
-#include <libe/spi.h>
-#include <libe/log.h>
-#include <libe/os.h>
+#include <libe/libe.h>
 
 
 int spi_master_open(struct spi_master *master, void *context, uint32_t frequency, uint8_t miso, uint8_t mosi, uint8_t sclk)
 {
 	/* set MOSI, SCK and SS as output and MISO as input */
-	os_gpio_output(10);
-	os_gpio_output(11);
-	os_gpio_input(12);
-	os_gpio_output(13);
+	gpio_output(10);
+	gpio_output(11);
+	gpio_input(12);
+	gpio_output(13);
 	/* enable spi */
 	SPCR = (1 << SPE) | (1 << MSTR) | (0 << SPR1) | (1 << SPR0) | (0 << DORD);
 
@@ -30,23 +27,36 @@ int spi_master_open(struct spi_master *master, void *context, uint32_t frequency
 void spi_master_close(struct spi_master *master)
 {
 	SPCR = 0;
-	os_gpio_input(10);
-	os_gpio_input(11);
-	os_gpio_input(12);
-	os_gpio_input(13);
+	gpio_input(10);
+	gpio_input(11);
+	gpio_input(12);
+	gpio_input(13);
 }
 
 int spi_open(struct spi_device *device, struct spi_master *master, uint8_t ss)
 {
 	device->ss = ss;
-	os_gpio_output(ss);
-	os_gpio_high(ss);
+	gpio_output(ss);
+	gpio_high(ss);
 	/* do not return zero even if the pin is zero :P */
 	return 0;
 }
 
 void spi_close(struct spi_device *device)
 {
-	os_gpio_input(device->ss);
+	gpio_input(device->ss);
 }
 
+int spi_transfer(struct spi_device *device, uint8_t *data, size_t size)
+{
+	gpio_low(device->ss);
+	for ( ; size > 0; size--) {
+		SPDR = *data;
+		while (!(SPSR & (1 << SPIF)));
+		*data = SPDR;
+		data++;
+	}
+	gpio_high(device->ss);
+
+	return 0;
+}

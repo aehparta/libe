@@ -24,12 +24,12 @@ int spi_master_open(struct spi_master *master, void *context, uint32_t frequency
 	}
 
 	/* set gpio inital values and directions */
-	os_gpio_low(miso);
-	os_gpio_low(mosi);
-	os_gpio_low(sclk);
-	os_gpio_input(miso);
-	os_gpio_output(mosi);
-	os_gpio_output(sclk);
+	gpio_low(miso);
+	gpio_low(mosi);
+	gpio_low(sclk);
+	gpio_input(miso);
+	gpio_output(mosi);
+	gpio_output(sclk);
 
 	/* save pins */
 	master->miso = miso;
@@ -59,8 +59,8 @@ void spi_master_close(struct spi_master *master)
 int spi_open(struct spi_device *device, struct spi_master *master, uint8_t ss)
 {
 	ERROR_IF_R(os_ftdi_has_pin(ss), -1, "pin %d is not available", ss);
-	os_gpio_high(ss);
-	os_gpio_output(ss);
+	gpio_high(ss);
+	gpio_output(ss);
 	device->m = master;
 	device->ss = ss;
 	return 0;
@@ -80,7 +80,7 @@ int spi_transfer(struct spi_device *device, uint8_t *data, size_t size)
 	};
 
 	/* select chip */
-	os_gpio_low(device->ss);
+	gpio_low(device->ss);
 
 	/* send start header */
 	ERROR_IF_R(ftdi_write_data(ftdi, start, sizeof(start)) != sizeof(start), -1, "ftdi spi header write failed");
@@ -97,7 +97,7 @@ int spi_transfer(struct spi_device *device, uint8_t *data, size_t size)
 	ERROR_IF_R(err != size, -1, "ftdi read returned different amount of data than requested, returned: %d, requested: %d", err, size);
 
 	/* release select and push changes to chip */
-	os_gpio_high(device->ss);
+	gpio_high(device->ss);
 
 	return 0;
 }

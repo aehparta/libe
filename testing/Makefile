@@ -7,6 +7,9 @@ endif
 # determine target
 include $(LIBE_PATH)/target.mk
 
+# enable gpio
+# libe_USE += GPIO
+
 # enable spi
 # libe_USE += SPI LOG
 # ifdef TARGET_X86

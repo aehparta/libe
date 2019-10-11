@@ -192,6 +192,8 @@ int os_ftdi_has_pin(uint8_t pin)
 	return 0;
 }
 
+#ifdef USE_GPIO
+
 static int os_ftdi_gpio_check_pin(uint8_t pin, uint8_t *pin_range, uint8_t *ud, uint8_t *p)
 {
 	*pin_range = pin >> 4;
@@ -266,5 +268,7 @@ uint8_t os_ftdi_gpio_read(uint8_t pin)
 	ftdi_read_pins(fdevs[pin_range].ftdi, &pins);
 	return (pins & p) ? 1 : 0;
 }
+
+#endif
 
 #endif

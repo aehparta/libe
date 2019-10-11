@@ -7,6 +7,7 @@
 
 #ifndef _LIBE_GPIO_H_
 #define _LIBE_GPIO_H_
+#ifdef USE_GPIO
 
 #ifdef __cplusplus
 extern "C" {
@@ -49,4 +50,5 @@ extern "C" {
 }
 #endif
 
+#endif /* USE_GPIO */
 #endif /* _LIBE_GPIO_H_ */

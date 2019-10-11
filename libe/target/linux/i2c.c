@@ -1,19 +1,17 @@
 /*
- * libe cross-platform library: I2C linux drivers
+ * I2C linux drivers
  *
- * Authors:
- *  Antti Partanen <aehparta@iki.fi>
+ * Authors: Antti Partanen <aehparta@iki.fi>
  */
 
 #include <sys/types.h>
 #include <sys/stat.h>
+#include <sys/ioctl.h>
 #include <fcntl.h>
 #include <unistd.h>
 #include <linux/i2c-dev.h>
 #include <linux/i2c.h>
-#include <libe/os.h>
-#include <libe/error.h>
-#include <libe/i2c.h>
+#include <libe/libe.h>
 
 
 int i2c_master_open(struct i2c_master *master, void *context, uint32_t frequency, uint8_t scl, uint8_t sda)

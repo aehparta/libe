@@ -7,9 +7,6 @@
 #ifndef _LIBE_MCP3221_H_
 #define _LIBE_MCP3221_H_
 
-#include <stdint.h>
-#include <libe/i2c.h>
-
 #ifdef __cplusplus
 extern "C" {
 #endif

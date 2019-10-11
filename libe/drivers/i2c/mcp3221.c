@@ -6,7 +6,7 @@
 
 #ifdef USE_I2C
 
-#include "mcp3221.h"
+#include <libe/libe.h>
 
 
 int16_t mcp3221_read(struct i2c_device *dev)

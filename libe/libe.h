@@ -12,6 +12,10 @@
 extern "C" {
 #endif
 
+#include <stddef.h>
+#include <stdint.h>
+#include <stdbool.h>
+
 #include "os.h"
 #include "log.h"
 #include "wifi.h"
