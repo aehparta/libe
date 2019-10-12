@@ -1,0 +1,39 @@
+
+# example on how to use libe without internal build system
+
+APP = i2c_scan_plain
+
+# target specification, MCU is not really needed in linux, just as an example here
+CFLAGS = -DTARGET_X86 -DTARGET=x86 -DTARGET_LINUX -DMCU=x86
+# cpu frequency is not needed in x86, just as an example here
+CFLAGS += -DF_CPU=0
+# enable features needed
+CFLAGS += -DUSE_I2C -DUSE_LOG
+# include libe and config
+CFLAGS += -I$(LIBE_PATH) -include ../config.h
+# rest of clags
+CFLAGS += -Os -std=c11
+
+LDFLAGS = -lrt -lpthread
+
+# tools
+CC = gcc
+RM = ls
+
+# sources
+SRC = \
+	main.c \
+	$(LIBE_PATH)/libe/target/linux/log.c \
+	$(LIBE_PATH)/libe/target/linux/i2c.c \
+	$(LIBE_PATH)/libe/target/linux/os.c
+
+# object files from sources
+OBJ = $(SRC:%.c=%.o)
+
+all: $(APP)
+
+$(APP): $(OBJ)
+	$(CC) $(OBJ) -o $@ $(LDFLAGS)
+
+%.o: %.c
+	$(CC) -c $(CFLAGS) $< -o $@ 
