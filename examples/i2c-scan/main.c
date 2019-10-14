@@ -42,6 +42,7 @@ int main(int argc, char *argv[])
 
 	while (1) {
 		/* scan i2c bus */
+		printf("Scanning I2C bus...\r\n");
 		int found = 0;
 		for (int a = 0; a < 128; a++) {
 			os_wdt_reset();

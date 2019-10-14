@@ -20,13 +20,11 @@ int i2c_master_open(struct i2c_master *master, void *context, uint32_t frequency
 	/* bit rate register value */
 	TWBR = f_div / 2; /* using prescaler 1 from TWSR */
 	TWSR = 0x00;
-	TWCR = TWCR_BASE;
 
 	/* reset bus */
 	TWCR = TWCR_BASE | (1 << TWSTA);
 	while (!(TWCR & (1 << TWINT)));
 	TWCR = TWCR_BASE | (1 << TWSTO);
-	while (!(TWCR & (1 << TWINT)));
 
 	return 0;
 }
@@ -50,46 +48,61 @@ void i2c_close(struct i2c_device *dev)
 
 int i2c_read(struct i2c_device *dev, void *data, size_t size)
 {
-	return 0;
+	int err = -1;
+
+	/* send start and assume it was sent ok */
+	TWCR = TWCR_BASE | (1 << TWSTA);
+	while (!(TWCR & (1 << TWINT)));
+
+	/* send address + read (one) */
+	TWDR = dev->address | 1;
+	TWCR = TWCR_BASE;
+	/* wait for transmission and check response */
+	while (!(TWCR & (1 << TWINT)));
+	if ((TWSR & 0xf8) != 0x40) {
+		error_set_last("no ack received");
+		goto out_err;
+	}
+
+out_err:
+	return err;
 }
 
 int i2c_write(struct i2c_device *dev, void *data, size_t size)
 {
 	int err = -1;
 
+	/* send start and assume it was sent ok */
 	TWCR = TWCR_BASE | (1 << TWSTA);
 	while (!(TWCR & (1 << TWINT)));
+
 	/* send address + write (zero) */
 	TWDR = dev->address;
-	/* clear interrupt flag and start transmission */
 	TWCR = TWCR_BASE;
+	/* wait for transmission and check response */
 	while (!(TWCR & (1 << TWINT)));
 	if ((TWSR & 0xf8) != 0x18) {
 		error_set_last("no ack received");
 		goto out_err;
-	} else {
-		uint8_t *b = data;
-		for (size_t i = 0; i < size; i++) {
-			TWDR = *b;
-			/* clear interrupt flag and start transmission */
-			TWCR = TWCR_BASE;
-			/* wait for transmission */
-			while (!(TWCR & (1 << TWINT)));
-			/* check status */
-			if ((TWSR & 0xf8) != 0x28) {
-				error_set_last("no ack received after sending data");
-				goto out_err;
-			}
-			b++;
+	}
+
+	/* send data */
+	for (uint8_t *p = data; size > 0; size--, p++) {
+		TWDR = *p;
+		TWCR = TWCR_BASE;
+		/* wait for transmission and check response */
+		while (!(TWCR & (1 << TWINT)));
+		if ((TWSR & 0xf8) != 0x28) {
+			error_set_last("no ack received after sending data");
+			goto out_err;
 		}
 	}
 
 	err = 0;
 
 out_err:
+	/* always send stop */
 	TWCR = TWCR_BASE | (1 << TWSTO);
-	while (!(TWCR & (1 << TWINT)));
-	TWCR = TWCR_BASE;
 	return err;
 }
 

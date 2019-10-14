@@ -22,7 +22,11 @@
 #define AVR_LOG_UCSRC  UCSR0C
 #define AVR_LOG_UDRE   UDRE0
 #define AVR_LOG_UDR    UDR0
+#ifdef UBRR0
 #define AVR_LOG_UBRR   UBRR0
+#else
+#define AVR_LOG_UBRR   UBRR0L
+#endif
 #define AVR_LOG_TXEN   TXEN0
 #define AVR_LOG_RXEN   RXEN0
 #define AVR_LOG_UCSZ   UCSZ00
@@ -53,6 +57,11 @@ int log_init(void)
 {
 	/* calculate ubrr register value from baud */
 	AVR_LOG_UBRR = (F_CPU / (16UL * AVR_LOG_BAUD) - 1UL) & 0x0fff;
+#if defined(UBRRH)
+	UBRRH = 0x00;
+#elif defined(UBRR0H)
+	UBRR0H = 0x00;
+#endif
 
 	/* disable double */
 	AVR_LOG_UCSRA = 0;
