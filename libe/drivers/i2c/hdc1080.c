@@ -9,7 +9,7 @@
 #include "hdc1080.h"
 
 
-int hdc1080_open(struct i2c_device *dev, struct i2c_master *master)
+int8_t hdc1080_open(struct i2c_device *dev, struct i2c_master *master)
 {
 	uint8_t data[3];
 
@@ -31,11 +31,11 @@ int hdc1080_open(struct i2c_device *dev, struct i2c_master *master)
 	return 0;
 }
 
-int hdc1080_conf(struct i2c_device *dev, bool heater, bool mode, uint8_t t_res, uint8_t h_res)
+int hdc1080_conf(struct i2c_device *dev, bool heater, uint8_t t_res, uint8_t h_res)
 {
 	uint8_t data[3];
 	data[0] = 0x02;
-	data[1] = (heater << 5) | (mode << 4) | (t_res == 11 ? 1 : 0);
+	data[1] = (heater << 5) | (1 << 4) | (t_res == 11 ? 1 : 0);
 	if (h_res == 11) {
 		data[1] |= 1;
 	} else if (h_res == 8) {
@@ -45,7 +45,7 @@ int hdc1080_conf(struct i2c_device *dev, bool heater, bool mode, uint8_t t_res, 
 	return i2c_write(dev, data, 3);
 }
 
-int hdc1080_read(struct i2c_device *dev, float *t, float *h)
+int8_t hdc1080_read(struct i2c_device *dev, float *t, float *h)
 {
 	uint8_t data[4];
 
@@ -65,34 +65,6 @@ int hdc1080_read(struct i2c_device *dev, float *t, float *h)
 	}
 
 	return 0;
-}
-
-float hdc1080_read_temperature(struct i2c_device *dev)
-{
-	uint8_t data[2];
-
-	/* trigger measurement */
-	data[0] = 0x00;
-	IF_R(i2c_write(dev, data, 1), -274.0);
-
-	/* read until result is ready */
-	while (i2c_read(dev, data, 2));
-
-	return (float)(data[0] << 8 | data[1]) / 65536.0 * 165.0 - 40.0;
-}
-
-float hdc1080_read_humidity(struct i2c_device *dev)
-{
-	uint8_t data[2];
-
-	/* trigger measurement */
-	data[0] = 0x01;
-	IF_R(i2c_write(dev, data, 1), -1.0);
-
-	/* read until result is ready */
-	while (i2c_read(dev, data, 2));
-
-	return (float)(data[0] << 8 | data[1]) / 65536.0 * 100.0;
 }
 
 /* tool related functions */
@@ -115,7 +87,7 @@ int tool_i2c_hdc1080_exec(struct i2c_master *master, uint8_t address, char *comm
 {
 	int err = -1;
 	struct i2c_device dev;
-	bool heater = false, mode = 1;
+	bool heater = false;
 	uint8_t t_res = 14, h_res = 14;
 
 	/* only one command */
@@ -127,7 +99,6 @@ int tool_i2c_hdc1080_exec(struct i2c_master *master, uint8_t address, char *comm
 	/* parse extra arguments, stupid but simple way */
 	for (int i = 1; i < argc; i++) {
 		heater = strcmp(argv[i], "heat") == 0 ? true : heater;
-		mode = strcmp(argv[i], "mode=0") == 0 ? 0 : mode;
 		t_res = strcmp(argv[i], "t_res=11") == 0 ? 11 : t_res;
 		h_res = strcmp(argv[i], "h_res=11") == 0 ? 11 : h_res;
 		h_res = strcmp(argv[i], "h_res=8") == 0 ? 8 : h_res;
@@ -136,29 +107,17 @@ int tool_i2c_hdc1080_exec(struct i2c_master *master, uint8_t address, char *comm
 	/* open chip */
 	if (hdc1080_open(&dev, master)) {
 		fprintf(stderr, "Chip not found, reason: %s\n", error_last);
-	} else if (hdc1080_conf(&dev, heater, mode, t_res, h_res)) {
+	} else if (hdc1080_conf(&dev, heater, t_res, h_res)) {
 		fprintf(stderr, "Chip initialization failed, reason: %s\n", error_last);
 	} else {
 		/* execute command */
 		float t = -275.15, h = -1.0;
-		if (!mode) {
-			/* read temperature and humidity separately */
-			t = hdc1080_read_temperature(&dev);
-			h = hdc1080_read_humidity(&dev);
-			if (t >= -273.15 && h >= 0.0) {
-				printf("%.2f °C\n%.2f %%RH\n", t, h);
-				err = 0;
-			} else {
-				fprintf(stderr, "Failed to read chip.\n");
-			}
+		/* read temperature and humidity in sequence */
+		if (!hdc1080_read(&dev, &t, &h)) {
+			printf("%.2f °C\n%.2f %%RH\n", t, h);
+			err = 0;
 		} else {
-			/* read temperature and humidity in sequence */
-			if (!hdc1080_read(&dev, &t, &h)) {
-				printf("%.2f °C\n%.2f %%RH\n", t, h);
-				err = 0;
-			} else {
-				fprintf(stderr, "Failed to read chip.\n");
-			}
+			fprintf(stderr, "Failed to read chip.\n");
 		}
 	}
 

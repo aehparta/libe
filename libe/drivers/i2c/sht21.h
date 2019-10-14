@@ -19,15 +19,9 @@ extern "C" {
 #define SHT21_ADDR        0x40
 
 
-int sht21_open(struct i2c_device *dev, struct i2c_master *master);
-int sht21_conf(struct i2c_device *dev, bool heater, uint8_t res);
-
+int8_t sht21_open(struct i2c_device *dev, struct i2c_master *master, uint8_t ref, uint8_t res, uint8_t h_res);
 #define sht21_close(dev) i2c_close(dev)
-
-int sht21_read(struct i2c_device *dev, float *t, float *h);
-float sht21_read_temperature(struct i2c_device *dev);
-float sht21_read_humidity(struct i2c_device *dev);
-
+int8_t sht21_read(struct i2c_device *dev, float *t, float *h);
 
 /* hook when compiling i2c tool */
 #ifdef COMPILE_TOOL_I2C
