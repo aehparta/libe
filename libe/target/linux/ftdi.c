@@ -212,12 +212,12 @@ void os_ftdi_gpio_enable(uint8_t pin, bool direction)
 
 	IF_R(os_ftdi_gpio_check_pin(pin, &pin_range, &ud, &p),);
 
-	if ((fdevs[pin_range].dirs[ud] & p) == (direction == GPIO_OUTPUT ? p : 0)) {
+	if ((fdevs[pin_range].dirs[ud] & p) == (direction ? p : 0)) {
 		/* no changes, just return */
 		return;
 	}
 
-	if (direction == GPIO_OUTPUT) {
+	if (direction) {
 		fdevs[pin_range].dirs[ud] |= p;
 	} else {
 		fdevs[pin_range].dirs[ud] &= ~p;

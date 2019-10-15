@@ -9,7 +9,7 @@ ifeq ($(TARGET),)
     $(error TARGET not set)
 endif
 
-ifeq ($(TARGET),esp32)
+ifeq ($(TARGET),ESP32)
     # ESP32
     include $(LIBE_PATH)/build-esp32.mk
 else

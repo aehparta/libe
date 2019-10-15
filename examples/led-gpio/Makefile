@@ -4,11 +4,14 @@ ifeq ($(LIBE_PATH),)
     $(error LIBE_PATH not set)
 endif
 
+# default target is x86
+TARGET = X86
+
 # enable gpio
-libe_USE += GPIO
+USE += GPIO
 # enable log always on x86
 ifeq ($(TARGET),x86)
-	libe_USE += LOG
+	USE += LOG
 endif
 
 # init

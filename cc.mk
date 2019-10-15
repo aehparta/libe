@@ -4,27 +4,35 @@ ifeq ($(LIBE_PATH),)
     $(error LIBE_PATH not set)
 endif
 
+# get mcu from environment if set
+ifneq ($(mcu),)
+    MCU = $(shell echo $(mcu) | tr '[:lower:]' '[:upper:]')
+endif
+
+# get clock from environment if set
+ifneq ($(f_cpu),)
+    F_CPU = $(f_cpu)
+endif
+
 # create compilation options
 
 # target extentions for binaries and libraries
 TARGET_EXT ?= -$(TARGET)
 
 # target specific stuff
-ifeq ($(TARGET),x86)
+ifeq ($(TARGET),X86)
     # pc
-    MCU           ?= x86
-else ifeq ($(TARGET),rpi)
+else ifeq ($(TARGET),RPI)
     # raspberry
-    MCU           ?= rpi
-else ifeq ($(TARGET),esp32)
+else ifeq ($(TARGET),ESP32)
     # esp32
-    MCU           ?= esp32
-else ifeq ($(TARGET),avr)
+    MCU           ?= ESP32
+else ifeq ($(TARGET),AVR)
     # microchip avr
-    CC_PREFIX       ?= avr-
-    MCU             ?= atmega8
-    F_CPU           ?= 8000000L
-else ifeq ($(TARGET),pic8)
+    CC_PREFIX     ?= avr-
+    MCU           ?= ATMEGA8
+    F_CPU         ?= 8000000L
+else ifeq ($(TARGET),PIC8)
     # microchip pic 8-bit
     CC_PREFIX     ?= xc8-
     MCU           ?= 16F18345
@@ -65,13 +73,13 @@ NM          = $(CC_PREFIX)nm
 REMOVE      = rm
 
 # compiler options
-ifeq ($(TARGET),avr)
+ifeq ($(TARGET),AVR)
     libe_CFLAGS  += -DF_CPU=$(F_CPU)
     libe_CFLAGS  += -mmcu=$(MCU)
     libe_CFLAGS  += -ffunction-sections -fdata-sections
     libe_LDFLAGS += -mmcu=$(MCU)
     libe_LDFLAGS += -Wl,--gc-sections
-else ifeq ($(TARGET),pic8)
+else ifeq ($(TARGET),PIC8)
     libe_CFLAGS  += -DF_CPU=$(F_CPU)
     libe_CFLAGS  += -mcpu=$(MCU)
     libe_CFLAGS  += -fno-short-float -fno-short-double
@@ -112,10 +120,10 @@ else ifeq ($(TARGET),msp430)
     libe_LDFLAGS += -T$(MCU).ld
     libe_LDFLAGS += -Wl,--gc-sections -mhwmult=none
     #libe_LDFLAGS += -mlarge -mcode-region=either -mdata-region=either
-else ifeq ($(TARGET),x86)
-    libe_LDFLAGS += -lftdi1 -lrt -lpthread -lpcre
-else ifeq ($(TARGET),rpi)
-    libe_LDFLAGS += -lrt -lpthread -lpcre
+else ifeq ($(TARGET),X86)
+    libe_LDFLAGS += -lftdi1 -lrt -lpthread
+else ifeq ($(TARGET),RPI)
+    libe_LDFLAGS += -lrt -lpthread
 endif
 
 AR_FLAGS     ?= rcs
@@ -124,7 +132,7 @@ LIB_EXT      ?= .a
 BIN_EXT      ?= .elf
 OPTIMIZATION ?= s
 
-ifeq ($(TARGET),pic8)
+ifeq ($(TARGET),PIC8)
     libe_CFLAGS += -O$(OPTIMIZATION) -std=c99
 else
     libe_CFLAGS += -D_GNU_SOURCE -O$(OPTIMIZATION) -std=c11 -g -Wall -Wstrict-prototypes

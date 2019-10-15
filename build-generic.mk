@@ -7,7 +7,7 @@ LDFLAGS += $(libe_LDFLAGS)
 include $(LIBE_PATH)/cc.mk
 
 # build directory
-BUILDDIR ?= .build.$(TARGET)
+BUILDDIR ?= .build.$(shell echo $(TARGET) | tr '[:upper:]' '[:lower:]')
 
 # add color definitions
 include $(LIBE_PATH)/colors.mk
@@ -29,6 +29,8 @@ ifneq ($(MCU),)
 	@echo $(LDC_DGRAYB) "MCU: $(MCU), CLOCK: $(F_CPU)" $(LDC_DEFAULT)
 endif
 	@echo $(LDC_DGRAYB) "USE: $(libe_USE)" $(LDC_DEFAULT)
+	@echo $(LDC_DGRAYB) "CFLAGS: $(CFLAGS)" $(LDC_DEFAULT)
+	@echo $(LDC_DGRAYB) "LDFLAGS: $(LDFLAGS)" $(LDC_DEFAULT)
 
 build: clean $(BUILD_LIBS) $(BUILD_BINS)
 
@@ -85,7 +87,7 @@ ifneq ($(OBJDUMP),)
 endif
 $(BUILD_LIBS): $$(patsubst %.c,$(BUILDDIR)/%$(OBJ_EXT),$$($$@_SRC))
 	@echo $(LDC_BLUEB) "CREATE $@$(TARGET_EXT).a" $(LDC_DEFAULT)
-ifeq ($(TARGET),pic8)
+ifeq ($(TARGET),PIC8)
 	@$(AR) $(AR_FLAGS) -O$@$(TARGET_EXT)$(LIB_EXT) $^
 else
 	@$(AR) $(AR_FLAGS) $@$(TARGET_EXT)$(LIB_EXT) $^

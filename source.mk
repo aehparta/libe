@@ -4,10 +4,13 @@ ifeq ($(LIBE_PATH),)
     $(error LIBE_PATH not set)
 endif
 
+# target path helper
+T_PATH = $(LIBE_PATH)/libe/target/$(shell echo $(TARGET) | tr '[:upper:]' '[:lower:]')
+
 # libe sources
 libe_SRC = \
-    $(LIBE_PATH)/libe/target/$(TARGET)/os.c \
-    $(LIBE_PATH)/libe/target/$(TARGET)/gpio.c \
+    $(T_PATH)/os.c \
+    $(T_PATH)/gpio.c \
     $(LIBE_PATH)/libe/error.c
 
 # linux generic
@@ -20,7 +23,7 @@ endif
 
 # add gpio
 ifneq ($(filter $(libe_DEFINES),USE_GPIO),)
-    libe_SRC += $(LIBE_PATH)/libe/target/$(TARGET)/gpio.c
+    libe_SRC += $(T_PATH)/gpio.c
     # gpio drivers
     libe_SRC += $(LIBE_PATH)/libe/drivers/gpio/hd44780.c
 endif
@@ -30,14 +33,14 @@ ifneq ($(filter $(libe_DEFINES),USE_LOG),)
     ifdef TARGET_LINUX
         libe_SRC += $(LIBE_PATH)/libe/target/linux/log.c
     else
-        libe_SRC += $(LIBE_PATH)/libe/target/$(TARGET)/log.c
+        libe_SRC += $(T_PATH)/log.c
     endif
 endif
 
 # add spi and drivers for chips
 ifneq ($(filter $(libe_DEFINES),USE_SPI),)
     libe_SRC += \
-        $(LIBE_PATH)/libe/target/$(TARGET)/spi.c \
+        $(T_PATH)/spi.c \
         $(LIBE_PATH)/libe/drivers/spi/nrf.c
     ifneq ($(filter $(libe_DEFINES),USE_WIZNET),)
         ifeq ($(wildcard ioLibrary_Driver),)
@@ -71,18 +74,18 @@ ifneq ($(filter $(libe_DEFINES),USE_I2C),)
     else ifdef TARGET_LINUX
         libe_SRC += $(LIBE_PATH)/libe/target/linux/i2c.c
     else
-        libe_SRC += $(LIBE_PATH)/libe/target/$(TARGET)/i2c.c
+        libe_SRC += $(T_PATH)/i2c.c
     endif
 endif
 
 # add non-volatile memory (eeprom or similar)
 ifneq ($(filter $(libe_DEFINES),USE_NVM),)
-    libe_SRC += $(LIBE_PATH)/libe/target/$(TARGET)/nvm.c
+    libe_SRC += $(T_PATH)/nvm.c
 endif
 
 # add pwm
 ifneq ($(filter $(libe_DEFINES),USE_PWM),)
-    libe_SRC += $(LIBE_PATH)/libe/target/$(TARGET)/pwm.c
+    libe_SRC += $(T_PATH)/pwm.c
 endif
 
 # add software aes
