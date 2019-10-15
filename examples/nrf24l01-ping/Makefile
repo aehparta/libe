@@ -1,9 +1,4 @@
 
-# check that LIBE_PATH is set
-ifeq ($(LIBE_PATH),)
-    $(error LIBE_PATH not set)
-endif
-
 # default target is x86
 TARGET = X86
 
