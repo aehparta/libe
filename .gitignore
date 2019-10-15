@@ -12,3 +12,5 @@
 *.rlf
 *.hxl
 *.sublime-workspace
+sdkconfig
+docs/_build
