@@ -6,6 +6,7 @@ Welcome to libe's documentation!
    :maxdepth: 3
    :caption: Contents:
 
+   build-system
    os
    gpio
    i2c
