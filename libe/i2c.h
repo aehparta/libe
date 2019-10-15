@@ -36,32 +36,32 @@ extern "C" {
  * I2C functions
  */
 
-int i2c_master_open(struct i2c_master *master, void *context, uint32_t frequency, uint8_t scl, uint8_t sda);
+int8_t i2c_master_open(struct i2c_master *master, void *context, uint32_t frequency, uint8_t scl_pin, uint8_t sda_pin);
 void i2c_master_close(struct i2c_master *master);
-int i2c_open(struct i2c_device *dev, struct i2c_master *master, uint8_t address);
+int8_t i2c_open(struct i2c_device *dev, struct i2c_master *master, uint8_t address);
 void i2c_close(struct i2c_device *dev);
-int i2c_read(struct i2c_device *dev, void *data, size_t size);
-int i2c_write(struct i2c_device *dev, void *data, size_t size);
+int8_t i2c_read(struct i2c_device *dev, void *data, int8_t size);
+int8_t i2c_write(struct i2c_device *dev, void *data, int8_t size);
 
-static inline int i2c_write_byte(struct i2c_device *dev, uint8_t value)
+static inline int8_t i2c_write_byte(struct i2c_device *dev, uint8_t value)
 {
 	return i2c_write(dev, &value, 1);
 }
 
-static inline int i2c_write_reg_byte(struct i2c_device *dev, uint8_t reg, uint8_t value)
+static inline int8_t i2c_write_reg_byte(struct i2c_device *dev, uint8_t reg, uint8_t value)
 {
 	uint8_t data[2] = { reg, value };
 	return i2c_write(dev, data, 2);
 }
 
-static inline int i2c_read_reg_byte(struct i2c_device *dev, uint8_t reg)
+static inline uint8_t i2c_read_reg_byte(struct i2c_device *dev, uint8_t reg)
 {
 	uint8_t value;
-	if (i2c_write(dev, &reg, 1)) {
-		return -1;
+	if (i2c_write(dev, &reg, 1) != 1) {
+		return 0xff;
 	}
-	if (i2c_read(dev, &value, 1)) {
-		return -1;
+	if (i2c_read(dev, &value, 1) != 1) {
+		return 0xff;
 	}
 	return value;
 }

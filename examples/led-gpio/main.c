@@ -52,16 +52,13 @@ int main(void)
 
 		/* when using with constant pin number like this, this call will be very optimized */
 		gpio_low(CFG_LED_GPIO1);
-#ifdef TARGET_AVR
+
 		/* previous is same in AVR as writing this */
-		PORTB &= ~(1 << 1);
-#elif defined(LATB) && defined(TARGET_PIC8)
-		/* or in PIC with LATB */
-		LATB &= ~(1 << 1);
-#elif defined(PORTB) && defined(TARGET_PIC8)
-		/* or in older PIC with PORTB */
-		PORTB &= ~(1 << 1);
-#endif
+		// PORTx &= ~(bit << 1);
+		/* or in PIC with LATx */
+		// LATx &= ~(bit << 1);
+		/* or in older PIC with PORTx */
+		// PORTx &= ~(bit << 1);
 
 		/* this will call _delay_ms() in AVR, __delay_ms() in PIC, something else in other platforms */
 		os_delay_ms(500);

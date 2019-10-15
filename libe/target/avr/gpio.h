@@ -91,27 +91,27 @@ inline uint8_t gpio_read_inline(uint8_t pin)
 	switch (pin >> 3) {
 #ifdef PINA
 	case 0:
-		return PINA & _BV(pin & 7) ? 1 : 0;
+		return PINA & _BV(pin & 7);
 #endif
 #ifdef PINB
 	case 1:
-		return PINB & _BV(pin & 7) ? 1 : 0;
+		return PINB & _BV(pin & 7);
 #endif
 #ifdef PINC
 	case 2:
-		return PINC & _BV(pin & 7) ? 1 : 0;
+		return PINC & _BV(pin & 7);
 #endif
 #ifdef PIND
 	case 3:
-		return PIND & _BV(pin & 7) ? 1 : 0;
+		return PIND & _BV(pin & 7);
 #endif
 #ifdef PINE
 	case 4:
-		return PINE & _BV(pin & 7) ? 1 : 0;
+		return PINE & _BV(pin & 7);
 #endif
 #ifdef PINF
 	case 5:
-		return PINF & _BV(pin & 7) ? 1 : 0;
+		return PINF & _BV(pin & 7);
 #endif
 	}
 	return 0;

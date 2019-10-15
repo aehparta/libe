@@ -9,8 +9,8 @@
 #define I2C_BITBANG_SDA     27
 #define CFG_I2C_CONTEXT     NULL
 #define CFG_I2C_FREQUENCY   100000
-#define CFG_I2C_SCL         30
-#define CFG_I2C_SDA         29
+#define CFG_I2C_SCL         GPIOD6
+#define CFG_I2C_SDA         GPIOD5
 /* spi */
 #define CFG_SPI_CONTEXT     NULL
 #define CFG_SPI_FREQUENCY   0
@@ -18,19 +18,19 @@
 #define CFG_SPI_MOSI        0
 #define CFG_SPI_SCLK        0
 /* nrf24l01+ */
-#define CFG_NRF_SS          8
-#define CFG_NRF_CE          9
+#define CFG_NRF_SS          GPIOB0
+#define CFG_NRF_CE          GPIOB1
 /* hd44780 */
-#define CFG_HD44780_D4      8
-#define CFG_HD44780_D5      9
-#define CFG_HD44780_D6      10
-#define CFG_HD44780_D7      11
-#define CFG_HD44780_EN      14
-#define CFG_HD44780_RW      13
-#define CFG_HD44780_RS      12
+#define CFG_HD44780_D4      GPIOB0
+#define CFG_HD44780_D5      GPIOB1
+#define CFG_HD44780_D6      GPIOB2
+#define CFG_HD44780_D7      GPIOB3
+#define CFG_HD44780_EN      GPIOB6
+#define CFG_HD44780_RW      GPIOB5
+#define CFG_HD44780_RS      GPIOB4
 /* led */
-#define CFG_LED_GPIO0       8 /* = PB0 */
-#define CFG_LED_GPIO1       9 /* = PB1 */
+#define CFG_LED_GPIO0       GPIOB0
+#define CFG_LED_GPIO1       GPIOB2
 #endif
 
 
@@ -38,17 +38,17 @@
 /* i2c */
 #define CFG_I2C_CONTEXT     NULL
 #define CFG_I2C_FREQUENCY   100000
-#define CFG_I2C_SCL         0
-#define CFG_I2C_SDA         1
+#define CFG_I2C_SCL         GPIOA0
+#define CFG_I2C_SDA         GPIOA1
 /* spi */
 #define CFG_SPI_CONTEXT     NULL
 #define CFG_SPI_FREQUENCY   0
-#define CFG_SPI_MISO        2
-#define CFG_SPI_MOSI        1
-#define CFG_SPI_SCLK        0
+#define CFG_SPI_MISO        GPIOA2
+#define CFG_SPI_MOSI        GPIOA1
+#define CFG_SPI_SCLK        GPIOA0
 /* nrf24l01+ */
-#define CFG_NRF_SS          4
-#define CFG_NRF_CE          5
+#define CFG_NRF_SS          GPIOA4
+#define CFG_NRF_CE          GPIOA5
 /* led */
 #ifdef MCU_18F13K22
 #define CFG_LED_GPIO0       16 /* = RC0 */
