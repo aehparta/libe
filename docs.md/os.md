@@ -7,13 +7,13 @@
 
 Floating point time representation type. `long double` as default.
 
-##### avr
+##### AVR
 
-This is `double` in avr.
+This is `double` in AVR.
 
-##### pic8
+##### PIC, 8-bit
 
-This is `double` in pic8.
+This is `double` in PIC.
 
 ## Functions
 
@@ -23,7 +23,7 @@ This is `double` in pic8.
 Low level system setup. Should be always called first at start of application main entry point.
 Generally will at least set all ports as inputs.
 
-##### pic8
+##### PIC, 8-bit
 
 Will set all ports as digital using `ANSELx = 0x00` if analog port selection registers are available.
 
@@ -48,12 +48,12 @@ Will de-initialize system. On many smaller platforms this is just an empty defin
 
 This usually calls platform specific macro, like
 [`_delay_us()`](https://www.nongnu.org/avr-libc/user-manual/group__util__delay.html)
-in avr and `__delay_us()` in pic8.
+in AVR and `__delay_us()` in PIC.
 
 ### void os_delay_ms(t_us)
 * ⇒ `t_us` Sleep given amount of milliseconds
 
 This usually calls platform specific macro, like
 [`_delay_ms()`](https://www.nongnu.org/avr-libc/user-manual/group__util__delay.html)
-in avr and `__delay_ms()` in pic8.
+in AVR and `__delay_ms()` in PIC.
 
