@@ -12,10 +12,13 @@ These constants cover ports from A to H.
 GPIO implemented this way is more and less complex thing.
 On most platforms, like AVR, GPIO functions are inline and will often optimize as well as directly written native code.
 
-Compile
+Configuration
 ****************************************
 
-Flag ``USE_GPIO`` must be defined globally.
+Enable GPIO module
+========================================
+
+To enable GPIO, flag ``USE_GPIO`` must be defined globally.
 
 In Makefile:
 
@@ -25,7 +28,7 @@ In Makefile:
 
 From command line when compiling::
 	
-	make USE=GPIO
+	make use=gpio
 
 Functions
 ****************************************

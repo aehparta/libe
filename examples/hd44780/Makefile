@@ -4,11 +4,11 @@ ifeq ($(LIBE_PATH),)
     $(error LIBE_PATH not set)
 endif
 
-# enable spi
-libe_USE += HD44780
-ifdef TARGET_X86
-    libe_USE += FTDI
-endif
+# default target is x86
+TARGET = X86
+
+# enable ftdi when x86
+USE_X86 += FTDI
 
 # init make system
 include $(LIBE_PATH)/init.mk
@@ -23,5 +23,3 @@ include $(LIBE_PATH)/build.mk
 
 # programmable targets
 include $(LIBE_PATH)/flash/program.mk
-
--include local.mk

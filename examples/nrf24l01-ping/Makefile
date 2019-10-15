@@ -4,11 +4,12 @@ ifeq ($(LIBE_PATH),)
     $(error LIBE_PATH not set)
 endif
 
+# default target is x86
+TARGET = X86
+
 # enable spi
-libe_USE += SPI LOG
-ifdef TARGET_X86
-    libe_USE += FTDI
-endif
+USE += SPI LOG
+USE_X86 += FTDI
 
 # init make system
 include $(LIBE_PATH)/init.mk

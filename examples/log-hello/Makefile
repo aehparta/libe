@@ -4,8 +4,11 @@ ifeq ($(LIBE_PATH),)
     $(error LIBE_PATH not set)
 endif
 
+# default target is x86
+TARGET = X86
+
 # enable log
-libe_USE += LOG
+USE += LOG
 
 # init
 include $(LIBE_PATH)/init.mk

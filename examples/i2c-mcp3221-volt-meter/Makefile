@@ -4,8 +4,13 @@ ifeq ($(LIBE_PATH),)
     $(error LIBE_PATH not set)
 endif
 
+# default target is x86
+TARGET = X86
+
 # enable log and i2c
-libe_USE += I2C LOG
+USE += I2C LOG
+
+DEFINES_PIC8 += I2C_BITBANG_SCL=0 I2C_BITBANG_SDA=1
 
 # init
 include $(LIBE_PATH)/init.mk
@@ -14,14 +19,6 @@ include $(LIBE_PATH)/init.mk
 BUILD_BINS = i2c_mcp3221
 PROGRAM_BIN = i2c_mcp3221
 i2c_mcp3221_SRC = main.c $(libe_SRC)
-
-# include config or define things for pic8 xc8 compiler manually
-ifeq ($(TARGET),pic8)
-CFLAGS += -DI2C_BITBANG_SCL=0
-CFLAGS += -DI2C_BITBANG_SDA=1
-else
-CFLAGS += -include ../config.h
-endif
 
 # build
 include $(LIBE_PATH)/build.mk

@@ -13,11 +13,14 @@ endif
 
 # unravel uses from environment, Makefile and libe_USE
 libe_USE += $(foreach use,$(USE),$(use))
+libe_USE += $(foreach use,$(USE_$(TARGET)),$(use))
 libe_USE += $(foreach use,$(use),$(shell echo $(use) | tr '[:lower:]' '[:upper:]'))
 libe_DEFINES += $(foreach use,$(libe_USE),USE_$(use))
 
-# unravel defines from environment
-libe_DEFINES += $(foreach define,$(defines),$(shell echo $(define) | tr '[:lower:]' '[:upper:]'))
+# unravel defines
+libe_DEFINES += $(foreach define,$(DEFINES),$(define))
+libe_DEFINES += $(foreach define,$(DEFINES_$(TARGET)),$(define))
+libe_DEFINES += $(foreach define,$(defines),$(define))
 
 # debug
 ifeq ($(debug),0)

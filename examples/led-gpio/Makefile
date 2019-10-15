@@ -9,12 +9,10 @@ TARGET = X86
 
 # enable gpio
 USE += GPIO
-# enable log always on x86
-ifeq ($(TARGET),x86)
-	USE += LOG
-endif
+# enable log always on x86 and also ftdi
+USE_X86 += LOG FTDI
 
-# init
+# init build system
 include $(LIBE_PATH)/init.mk
 
 # our own sources etc
@@ -27,5 +25,3 @@ include $(LIBE_PATH)/build.mk
 
 # programmable targets
 include $(LIBE_PATH)/flash/program.mk
-
--include local.mk

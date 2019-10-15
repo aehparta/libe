@@ -4,8 +4,13 @@ ifeq ($(LIBE_PATH),)
     $(error LIBE_PATH not set)
 endif
 
+# default target is x86
+TARGET = X86
+
 # enable log and i2c
-libe_USE += I2C LOG
+USE += I2C LOG
+
+DEFINES_PIC8 += I2C_BITBANG_SCL=0 I2C_BITBANG_SDA=1
 
 # base init of makesystem
 include $(LIBE_PATH)/init.mk
@@ -16,16 +21,8 @@ PROGRAM_BIN = i2c_scan
 i2c_scan_SRC = main.c $(libe_SRC)
 
 # on avr use extensive printf to print floats
-ifdef TARGET_AVR
-    libe_LDFLAGS += -Wl,-u,vfprintf -lprintf_flt
-endif
-
-# include config or define things for pic8 xc8 compiler manually
-ifeq ($(TARGET),pic8)
-CFLAGS += -DI2C_BITBANG_SCL=0
-CFLAGS += -DI2C_BITBANG_SDA=1
-else
-CFLAGS += -include ../config.h
+ifeq ($(TARGET),AVR)
+    LDFLAGS += -Wl,-u,vfprintf -lprintf_flt
 endif
 
 # build
