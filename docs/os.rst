@@ -15,7 +15,7 @@ Functions
 
 .. c:function:: void os_quit(void)
 
-	Will de-initialize system. On many smaller platforms this is just an empty define and does nothing.
+	Will de-initialize system. On many smaller targets this is just an empty define and does nothing.
 
 .. c:function:: time_t os_timei(void)
 
@@ -29,13 +29,13 @@ Functions
 
 	:param time_t t: seconds to sleep
 
-	Sleep given amount of seconds. On most platforms this is stupid while-loop that simply blocks.
+	Sleep given amount of seconds. On most targets this is stupid while-loop that simply blocks.
 
 .. c:function:: void os_sleepf(os_time_t t)
 
 	:param os_time_t t: seconds to sleep, floating point, with fractions of second included
 
-	Sleep given amount of seconds. On most platforms this is stupid while-loop that simply blocks.
+	Sleep given amount of seconds. On most targets this is stupid while-loop that simply blocks.
 
 Macros
 ****************************************
@@ -44,7 +44,7 @@ Macros
 
 	:param delay: microseconds to sleep
 
-	This usually calls platform specific macro, like
+	This usually calls target specific macro, like
 	`_delay_us() <https://www.nongnu.org/avr-libc/user-manual/group__util__delay.html>`_
 	in AVR and ``__delay_us()`` in PIC.
 
@@ -52,7 +52,7 @@ Macros
 
 	:param delay: milliseconds to sleep
 
-	This usually calls platform specific macro, like
+	This usually calls target specific macro, like
 	`_delay_ms() <https://www.nongnu.org/avr-libc/user-manual/group__util__delay.html>`_
 	in AVR and ``__delay_ms()`` in PIC.
 

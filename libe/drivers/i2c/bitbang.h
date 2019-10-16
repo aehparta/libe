@@ -16,10 +16,14 @@
 extern "C" {
 #endif
 
-#if defined(TARGET_AVR) || defined(TARGET_PIC8)
+#ifdef USE_I2C_BITBANG_DYNAMIC
 
-#define I2C_BITBANG_IS_STATIC
+#define I2C_BITBANG_SCL (master->scl)
+#define I2C_BITBANG_SDA (master->sda)
 struct i2c_master {
+	uint8_t scl;
+	uint8_t sda;
+	uint32_t frequency;
 };
 struct i2c_device {
 	struct i2c_master *master;
@@ -29,12 +33,7 @@ struct i2c_device {
 
 #else
 
-#define I2C_BITBANG_SCL (master->scl)
-#define I2C_BITBANG_SDA (master->sda)
 struct i2c_master {
-	uint8_t scl;
-	uint8_t sda;
-	uint32_t frequency;
 };
 struct i2c_device {
 	struct i2c_master *master;

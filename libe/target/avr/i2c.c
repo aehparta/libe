@@ -14,6 +14,11 @@
 
 int i2c_master_open(struct i2c_master *master, void *context, uint32_t frequency, uint8_t scl, uint8_t sda)
 {
+	/* default to 100 kHz */
+	if (frequency < 1) {
+		frequency = 100000;
+	}
+
 	/* check that F_CPU isn't too small so that negatives values would appear */
 	float f_div = (F_CPU / frequency - 16);
 	f_div = f_div < 0 ? 0 : f_div;

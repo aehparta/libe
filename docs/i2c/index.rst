@@ -2,6 +2,10 @@
 I2C
 ########################################
 
+Only a single I2C driver can be used for the time being.
+If you use the bitbang driver then you cannot use target builtin I2C driver.
+Nor can you use two different builtin drivers.
+
 Configuration
 ****************************************
 
@@ -20,14 +24,45 @@ From command line when compiling::
 	
 	make use=i2c
 
+Master drivers
+****************************************
+
+X86, RPI and other linux based systems
+========================================
+
+Linux based systems use ``/dev/i2c`` interface:
+
+* ``context`` for :c:func:`i2c_master_open` must be an absolute path, i.e. ``"/dev/i2c-13"``.
+* rest of the parameters after ``context`` do not matter
+
+Opening multiple masters is supported.
+
+AVR
+========================================
+
+AVR's have only single I2C interface as far as I know so:
+
+* ``frequency`` must be valid for :c:func:`i2c_master_open` or use 0 to fallback to default 100 kHz
+
+	* closest available bitrate register value will then be calculated using :math:`(F\_CPU / frequency - 16) / 2`
+	* negative results are rounded up to zero
+
+* rest of the parameters do not matter, even ``master`` can be ``NULL``
+
 Bitbang driver
 ========================================
 
-Bitbang driver is available on all platforms that are GPIO capable.
-Mostly for optimizations sake, bitbang driver requires clock and data
-pins to be defined in compile time as defines.
+Bitbang driver is available on all targets that are GPIO capable.
 
-To enable bitbang driver with I2C, following conditions must be met:
+Static mode
+----------------------------------------
+
+Mostly for optimizations sake on small targets,
+the bitbang driver requires clock and data pins to be defined in compile time as defines.
+
+Because of this none of the parameters to :c:func:`i2c_master_open` matter.
+
+To enable static bitbang driver with I2C, following conditions must be met:
 
 * enable bitbang driver by defining ``USE_I2C_BITBANG`` globally with ``USE_I2C`` and ``USE_GPIO``
 * define I2C clock and data pins using ``I2C_BITBANG_SCL`` and ``I2C_BITBANG_SDA``
@@ -37,12 +72,53 @@ In Makefile:
 .. code-block:: makefile
 
 	USE += GPIO I2C I2C_BITBANG
-	DEFINES += I2C_BITBANG_SCL=<PIN> I2C_BITBANG_SDA=<PIN>
+	# define target specific pins
+	DEFINES_AVR += I2C_BITBANG_SCL=<PIN> I2C_BITBANG_SDA=<PIN>
+	DEFINES_PIC8 += I2C_BITBANG_SCL=<PIN> I2C_BITBANG_SDA=<PIN>
 
 From command line when compiling::
 	
 	make use="gpio i2c i2c_bitbang" defines="I2C_BITBANG_SCL=<PIN> I2C_BITBANG_SDA=<PIN>"
 
+Dynamic mode
+----------------------------------------
+
+I2C bitbang driver can also be configured to use dynamic run-time values
+for clock and data pins.
+
+This mode should not be used on smaller targets.
+It is slow and compiles ineffectively as a large piece of code example on targets AVR and PIC8.
+
+On the other hand, you can open multiple masters using different GPIO pins in this mode.
+
+To enable dynamic bitbang driver with I2C, following conditions must be met:
+
+* enable bitbang driver by defining ``USE_I2C_BITBANG`` globally with ``USE_I2C`` and ``USE_GPIO``
+* set bitbang driver into dynamic mode with ``USE_I2C_BITBANG_DYNAMIC``
+* call :c:func:`i2c_master_open` with valid values for ``master``, ``frequency``, ``scl_pin`` and ``sda_pin``
+
+In Makefile:
+
+.. code-block:: makefile
+
+	USE += GPIO I2C I2C_BITBANG USE_I2C_BITBANG_DYNAMIC
+
+Frequency
+----------------------------------------
+
+As default the frequency will be set using a delay according to following rules:
+
+* If dynamic mode is enabled using ``USE_I2C_BITBANG_DYNAMIC``, then delay is frequency given to :c:func:`i2c_master_open` and implemented as ``os_sleepf(1 / master->frequency)`` which is very inaccurate on smaller targets
+* If target is AVR then ``_delay_loop1(F_CPU / 200000 / 3)`` is used to achieve an inaccurate approximate of 100 kHz
+* On other targets ``os_delay_us(4)`` is used to achieve an inaccurate approximate of 100 kHz
+
+Bitbang driver also supports custom delay. This can be defined using ``I2C_BITBANG_DELAY_FUNC`` macro.
+
+In Makefile:
+
+.. code-block:: makefile
+
+	DEFINES += I2C_BITBANG_DELAY_FUNC=your_delay_func_or_macro()
 
 Functions
 ****************************************

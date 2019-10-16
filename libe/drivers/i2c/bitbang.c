@@ -8,7 +8,7 @@
 
 #include <libe/libe.h>
 
-#ifdef I2C_BITBANG_IS_STATIC
+#ifndef USE_I2C_BITBANG_DYNAMIC
 #ifndef I2C_BITBANG_SCL
 #error "I2C_BITBANG_SCL pin definition missing, it must be set when using I2C bitbang"
 #endif
@@ -17,15 +17,15 @@
 #endif
 #endif
 
-#if !defined(I2C_DELAY)
-#ifndef I2C_BITBANG_IS_STATIC
-/* on linux and other more powerfull platforms allow bitbang frequency to be defined */
-#define I2C_DELAY()             os_sleepf(1 / master->frequency)
-#elif TARGET_AVR
-#define I2C_DELAY()             _delay_loop_1(F_CPU / 200000 / 3)
+#if !defined(I2C_BITBANG_DELAY_FUNC)
+#ifdef USE_I2C_BITBANG_DYNAMIC
+#define I2C_BITBANG_DELAY_FUNC              os_sleepf(1 / master->frequency)
+#if defined(TARGET_AVR)
+/* on avr lock i2c clock to approximately 100 kHz using the better _delay_loop() instead of _delay_us() */
+#define I2C_BITBANG_DELAY_FUNC              _delay_loop_1(F_CPU / 200000 / 3)
 #else
 /* on other less powerfull platforms lock i2c clock to approximately 100 kHz */
-#define I2C_DELAY()             os_delay_us(4)
+#define I2C_BITBANG_DELAY_FUNC              os_delay_us(4)
 #endif
 #endif
 
@@ -34,7 +34,7 @@
 		gpio_output(I2C_BITBANG_SDA); \
 		gpio_high(I2C_BITBANG_SCL); \
 		gpio_low(I2C_BITBANG_SDA); \
-		I2C_DELAY(); \
+		I2C_BITBANG_DELAY_FUNC; \
 		gpio_low(I2C_BITBANG_SCL); \
 	} while (0)
 
@@ -42,9 +42,9 @@
 	do { \
 		gpio_output(I2C_BITBANG_SDA); \
 		gpio_low(I2C_BITBANG_SDA); \
-		I2C_DELAY(); \
+		I2C_BITBANG_DELAY_FUNC; \
 		gpio_high(I2C_BITBANG_SCL); \
-		I2C_DELAY(); \
+		I2C_BITBANG_DELAY_FUNC; \
 		gpio_high(I2C_BITBANG_SDA); /* this sets pull-up on in avr */ \
 		gpio_input(I2C_BITBANG_SDA); \
 	} while (0)
@@ -52,17 +52,17 @@
 #define I2C_WRITE(state) \
 	do { \
 		gpio_set(I2C_BITBANG_SDA, (state)); \
-		I2C_DELAY(); \
+		I2C_BITBANG_DELAY_FUNC; \
 		gpio_high(I2C_BITBANG_SCL); \
-		I2C_DELAY(); \
+		I2C_BITBANG_DELAY_FUNC; \
 		gpio_low(I2C_BITBANG_SCL); \
 	} while (0)
 
 #define I2C_READ(var, mask) \
 	do { \
-		I2C_DELAY(); \
+		I2C_BITBANG_DELAY_FUNC; \
 		gpio_high(I2C_BITBANG_SCL); \
-		I2C_DELAY(); \
+		I2C_BITBANG_DELAY_FUNC; \
 		if (!gpio_read(I2C_BITBANG_SDA)) { \
 			(var) &= mask; \
 		} \
@@ -73,9 +73,9 @@
 	do { \
 		gpio_high(I2C_BITBANG_SDA); /* this sets pull-up on in avr */ \
 		gpio_input(I2C_BITBANG_SDA); \
-		I2C_DELAY(); \
+		I2C_BITBANG_DELAY_FUNC; \
 		gpio_high(I2C_BITBANG_SCL); \
-		I2C_DELAY(); \
+		I2C_BITBANG_DELAY_FUNC; \
 		if (gpio_read(I2C_BITBANG_SDA)) { \
 			/* no ack received */ \
 			I2C_STOP(); \
@@ -88,7 +88,7 @@
 int i2c_master_open(struct i2c_master *master, void *context, uint32_t frequency, uint8_t scl, uint8_t sda)
 {
 	/* save information */
-#ifndef I2C_BITBANG_IS_STATIC
+#ifdef USE_I2C_BITBANG_DYNAMIC
 	master->scl = scl;
 	master->sda = sda;
 	master->frequency = frequency;
@@ -143,7 +143,7 @@ void i2c_close(struct i2c_device *dev)
 
 int i2c_read(struct i2c_device *dev, void *data, size_t size)
 {
-#ifndef I2C_BITBANG_IS_STATIC
+#ifdef USE_I2C_BITBANG_DYNAMIC
 	struct i2c_master *master = dev->master;
 #endif
 
@@ -182,7 +182,7 @@ int i2c_read(struct i2c_device *dev, void *data, size_t size)
 
 int i2c_write(struct i2c_device *dev, void *data, size_t size)
 {
-#ifndef I2C_BITBANG_IS_STATIC
+#ifdef USE_I2C_BITBANG_DYNAMIC
 	struct i2c_master *master = dev->master;
 #endif
 	

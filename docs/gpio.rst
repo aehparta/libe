@@ -10,7 +10,7 @@ For convenience ``GPIOxy`` constants have been defined where ``x`` is the letter
 These constants cover ports from A to H.
 
 GPIO implemented this way is more and less complex thing.
-On most platforms, like AVR, GPIO functions are inline and will often optimize as well as directly written native code.
+On most targets, like AVR, GPIO functions are inline and will often optimize as well as directly written native code.
 
 Configuration
 ****************************************

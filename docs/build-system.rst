@@ -62,7 +62,7 @@ Makefile options
 
 .. describe:: F_CPU_<TARGET> = <FREQUENCY>
 
-	Target specific CPU clock speed needed by some platforms like AVR and 8-bit PIC.
+	Target specific CPU clock speed needed by some targets like AVR and 8-bit PIC.
 
 	Define in Makefile:
 
