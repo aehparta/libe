@@ -8,11 +8,12 @@
 #include <sys/stat.h>
 #include <unistd.h>
 #endif
-/* cannot include a file globally in xc8 */
-#ifdef TARGET_PIC8
-#include "../config.h"
-#endif
 
+#ifndef I2C_CONTEXT
+#define I2C_CONTEXT NULL
+#define I2C_SCL 0
+#define I2C_SDA 0
+#endif
 
 #ifdef TARGET_ESP32
 int app_main(int argc, char *argv[])
@@ -20,7 +21,7 @@ int app_main(int argc, char *argv[])
 int main(int argc, char *argv[])
 #endif
 {
-	void *context = CFG_I2C_CONTEXT;
+	void *context = I2C_CONTEXT;
 	struct i2c_master i2c;
 	struct i2c_device dev;
 
@@ -30,7 +31,7 @@ int main(int argc, char *argv[])
 
 	/* check i2c device if using linux */
 #ifdef USE_FTDI
-	ERROR_IF_R(os_ftdi_use(OS_FTDI_GPIO_0_TO_63, CFG_FTDI_VID, CFG_FTDI_PID, CFG_FTDI_DESC, CFG_FTDI_SERIAL), 1, "unable to open ftdi device for gpio 0-63");
+	ERROR_IF_R(os_ftdi_use(OS_FTDI_GPIO_0_TO_63, FTDI_VID, FTDI_PID, FTDI_DESC, FTDI_SERIAL), 1, "unable to open ftdi device for gpio 0-63");
 #endif
 #if defined(TARGET_LINUX) && !defined(USE_I2C_BITBANG)
 	ERROR_IF_R(argc < 2, 1, "give i2c device as first argument");
@@ -38,7 +39,7 @@ int main(int argc, char *argv[])
 #endif
 
 	/* open i2c */
-	ERROR_IF_R(i2c_master_open(&i2c, context, CFG_I2C_FREQUENCY, CFG_I2C_SCL, CFG_I2C_SDA), 1, "unable to open i2c device");
+	ERROR_IF_R(i2c_master_open(&i2c, context, 0, I2C_SCL, I2C_SDA), 1, "unable to open i2c device");
 
 	while (1) {
 		/* scan i2c bus */

@@ -51,7 +51,7 @@ int main(int argc, char *argv[])
 #endif
 
 	/* open i2c */
-	ERROR_IF_R(i2c_master_open(&master, context, 0, 0, 0), 1, "unable to open i2c device");
+	ERROR_IF_R(i2c_master_open(&master, context, 0, I2C_SCL, I2C_SDA), 1, "unable to open i2c device");
 
 	/* try to find a temperature and humidity chip */
 	for (int i = 0; drivers[i].open; i++) {

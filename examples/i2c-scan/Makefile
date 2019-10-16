@@ -7,6 +7,9 @@ USE += I2C LOG
 
 DEFINES_PIC8 += I2C_BITBANG_SCL=0 I2C_BITBANG_SDA=1
 
+# x86
+DEFINES_X86 += 
+
 # base init of makesystem
 include $(LIBE_PATH)/init.mk
 
