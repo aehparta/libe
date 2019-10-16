@@ -9,7 +9,7 @@
 #include <libe/libe.h>
 
 
-int os_init(void)
+int8_t os_init(void)
 {
 	/* every pin as input as default */
 #ifdef DDRA

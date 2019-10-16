@@ -13,9 +13,15 @@ libe_DEFINES += $(foreach use,$(libe_USE),USE_$(use))
 
 # unravel defines
 libe_DEFINES += $(foreach define,$(DEFINES),$(define))
-libe_DEFINES += $(foreach define,$(DEFINES_$(TARGET)),$(define))
-libe_DEFINES += $(foreach define,$(DEFINES_$(MCU)),$(define))
-libe_DEFINES += $(foreach define,$(defines),$(define))
+ifneq ($(DEFINES_$(TARGET)),)
+	libe_DEFINES += $(foreach define,$(DEFINES_$(TARGET)),$(define))
+endif
+ifneq ($(DEFINES_$(MCU)),)
+	libe_DEFINES += $(foreach define,$(DEFINES_$(MCU)),$(define))
+endif
+ifneq ($(defines),)
+	libe_DEFINES += $(foreach define,$(defines),$(define))
+endif
 
 # debug
 ifeq ($(debug),0)
@@ -28,17 +34,31 @@ ifeq ($(DEBUG),1)
 endif
 
 # add defines to cflags
-libe_CFLAGS += $(foreach define,$(libe_DEFINES),-D$(define))
+ifneq ($(libe_DEFINES),)
+	libe_CFLAGS += $(foreach define,$(libe_DEFINES),-D$(define))
+endif
 
 # add libe path to includes
 libe_CFLAGS += -I$(LIBE_PATH)
 
 # unravel cflags
-CFLAGS += $(foreach flag,$(CFLAGS_$(TARGET)),$(flag))
-CFLAGS += $(foreach flag,$(CFLAGS_$(MCU)),$(flag))
-CFLAGS += $(foreach flag,$(cflags),$(flag))
+ifneq ($(CFLAGS_$(TARGET)),)
+	CFLAGS += $(foreach flag,$(CFLAGS_$(TARGET)),$(flag))
+endif
+ifneq ($(CFLAGS_$(MCU)),)
+	CFLAGS += $(foreach flag,$(CFLAGS_$(MCU)),$(flag))
+endif
+ifneq ($(cflags),)
+	CFLAGS += $(foreach flag,$(cflags),$(flag))
+endif
 
 # unravel ldflags
-LDFLAGS += $(foreach flag,$(LDFLAGS_$(TARGET)),$(flag))
-LDFLAGS += $(foreach flag,$(LDFLAGS_$(MCU)),$(flag))
-LDFLAGS += $(foreach flag,$(ldflags),$(flag))
+ifneq ($(LDFLAGS_$(TARGET)),)
+	LDFLAGS += $(foreach flag,$(LDFLAGS_$(TARGET)),$(flag))
+endif
+ifneq ($(LDFLAGS_$(MCU)),)
+	LDFLAGS += $(foreach flag,$(LDFLAGS_$(MCU)),$(flag))
+endif
+ifneq ($(ldflags),)
+	LDFLAGS += $(foreach flag,$(ldflags),$(flag))
+endif

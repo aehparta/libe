@@ -5,6 +5,8 @@
  * Authors: Antti Partanen <aehparta@iki.fi>
  */
 
+#ifdef USE_GPIO
+
 #include <libe/libe.h>
 
 
@@ -117,3 +119,5 @@ int hd44780_goto_xy(struct hd44780_device *display, int x, int y)
 	hd44780_cmd(display, 0x80 | (y * 40 + x));
 	return 0;
 }
+
+#endif

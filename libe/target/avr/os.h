@@ -16,7 +16,7 @@ extern "C" {
 
 #define OS_DELAY_AS_MACROS_OR_INLINE    1
 
-int os_init(void);
+int8_t os_init(void);
 #define os_quit()
 
 #define os_wdt_reset() wdt_reset()

@@ -10,7 +10,7 @@
 #include <libe/log.h>
 
 
-int os_init(void)
+int8_t os_init(void)
 {
 	/* all as digital inputs as default */
 #ifdef TRISA

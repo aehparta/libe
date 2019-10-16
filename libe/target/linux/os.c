@@ -18,7 +18,7 @@
 #include <libe/log.h>
 
 
-int os_init(void)
+int8_t os_init(void)
 {
 #ifdef USE_FTDI
 	os_ftdi_init();

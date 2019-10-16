@@ -3,7 +3,6 @@
  */
 
 #include <libe/libe.h>
-#include "../config.h"
 
 
 #ifdef TARGET_ESP32
@@ -12,7 +11,7 @@ int app_main(int argc, char *argv[])
 int main(void)
 #endif
 {
-	uint8_t pin = CFG_LED_GPIO0;
+	uint8_t pin = LED_GPIO0;
 
 	/* low level init: initializes some system basics depending on platform */
 	os_init();
@@ -25,7 +24,7 @@ int main(void)
 
 	/* ftdi init */
 #ifdef USE_FTDI
-	ERROR_IF_R(os_ftdi_use(OS_FTDI_GPIO_0_TO_63, CFG_FTDI_VID, CFG_FTDI_PID, CFG_FTDI_DESC, CFG_FTDI_SERIAL), 1, "unable to open ftdi device for gpio 0-63");
+	ERROR_IF_R(os_ftdi_use(OS_FTDI_GPIO_0_TO_63, FTDI_VID, FTDI_PID, FTDI_DESC, FTDI_SERIAL), 1, "unable to open ftdi device for gpio 0-63");
 #endif
 
 	/* gpio init:
@@ -37,7 +36,7 @@ int main(void)
 	 * in this example PB4(12) and PB5(13) are used in AVR platform
 	 */
 	gpio_output(pin);
-	gpio_output(CFG_LED_GPIO1);
+	gpio_output(LED_GPIO1);
 
 	while (1) {
 		/* clear watchdog, it is on as default example in pic8 */
@@ -51,7 +50,7 @@ int main(void)
 		gpio_high(pin);
 
 		/* when using with constant pin number like this, this call will be very optimized */
-		gpio_low(CFG_LED_GPIO1);
+		gpio_low(LED_GPIO1);
 
 		/* previous is same in AVR as writing this */
 		// PORTx &= ~(bit << 1);
@@ -65,7 +64,7 @@ int main(void)
 
 		/* toggle pins on the other direction */
 		gpio_low(pin);
-		gpio_high(CFG_LED_GPIO1);
+		gpio_high(LED_GPIO1);
 
 		/* same delay again */
 		os_delay_ms(500);

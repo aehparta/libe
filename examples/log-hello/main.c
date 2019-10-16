@@ -3,7 +3,6 @@
  */
 
 #include <libe/libe.h>
-#include "../config.h"
 
 
 #ifdef TARGET_ESP32

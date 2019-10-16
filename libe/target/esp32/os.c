@@ -12,7 +12,7 @@
 #include <sdkconfig.h>
 
 
-int os_init(void)
+int8_t os_init(void)
 {
 	srand((unsigned int)(os_timef() * 1000));
 	return 0;

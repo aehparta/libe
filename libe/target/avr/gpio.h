@@ -2,8 +2,8 @@
  * AVR specific gpio.
  */
 
-#ifndef _TARGET_GPIO_H_
-#define _TARGET_GPIO_H_
+#ifndef _TARGET_AVR_GPIO_H_
+#define _TARGET_AVR_GPIO_H_
 
 #ifdef __cplusplus
 extern "C" {
@@ -146,4 +146,4 @@ uint8_t gpio_read_callable(uint8_t pin);
 }
 #endif
 
-#endif /* _TARGET_GPIO_H_ */
+#endif /* _TARGET_AVR_GPIO_H_ */

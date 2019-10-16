@@ -12,7 +12,7 @@ extern "C" {
 #define _XTAL_FREQ          F_CPU
 #include <xc.h>
 
-int os_init(void);
+int8_t os_init(void);
 #define os_quit()
 #define os_wdt_reset() __asm("clrwdt")
 

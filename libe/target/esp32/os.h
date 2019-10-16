@@ -5,10 +5,11 @@
 #ifndef _TARGET_ESP32_OS_H_
 #define _TARGET_ESP32_OS_H_
 
-#include <driver/gpio.h>
-
-int os_init(void);
+int8_t os_init(void);
 void os_quit(void);
 #define os_wdt_reset()
+
+#define os_delay_ms(x)      os_sleepf((os_time_t)x / 1000.0)
+#define os_delay_us(x)      os_sleepf((os_time_t)x / 1000.0 / 1000.0)
 
 #endif /* _TARGET_ESP32_OS_H_ */

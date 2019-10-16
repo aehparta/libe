@@ -30,7 +30,7 @@
 #define CFG_HD44780_RS      GPIOB4
 /* led */
 #define CFG_LED_GPIO0       GPIOB0
-#define CFG_LED_GPIO1       GPIOB2
+#define CFG_LED_GPIO1       GPIOB1
 #endif
 
 
