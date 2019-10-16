@@ -36,7 +36,9 @@ libe_CFLAGS += -I$(LIBE_PATH)
 # unravel cflags
 CFLAGS += $(foreach flag,$(CFLAGS_$(TARGET)),$(flag))
 CFLAGS += $(foreach flag,$(CFLAGS_$(MCU)),$(flag))
+CFLAGS += $(foreach flag,$(cflags),$(flag))
 
 # unravel ldflags
 LDFLAGS += $(foreach flag,$(LDFLAGS_$(TARGET)),$(flag))
 LDFLAGS += $(foreach flag,$(LDFLAGS_$(MCU)),$(flag))
+LDFLAGS += $(foreach flag,$(ldflags),$(flag))

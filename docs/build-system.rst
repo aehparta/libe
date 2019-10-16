@@ -5,6 +5,8 @@ Build system
 Command line options for make
 ****************************************
 
+All option names must be lower case for not to override internals.
+
 .. describe:: target=<target>
 
 .. describe:: mcu=<mcu>
@@ -13,8 +15,15 @@ Command line options for make
 
 .. describe:: use="<use1> <use2>"
 
-.. describe:: defines="<define1> <define2"
+.. describe:: defines="<define1> <define2>"
 
+.. describe:: cflags="<flag1> <flag2>"
+	
+	Directly add these to ``CFLAGS``.
+
+.. describe:: ldflags="<flag1> <flag2>"
+
+	Directly add these to ``LDFLAGS``.
 
 Makefile options
 ****************************************
