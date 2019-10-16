@@ -30,7 +30,7 @@ Makefile options
 
 .. describe:: TARGET = <TARGET>
 
-	In Makefile you **MUST** use upper case for target. In command line you can also use lower case.
+	In Makefile you **MUST** use upper case for target value. In command line you can also use lower case.
 
 	Define default target in Makefile:
 
