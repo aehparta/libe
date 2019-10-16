@@ -4,9 +4,22 @@ ifeq ($(LIBE_PATH),)
     $(error LIBE_PATH not set)
 endif
 
+# check target specific mcu
+ifneq ($(MCU_$(TARGET)),)
+    MCU = $(shell echo $(MCU_$(TARGET)) | tr '[:lower:]' '[:upper:]')
+endif
+
 # get mcu from environment if set
 ifneq ($(mcu),)
     MCU = $(shell echo $(mcu) | tr '[:lower:]' '[:upper:]')
+endif
+
+# check target and mcu specific clock frequency
+ifneq ($(F_CPU_$(TARGET)),)
+    F_CPU = $(F_CPU_$(TARGET))
+endif
+ifneq ($(F_CPU_$(MCU)),)
+    F_CPU = $(F_CPU_$(MCU))
 endif
 
 # get clock from environment if set
@@ -31,22 +44,22 @@ else ifeq ($(TARGET),AVR)
     # microchip avr
     CC_PREFIX     ?= avr-
     MCU           ?= ATMEGA8
-    F_CPU         ?= 8000000L
+    F_CPU         ?= 8000000
 else ifeq ($(TARGET),PIC8)
     # microchip pic 8-bit
     CC_PREFIX     ?= xc8-
     MCU           ?= 16F18345
-    F_CPU         ?= 16000000L
+    F_CPU         ?= 16000000
 else ifeq ($(TARGET),pic16)
     # microchip pic 16-bit
     CC_PREFIX     ?= xc16-
     MCU           ?= 24F16KA102
-    F_CPU         ?= 16000000L
+    F_CPU         ?= 16000000
 else ifeq ($(TARGET),pic32)
     # microchip pic 32-bit
     CC_PREFIX     ?= xc32-
     MCU           ?= 32MM0256GPM028
-    F_CPU         ?= 16000000L
+    F_CPU         ?= 16000000
 else ifeq ($(TARGET),msp430)
     # ti msp430
 #     ifeq ($(MSP430_BASE_DIR),)
@@ -58,7 +71,7 @@ else ifeq ($(TARGET),msp430)
     MSP430_INC_DIR     ?= $(HOME)/ti/ccs920/ccs/ccs_base/msp430/include_gcc/
     CC_PREFIX          ?= msp430-elf-
     MCU                ?= msp430f1121
-    F_CPU              ?= 4000000L
+    F_CPU              ?= 4000000
 else
     $(error libe: unsupported target or target not set)
 endif
@@ -74,13 +87,11 @@ REMOVE      = rm
 
 # compiler options
 ifeq ($(TARGET),AVR)
-    libe_CFLAGS  += -DF_CPU=$(F_CPU)
-    libe_CFLAGS  += -mmcu=$(MCU)
+    libe_CFLAGS  += -mmcu=$(shell echo $(MCU) | tr '[:upper:]' '[:lower:]')
     libe_CFLAGS  += -ffunction-sections -fdata-sections
     libe_LDFLAGS += -mmcu=$(MCU)
     libe_LDFLAGS += -Wl,--gc-sections
 else ifeq ($(TARGET),PIC8)
-    libe_CFLAGS  += -DF_CPU=$(F_CPU)
     libe_CFLAGS  += -mcpu=$(MCU)
     libe_CFLAGS  += -fno-short-float -fno-short-double
     libe_LDFLAGS += -mcpu=$(MCU) -Wl,--gc-sections
@@ -93,7 +104,6 @@ else ifeq ($(TARGET),PIC8)
     OBJDUMP  =
     OPTIMIZATION ?= 2
 else ifeq ($(TARGET),pic16)
-    libe_CFLAGS  += -DF_CPU=$(F_CPU)
     libe_CFLAGS  += -mcpu=$(MCU)
     libe_CFLAGS  += -ffunction-sections -fdata-sections -fomit-frame-pointer -no-legacy-libc -mpa
     libe_LDFLAGS += -T p$(MCU).gld
@@ -102,7 +112,6 @@ else ifeq ($(TARGET),pic16)
     BIN2HEX  = xc16-bin2hex
     OPTIMIZATION ?= 2
 else ifeq ($(TARGET),pic32)
-    libe_CFLAGS  += -DF_CPU=$(F_CPU)
     libe_CFLAGS  += -mprocessor=$(MCU)
     libe_CFLAGS  += -ffunction-sections -fdata-sections -no-legacy-libc
     libe_LDFLAGS += -mprocessor=$(MCU)
@@ -110,7 +119,6 @@ else ifeq ($(TARGET),pic32)
     libe_LDFLAGS += -Wl,--defsym=_min_heap_size=0,--gc-sections,--no-code-in-dinit,--no-dinit-in-serial-mem,-Map=$(TARGET).map,--cref
     OPTIMIZATION ?= 2
 else ifeq ($(TARGET),msp430)
-    libe_CFLAGS  += -DF_CPU=$(F_CPU)
     libe_CFLAGS  += -mmcu=$(MCU)
     libe_CFLAGS  += -I$(MSP430_INC_DIR)
     libe_CFLAGS  += -ffunction-sections -fdata-sections
@@ -131,6 +139,17 @@ OBJ_EXT      ?= .o
 LIB_EXT      ?= .a
 BIN_EXT      ?= .elf
 OPTIMIZATION ?= s
+
+# add target definition
+libe_CFLAGS += -DTARGET=$(TARGET) -DTARGET_$(TARGET)
+# add MCU definition
+ifneq ($(MCU),)
+    libe_CFLAGS += -DMCU=$(MCU) -DMCU_$(MCU)
+endif
+# add MCU clock frequency
+ifneq ($(F_CPU),)
+    libe_CFLAGS += -DF_CPU=$(F_CPU)UL
+endif
 
 ifeq ($(TARGET),PIC8)
     libe_CFLAGS += -O$(OPTIMIZATION) -std=c99

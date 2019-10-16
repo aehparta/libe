@@ -2,39 +2,138 @@
 Build system
 ########################################
 
-To be written.
-
-Configuration
+Command line options for make
 ****************************************
 
-.. envvar:: TARGET = <TARGET>
+.. describe:: target=<target>
 
-	Only required configuration value.
+.. describe:: mcu=<mcu>
 
-.. envvar:: MCU_<TARGET> = <MCU>
+.. describe:: f_cpu=<frequency>
 
-	Target specific MCU. Could be ATMEGA8 for AVR targets or 16F87 for 8-bit PIC targets for example.
+.. describe:: use="<use1> <use2>"
 
-.. envvar:: F_CPU_<TARGET> = <FREQUENCY>
+.. describe:: defines="<define1> <define2"
+
+
+Makefile options
+****************************************
+
+.. describe:: TARGET = <TARGET>
+
+	In Makefile you **MUST** use upper case for target. In command line you can also use lower case.
+
+	Define default target in Makefile:
+
+	.. code-block:: makefile
+
+		TARGET = X86
+
+	Then compile using another target::
+
+		make target=avr
+
+
+.. describe:: MCU_<TARGET> = <MCU>
+
+	Target specific default MCU. Could be ATmega8 for AVR targets or 16F87 for 8-bit PIC targets.
+
+	Define default MCU in Makefile:
+
+	.. code-block:: makefile
+
+		TARGET = X86
+		MCU_AVR = atmega328p
+		MCU_PIC8 = 16f84a
+
+	Then compile using another MCU::
+
+		make target=avr mcu=atmega8
+		make target=pic8 mcu=16f87
+
+.. describe:: F_CPU_<TARGET> = <FREQUENCY>
 
 	Target specific CPU clock speed needed by some platforms like AVR and 8-bit PIC.
 
-.. envvar:: F_CPU_<MCU> = <FREQUENCY>
+	Define in Makefile:
+
+	.. code-block:: makefile
+
+		F_CPU_AVR = 1000000
+
+	Then override from command line::
+
+		make f_cpu=8000000
+
+.. describe:: F_CPU_<MCU> = <FREQUENCY>
 
 	Same as ``F_CPU_<TARGET>`` but ``MCU`` specific.
 
-.. envvar:: USE += ...
-.. envvar:: USE_<TARGET> += ...
-.. envvar:: USE_<MCU> += ...
+.. describe:: USE += ...
 
-.. envvar:: DEFINES += ...
+	Add used components. Normally you want some since almost nothing is included as default.
 
-.. envvar:: DEFINES_<TARGET> += ...
+	Makefile with I2C and logging enabled:
+
+	.. code-block:: makefile
+
+		USE += I2C LOG
+
+	Then compile by adding GPIO and using I2C in bitbang mode (which needs GPIO)::
+
+		make use="gpio i2c_bitbang"
+
+.. describe:: USE_<TARGET> += ...
+
+	Same as ``USE`` but ``TARGET`` specific.
+
+.. describe:: USE_<MCU> += ...
+
+	Same as ``USE`` but ``MCU`` specific.
+
+.. describe:: DEFINES += ...
+
+	Add defines. This basically is a shorthand for ``CFLAGS += -D<DEFINE>``.
+
+	Usage in Makefile:
+
+	.. code-block:: makefile
+
+		DEFINES += MY_DEFINE OTHER_DEFINE
+		DEFINES += MY_PI=3.1415
+
+	From command line::
+
+		make defines="CMD_DEFINE1 CMD_DEFINE2=123"
+
+.. describe:: DEFINES_<TARGET> += ...
 
 	Same as ``DEFINES`` but ``TARGET`` specific.
 
-.. envvar:: DEFINES_<MCU> += ...
+.. describe:: DEFINES_<MCU> += ...
 
 	Same as ``DEFINES`` but ``MCU`` specific.
 
+.. describe:: CFLAGS += ...
 
+	Compiler flags.
+
+.. describe:: CFLAGS_<TARGET> += ...
+
+	Compiler flags.
+
+.. describe:: CFLAGS_<MCU> += ...
+
+	Compiler flags.
+
+.. describe:: LDFLAGS += ...
+
+	Linker flags.
+
+.. describe:: LDFLAGS_<TARGET> += ...
+
+	Linker flags.
+
+.. describe:: LDFLAGS_<MCU> += ...
+
+	Linker flags.

@@ -4,8 +4,17 @@ ifeq ($(LIBE_PATH),)
     $(error LIBE_PATH not set)
 endif
 
-# determine target
-include $(LIBE_PATH)/target.mk
+TARGET = X86
+
+MCU_AVR = atmega128
+F_CPU_ATMEGA328 = 1000
+
+USE = I2C
+USE_X86 = I2C_BITBANG FTDI GPIO
+USE_ATMEGA8 = LOG
+
+CFLAGS_ATMEGA8 = -Dxxx=yyy
+LDFLAGS_ATMEGA8 = -lm
 
 # enable gpio
 # libe_USE += GPIO
@@ -16,9 +25,8 @@ include $(LIBE_PATH)/target.mk
 #     libe_USE += FTDI
 # endif
 
-# flags and sources
-include $(LIBE_PATH)/flags.mk
-include $(LIBE_PATH)/source.mk
+# init
+include $(LIBE_PATH)/init.mk
 
 # our own sources etc
 BUILD_BINS = testing
