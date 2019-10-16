@@ -16,8 +16,8 @@
 
 struct driver {
 	char *name;
-	int (*open)(struct i2c_device *dev, struct i2c_master *master);
-	int (*read)(struct i2c_device *dev, float *t, float *h);
+	int8_t (*open)(struct i2c_device *dev, struct i2c_master *master, uint8_t ref, int8_t res, int8_t h_res);
+	int8_t (*read)(struct i2c_device *dev, float *t, float *h);
 };
 
 struct driver drivers[] = {
@@ -33,7 +33,7 @@ int app_main(int argc, char *argv[])
 int main(int argc, char *argv[])
 #endif
 {
-	void *context = CFG_I2C_CONTEXT;
+	void *context = NULL;
 	struct i2c_master master;
 	struct i2c_device dev;
 
@@ -51,11 +51,11 @@ int main(int argc, char *argv[])
 #endif
 
 	/* open i2c */
-	ERROR_IF_R(i2c_master_open(&master, context, CFG_I2C_FREQUENCY, CFG_I2C_SCL, CFG_I2C_SDA), 1, "unable to open i2c device");
+	ERROR_IF_R(i2c_master_open(&master, context, 0, 0, 0), 1, "unable to open i2c device");
 
 	/* try to find a temperature and humidity chip */
 	for (int i = 0; drivers[i].open; i++) {
-		if (drivers[i].open(&dev, &master) == 0) {
+		if (drivers[i].open(&dev, &master, 0, 0, 0) == 0) {
 
 			/* should call optional *_conf() function here too */
 

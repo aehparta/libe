@@ -60,19 +60,23 @@ Makefile options
 		make target=avr mcu=atmega8
 		make target=pic8 mcu=16f87
 
-.. describe:: F_CPU_<TARGET> = <FREQUENCY>
+.. describe:: F_CPU = <FREQUENCY>
 
-	Target specific CPU clock speed needed by some targets like AVR and 8-bit PIC.
+	Generic default CPU clock speed needed by some targets like AVR and 8-bit PIC.
 
 	Define in Makefile:
 
 	.. code-block:: makefile
 
-		F_CPU_AVR = 1000000
+		F_CPU = 1000000
 
 	Then override from command line::
 
 		make f_cpu=8000000
+
+.. describe:: F_CPU_<TARGET> = <FREQUENCY>
+
+	Same as ``F_CPU_<TARGET>`` but ``TARGET`` specific.
 
 .. describe:: F_CPU_<MCU> = <FREQUENCY>
 

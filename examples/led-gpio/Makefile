@@ -4,8 +4,15 @@ TARGET = X86
 
 # enable gpio
 USE += GPIO
-# enable log always on x86 and also ftdi
+# enable log and ftdi always on x86
 USE_X86 += LOG FTDI
+
+# set default clock speed to 1 MHz for this example
+F_CPU=1000000
+
+# target specific settings
+MCU_AVR=atmega8
+MCU_PIC8=16f84a
 
 # init build system
 include $(LIBE_PATH)/init.mk

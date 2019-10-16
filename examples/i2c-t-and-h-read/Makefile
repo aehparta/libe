@@ -5,6 +5,15 @@ TARGET = X86
 # enable log and i2c
 USE += I2C LOG
 
+# set default clock speed to 1 MHz for this example
+F_CPU=1000000
+
+# avr defaults
+MCU_AVR=atmega8
+
+# pic defaults
+MCU_PIC8=16f87
+USE += I2C_BITBANG
 DEFINES_PIC8 += I2C_BITBANG_SCL=0 I2C_BITBANG_SDA=1
 
 # base init of makesystem

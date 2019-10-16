@@ -9,7 +9,7 @@
 #include "hdc1080.h"
 
 
-int8_t hdc1080_open(struct i2c_device *dev, struct i2c_master *master)
+int8_t hdc1080_open(struct i2c_device *dev, struct i2c_master *master, uint8_t ref, int8_t res, int8_t h_res)
 {
 	uint8_t data[3];
 
@@ -18,31 +18,28 @@ int8_t hdc1080_open(struct i2c_device *dev, struct i2c_master *master)
 
 	/* read manufacturer id */
 	data[0] = 0xfe;
-	IF_R(i2c_write(dev, data, 1), -1);
-	IF_R(i2c_read(dev, data, 2), -1);
+	IF_R(i2c_write(dev, data, 1) != 1, -1);
+	IF_R(i2c_read(dev, data, 2) != 2, -1);
 	error_if(data[0] != 0x54 || data[1] != 0x49, -1, "invalid manufacturer id read from chip");
 
 	/* read device id */
 	data[0] = 0xff;
-	IF_R(i2c_write(dev, data, 1), -1);
-	IF_R(i2c_read(dev, data, 2), -1);
+	IF_R(i2c_write(dev, data, 1) != 1, -1);
+	IF_R(i2c_read(dev, data, 2) != 2, -1);
 	error_if(data[0] != 0x10 || data[1] != 0x50, -1, "invalid device id read from chip");
 
-	return 0;
-}
-
-int hdc1080_conf(struct i2c_device *dev, bool heater, uint8_t t_res, uint8_t h_res)
-{
-	uint8_t data[3];
+	/* configure */
 	data[0] = 0x02;
-	data[1] = (heater << 5) | (1 << 4) | (t_res == 11 ? 1 : 0);
+	data[1] = (1 << 4) | (res == 11 ? 1 : 0);
 	if (h_res == 11) {
 		data[1] |= 1;
 	} else if (h_res == 8) {
 		data[1] |= 2;
 	}
 	data[2] = 0x00;
-	return i2c_write(dev, data, 3);
+	error_if(i2c_write(dev, data, 3) != 3, -2, "unable to configure chip");
+
+	return 0;
 }
 
 int8_t hdc1080_read(struct i2c_device *dev, float *t, float *h)
@@ -51,10 +48,10 @@ int8_t hdc1080_read(struct i2c_device *dev, float *t, float *h)
 
 	/* trigger measurement */
 	data[0] = 0x00;
-	IF_R(i2c_write(dev, data, 1), -1);
+	IF_R(i2c_write(dev, data, 1) != 1, -1);
 
 	/* read until result is ready */
-	while (i2c_read(dev, data, 4));
+	while (!i2c_read(dev, data, 4));
 
 	/* convert result bits to actual temperature */
 	if (t) {

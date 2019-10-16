@@ -39,27 +39,18 @@ else ifeq ($(TARGET),RPI)
     # raspberry
 else ifeq ($(TARGET),ESP32)
     # esp32
-    MCU           ?= ESP32
 else ifeq ($(TARGET),AVR)
     # microchip avr
     CC_PREFIX     ?= avr-
-    MCU           ?= ATMEGA8
-    F_CPU         ?= 8000000
 else ifeq ($(TARGET),PIC8)
     # microchip pic 8-bit
     CC_PREFIX     ?= xc8-
-    MCU           ?= 16F18345
-    F_CPU         ?= 16000000
 else ifeq ($(TARGET),pic16)
     # microchip pic 16-bit
     CC_PREFIX     ?= xc16-
-    MCU           ?= 24F16KA102
-    F_CPU         ?= 16000000
 else ifeq ($(TARGET),pic32)
     # microchip pic 32-bit
     CC_PREFIX     ?= xc32-
-    MCU           ?= 32MM0256GPM028
-    F_CPU         ?= 16000000
 else ifeq ($(TARGET),msp430)
     # ti msp430
 #     ifeq ($(MSP430_BASE_DIR),)
@@ -89,7 +80,7 @@ REMOVE      = rm
 ifeq ($(TARGET),AVR)
     libe_CFLAGS  += -mmcu=$(shell echo $(MCU) | tr '[:upper:]' '[:lower:]')
     libe_CFLAGS  += -ffunction-sections -fdata-sections
-    libe_LDFLAGS += -mmcu=$(MCU)
+    libe_LDFLAGS += -mmcu=$(shell echo $(MCU) | tr '[:upper:]' '[:lower:]')
     libe_LDFLAGS += -Wl,--gc-sections
 else ifeq ($(TARGET),PIC8)
     libe_CFLAGS  += -mcpu=$(MCU)
