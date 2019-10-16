@@ -29,19 +29,19 @@ pins to be defined in compile time as defines.
 
 To enable bitbang driver with I2C, following conditions must be met:
 
-* enable bitbang driver by defining ``USE_I2C_BITBANG`` globally with ``USE_I2C``
+* enable bitbang driver by defining ``USE_I2C_BITBANG`` globally with ``USE_I2C`` and ``USE_GPIO``
 * define I2C clock and data pins using ``I2C_BITBANG_SCL`` and ``I2C_BITBANG_SDA``
 
 In Makefile:
 
 .. code-block:: makefile
 
-	USE += I2C I2C_BITBANG
+	USE += GPIO I2C I2C_BITBANG
 	DEFINES += I2C_BITBANG_SCL=<PIN> I2C_BITBANG_SDA=<PIN>
 
 From command line when compiling::
 	
-	make use="i2c i2c_bitbang" defines="I2C_BITBANG_SCL=<PIN> I2C_BITBANG_SDA=<PIN>"
+	make use="gpio i2c i2c_bitbang" defines="I2C_BITBANG_SCL=<PIN> I2C_BITBANG_SDA=<PIN>"
 
 
 Functions
