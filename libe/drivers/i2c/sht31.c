@@ -15,43 +15,41 @@
 #include "sht31.h"
 
 
-int sht31_open(struct i2c_device *dev, struct i2c_master *master)
+int8_t sht31_open(struct i2c_device *dev, struct i2c_master *master, uint8_t ref, int8_t res, int8_t h_res)
 {
-	return sht31_open_addr(dev, master, SHT31_ADDR);
-}
-
-int sht31_open_addr(struct i2c_device *dev, struct i2c_master *master, uint8_t address)
-{
+	ref = ref ? SHT31_ADDR : ref;
 	/* try to detect sht31 */
-	return i2c_open(dev, master, address);
-}
-
-int sht31_conf(struct i2c_device *dev, bool heater, uint8_t repeatability)
-{
-	uint8_t data[2];
-
-	/* heater */
-	data[0] = 0x30;
-	data[1] = heater ? 0x6d : 0x66;
-	IF_R(i2c_write(dev, data, 2), -1);
-
+	error_if(i2c_open(dev, master, ref), -1, "sht31 not detected");
 	/* save repeatability */
-	dev->driver_bits[0] = repeatability;
-
+	dev->driver_bits[0] = res;
 	return 0;
 }
 
-int sht31_read(struct i2c_device *dev, float *t, float *h)
+int8_t sht31_heater(struct i2c_device *dev, bool on)
+{
+	uint8_t data[2];
+	data[0] = 0x30;
+	data[1] = on ? 0x6d : 0x66;
+	int8_t err = i2c_write(dev, data, 2);
+	if (err == 2) {
+		return 0;
+	} else if (err < 0) {
+		return -1;
+	}
+	return -2;
+}
+
+int8_t sht31_read(struct i2c_device *dev, float *t, float *h)
 {
 	uint8_t data[6];
 
 	/* issue read */
 	data[0] = 0x24;
 	data[1] = dev->driver_bits[0];
-	IF_R(i2c_write(dev, data, 2), -1);
+	IF_R(i2c_write(dev, data, 2) != 2, -1);
 
 	/* wait for result */
-	while (i2c_read(dev, data, 6));
+	while (i2c_read(dev, data, 6) != 6);
 
 	/* convert result */
 	if (t) {
@@ -62,20 +60,6 @@ int sht31_read(struct i2c_device *dev, float *t, float *h)
 	}
 
 	return 0;
-}
-
-float sht31_read_temperature(struct i2c_device *dev)
-{
-	float v;
-	IF_R(sht31_read(dev, &v, NULL), -274.0);
-	return v;
-}
-
-float sht31_read_humidity(struct i2c_device *dev)
-{
-	float v;
-	IF_R(sht31_read(dev, NULL, &v), -1.0);
-	return v;
 }
 
 /* tool related functions */
@@ -113,20 +97,32 @@ int tool_i2c_sht31_exec(struct i2c_master *master, uint8_t address, char *comman
 	address = address ? address : SHT31_ADDR;
 
 	/* open chip */
-	if (sht31_open_addr(&dev, master, address)) {
-		fprintf(stderr, "Chip not found, reason: %s\n", error_last);
-	} else if (sht31_conf(&dev, heater, SHT31_REPEATABILITY_HIGH)) {
+	err = sht31_open(&dev, master, address, SHT31_REPEATABILITY_HIGH, 0);
+	if (err == -2) {
 		fprintf(stderr, "Chip initialization failed, reason: %s\n", error_last);
-	} else {
-		/* execute command */
-		float t = -275.15, h = -1.0;
-		/* read temperature and humidity in sequence */
-		if (!sht31_read(&dev, &t, &h)) {
-			printf("%.2f °C\n%.2f %%RH\n", t, h);
-			err = 0;
-		} else {
-			fprintf(stderr, "Failed to read chip.\n");
+		return -1;
+	} else if (err < 0) {
+		fprintf(stderr, "Chip not found, reason: %s\n", error_last);
+		return -1;
+	}
+
+	/* setup heater */
+	if (heater) {
+		if (sht31_heater(&dev, heater) < 0) {
+			fprintf(stderr, "Unable to enable heater, reason: %s\n", error_last);
+			sht31_close(&dev);
+			return -1;
 		}
+	}
+
+	/* execute command */
+	float t = -275.15, h = -1.0;
+	/* read temperature and humidity in sequence */
+	if (!sht31_read(&dev, &t, &h)) {
+		printf("%.2f °C\n%.2f %%RH\n", t, h);
+		err = 0;
+	} else {
+		fprintf(stderr, "Failed to read chip.\n");
 	}
 
 	sht31_close(&dev);

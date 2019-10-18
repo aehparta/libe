@@ -21,6 +21,7 @@ extern "C" {
 
 int8_t hdc1080_open(struct i2c_device *dev, struct i2c_master *master, uint8_t ref, int8_t res, int8_t h_res);
 #define hdc1080_close(dev) i2c_close(dev)
+int8_t hdc1080_heater(struct i2c_device *dev, bool on);
 int8_t hdc1080_read(struct i2c_device *dev, float *t, float *h);
 
 /* hook when compiling i2c tool */

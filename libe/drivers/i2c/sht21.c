@@ -9,56 +9,112 @@
 #include "sht21.h"
 
 
-int sht21_open(struct i2c_device *dev, struct i2c_master *master)
+int8_t sht21_open(struct i2c_device *dev, struct i2c_master *master, uint8_t ref, int8_t res, int8_t h_res)
 {
 	/* try to detect sht21 */
-	return i2c_open(dev, master, SHT21_ADDR);
+	error_if(i2c_open(dev, master, SHT21_ADDR), -1, "sht21 not detected");
 	/* hdc1080 has the same address but there is no way to identify sht21 */
-}
 
-int sht21_conf(struct i2c_device *dev, bool heater, uint8_t res)
-{
+	if (res < 0) {
+		/* skip configuration */
+		return 0;
+	}
+
 	uint8_t data[2] = { 0xe7, 0x00 };
 
 	/* read user register first */
-	IF_R(i2c_write(dev, data, 1), -1);
-	IF_R(i2c_read(dev, data + 1, 1), -1);
+	error_if(i2c_write(dev, data, 1) != 1, -2, "sht21 user register read failed");
+	error_if(i2c_read(dev, data + 1, 1) != 1, -2, "sht21 user register read failed");
 
 	/* clear other than reserved bits */
 	data[1] &= 0x38;
 
 	/* setup resolution */
 	switch (res) {
-	case 0:
+	default:
+	case 14:
 		/* RH = 12 bits, T = 14 bits */
 		/* this is zero (and default) */
 		break;
-	case 1:
+	case 12:
 		/* RH = 8 bits, T = 12 bits */
 		data[1] |= 0x01;
 		break;
-	case 2:
+	case 13:
 		/* RH = 10 bits, T = 13 bits */
 		data[1] |= 0x80;
 		break;
-	case 3:
+	case 11:
 		/* RH = 11 bits, T = 11 bits */
 		data[1] |= 0x81;
 		break;
-	default:
-		error_set_last("invalid resolution setting");
-		return -1;
 	}
 
+	/* save configuration so later modifications dont need to read it */
+	dev->driver_bits[0] = data[1];
+
 	/* heater */
-	data[1] |= heater << 2;
+	// data[1] |= heater << 2;
 
 	/* write */
 	data[0] = 0xe6;
-	return i2c_write(dev, data, 2);
+	error_if(i2c_write(dev, data, 2) != 2, -2, "sht21 configuration failed");
+
+	return 0;
 }
 
-int sht21_read(struct i2c_device *dev, float *t, float *h)
+int8_t sht21_heater(struct i2c_device *dev, bool on)
+{
+	uint8_t data[2];
+	data[0] = 0xe6;
+	data[1] = on ? dev->driver_bits[0] | 0x04 : dev->driver_bits[0] & 0xfb;
+	int8_t err = i2c_write(dev, data, 2);
+	if (err == 2) {
+		/* configuration written */
+		return 0;
+	} else if (err < 0) {
+		/* device did not respond or other similar error */
+		return err;
+	}
+	/* device propably responded, but something else went wrong */
+	return -2;
+}
+
+static float sht21_read_temperature(struct i2c_device *dev)
+{
+	uint8_t data[3];
+
+	/* trigger measurement */
+	data[0] = 0xf3;
+	IF_R(i2c_write(dev, data, 1) != 1, -1);
+
+	/* read until result is ready */
+	while (i2c_read(dev, data, 3) != 3);
+
+	/* clear status bits */
+	data[1] &= 0xfc;
+
+	return (float)(data[0] << 8 | data[1]) / 65536.0 * 175.72 - 46.85;
+}
+
+static float sht21_read_humidity(struct i2c_device *dev)
+{
+	uint8_t data[3];
+
+	/* trigger measurement */
+	data[0] = 0xf5;
+	IF_R(i2c_write(dev, data, 1) != 1, -1);
+
+	/* read until result is ready */
+	while (i2c_read(dev, data, 3) != 3);
+
+	/* clear status bits */
+	data[1] &= 0xfc;
+
+	return (float)(data[0] << 8 | data[1]) / 65536.0 * 125.0 - 6.0;
+}
+
+int8_t sht21_read(struct i2c_device *dev, float *t, float *h)
 {
 	/* read */
 	if (t) {
@@ -75,40 +131,6 @@ int sht21_read(struct i2c_device *dev, float *t, float *h)
 	}
 
 	return 0;
-}
-
-float sht21_read_temperature(struct i2c_device *dev)
-{
-	uint8_t data[3];
-
-	/* trigger measurement */
-	data[0] = 0xf3;
-	IF_R(i2c_write(dev, data, 1), -1);
-
-	/* read until result is ready */
-	while (i2c_read(dev, data, 3));
-
-	/* clear status bits */
-	data[1] &= 0xfc;
-
-	return (float)(data[0] << 8 | data[1]) / 65536.0 * 175.72 - 46.85;
-}
-
-float sht21_read_humidity(struct i2c_device *dev)
-{
-	uint8_t data[3];
-
-	/* trigger measurement */
-	data[0] = 0xf5;
-	IF_R(i2c_write(dev, data, 1), -1);
-
-	/* read until result is ready */
-	while (i2c_read(dev, data, 3));
-
-	/* clear status bits */
-	data[1] &= 0xfc;
-
-	return (float)(data[0] << 8 | data[1]) / 65536.0 * 125.0 - 6.0;
 }
 
 /* tool related functions */
@@ -151,20 +173,32 @@ int tool_i2c_sht21_exec(struct i2c_master *master, uint8_t address, char *comman
 	}
 
 	/* open chip */
-	if (sht21_open(&dev, master)) {
-		fprintf(stderr, "Chip not found, reason: %s\n", error_last);
-	} else if (sht21_conf(&dev, heater, res)) {
+	err = sht21_open(&dev, master, 0, t_res, h_res);
+	if (err == -2) {
 		fprintf(stderr, "Chip initialization failed, reason: %s\n", error_last);
-	} else {
-		/* execute command */
-		float t = -275.15, h = -1.0;
-		/* read temperature and humidity in sequence */
-		if (!sht21_read(&dev, &t, &h)) {
-			printf("%.2f °C\n%.2f %%RH\n", t, h);
-			err = 0;
-		} else {
-			fprintf(stderr, "Failed to read chip.\n");
+		return -1;
+	} else if (err < 0) {
+		fprintf(stderr, "Chip not found, reason: %s\n", error_last);
+		return -1;
+	}
+
+	/* setup heater */
+	if (heater) {
+		if (sht21_heater(&dev, heater) < 0) {
+			fprintf(stderr, "Unable to enable heater, reason: %s\n", error_last);
+			sht21_close(&dev);
+			return -1;
 		}
+	}
+
+	/* execute command */
+	float t = -275.15, h = -1.0;
+	/* read temperature and humidity in sequence */
+	if (!sht21_read(&dev, &t, &h)) {
+		printf("%.2f °C\n%.2f %%RH\n", t, h);
+		err = 0;
+	} else {
+		fprintf(stderr, "Failed to read chip.\n");
 	}
 
 	sht21_close(&dev);

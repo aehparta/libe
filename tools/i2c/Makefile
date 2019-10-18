@@ -1,18 +1,9 @@
 
-# check that LIBE_PATH is set
-ifeq ($(LIBE_PATH),)
-    $(error LIBE_PATH not set)
-endif
+TARGET = X86
+USE += I2C ERROR
 
-# determine target
-include $(LIBE_PATH)/target.mk
-
-# enable i2c
-libe_USE += I2C
-
-# flags and sources
-include $(LIBE_PATH)/flags.mk
-include $(LIBE_PATH)/source.mk
+# init build
+include $(LIBE_PATH)/init.mk
 
 # our own sources etc
 BUILD_BINS = libe_i2c

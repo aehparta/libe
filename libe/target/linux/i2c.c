@@ -16,7 +16,7 @@
 #include <libe/libe.h>
 
 
-int i2c_master_open(struct i2c_master *master, void *context, uint32_t frequency, uint8_t scl, uint8_t sda)
+int8_t i2c_master_open(struct i2c_master *master, void *context, uint32_t frequency, uint8_t scl, uint8_t sda)
 {
 	struct stat st;
 
@@ -39,7 +39,7 @@ void i2c_master_close(struct i2c_master *master)
 	}
 }
 
-int i2c_open(struct i2c_device *dev, struct i2c_master *master, uint8_t address)
+int8_t i2c_open(struct i2c_device *dev, struct i2c_master *master, uint8_t address)
 {
 	dev->master = master;
 	dev->address = address;
@@ -52,7 +52,7 @@ void i2c_close(struct i2c_device *dev)
 
 }
 
-int i2c_read(struct i2c_device *dev, void *data, size_t size)
+int8_t i2c_read(struct i2c_device *dev, void *data, int8_t size)
 {
     struct i2c_msg msgs[1];
     struct i2c_rdwr_ioctl_data msgset[1];
@@ -70,7 +70,7 @@ int i2c_read(struct i2c_device *dev, void *data, size_t size)
     return 0;
 }
 
-int i2c_write(struct i2c_device *dev, void *data, size_t size)
+int8_t i2c_write(struct i2c_device *dev, void *data, int8_t size)
 {
     struct i2c_msg msgs[1];
     struct i2c_rdwr_ioctl_data msgset[1];

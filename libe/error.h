@@ -19,8 +19,8 @@ extern char *error_last;
 
 #else 
 
-#define error_if(condition, ret, msg)
-#define error_if_errno(condition, ret)
+#define error_if(condition, ret, msg) do { if (condition) { return ret; } } while(0)
+#define error_if_errno(condition, ret) do { if (condition) { return ret; } } while(0)
 #define error_set_last(msg)
 
 #endif

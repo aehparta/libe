@@ -14,19 +14,24 @@ int8_t hdc1080_open(struct i2c_device *dev, struct i2c_master *master, uint8_t r
 	uint8_t data[3];
 
 	/* try to detect hdc1080, sht21 has the same address */
-	IF_R(i2c_open(dev, master, HDC1080_ADDR), -1);
+	error_if(i2c_open(dev, master, HDC1080_ADDR), -10, "hdc1080 not detected");
 
 	/* read manufacturer id */
 	data[0] = 0xfe;
 	IF_R(i2c_write(dev, data, 1) != 1, -1);
 	IF_R(i2c_read(dev, data, 2) != 2, -1);
-	error_if(data[0] != 0x54 || data[1] != 0x49, -1, "invalid manufacturer id read from chip");
+	error_if(data[0] != 0x54 || data[1] != 0x49, -11, "invalid manufacturer id read from hdc1080");
 
 	/* read device id */
 	data[0] = 0xff;
 	IF_R(i2c_write(dev, data, 1) != 1, -1);
 	IF_R(i2c_read(dev, data, 2) != 2, -1);
-	error_if(data[0] != 0x10 || data[1] != 0x50, -1, "invalid device id read from chip");
+	error_if(data[0] != 0x10 || data[1] != 0x50, -12, "invalid device id read from hdc1080");
+
+	if (res < 0 || h_res < 0) {
+		/* skip configuration */
+		return 0;
+	}
 
 	/* configure */
 	data[0] = 0x02;
@@ -38,8 +43,29 @@ int8_t hdc1080_open(struct i2c_device *dev, struct i2c_master *master, uint8_t r
 	}
 	data[2] = 0x00;
 	error_if(i2c_write(dev, data, 3) != 3, -2, "unable to configure chip");
+	/* save configuration so later modifications dont need to read it */
+	dev->driver_bits[0] = data[1];
 
 	return 0;
+}
+
+int8_t hdc1080_heater(struct i2c_device *dev, bool on)
+{
+	uint8_t data[3];
+	data[0] = 0x02;
+	data[1] = dev->driver_bits[0] = on ? dev->driver_bits[0] | 0x20 : dev->driver_bits[0] & 0x1f;
+	data[2] = 0x00;
+
+	int8_t err = i2c_write(dev, data, 3);
+	if (err == 3) {
+		/* configuration written */
+		return 0;
+	} else if (err < 0) {
+		/* device did not respond or other similar error */
+		return err;
+	}
+	/* device propably responded, but something else went wrong */
+	return -2;
 }
 
 int8_t hdc1080_read(struct i2c_device *dev, float *t, float *h)
@@ -51,7 +77,7 @@ int8_t hdc1080_read(struct i2c_device *dev, float *t, float *h)
 	IF_R(i2c_write(dev, data, 1) != 1, -1);
 
 	/* read until result is ready */
-	while (!i2c_read(dev, data, 4));
+	while (i2c_read(dev, data, 4) != 4);
 
 	/* convert result bits to actual temperature */
 	if (t) {
@@ -102,20 +128,32 @@ int tool_i2c_hdc1080_exec(struct i2c_master *master, uint8_t address, char *comm
 	}
 
 	/* open chip */
-	if (hdc1080_open(&dev, master)) {
-		fprintf(stderr, "Chip not found, reason: %s\n", error_last);
-	} else if (hdc1080_conf(&dev, heater, t_res, h_res)) {
+	err = hdc1080_open(&dev, master, 0, t_res, h_res);
+	if (err == -2) {
 		fprintf(stderr, "Chip initialization failed, reason: %s\n", error_last);
-	} else {
-		/* execute command */
-		float t = -275.15, h = -1.0;
-		/* read temperature and humidity in sequence */
-		if (!hdc1080_read(&dev, &t, &h)) {
-			printf("%.2f °C\n%.2f %%RH\n", t, h);
-			err = 0;
-		} else {
-			fprintf(stderr, "Failed to read chip.\n");
+		return -1;
+	} else if (err < 0) {
+		fprintf(stderr, "Chip not found, reason: %s\n", error_last);
+		return -1;
+	}
+
+	/* setup heater */
+	if (heater) {
+		if (hdc1080_heater(&dev, heater) < 0) {
+			fprintf(stderr, "Unable to enable heater, reason: %s\n", error_last);
+			hdc1080_close(&dev);
+			return -1;
 		}
+	}
+
+	/* execute command */
+	float t = -275.15, h = -1.0;
+	/* read temperature and humidity in sequence */
+	if (!hdc1080_read(&dev, &t, &h)) {
+		printf("%.2f °C\n%.2f %%RH\n", t, h);
+		err = 0;
+	} else {
+		fprintf(stderr, "Failed to read chip.\n");
 	}
 
 	hdc1080_close(&dev);

@@ -41,8 +41,9 @@ Capitalized words:
 * ⇒ `bool on` Heater on or off
 * ⤶ `int8_t`
     * `0` on success
-    * `-1` if device has no heater
+    * `-1` if device not found
     * `-2` on other errors
+    * `-3` if device has no heater
 
 Enable internal heater if device has such.
 Usually heater will only apply heat when a measurement is requested.

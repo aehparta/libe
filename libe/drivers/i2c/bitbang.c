@@ -85,13 +85,13 @@
 	} while (0)
 
 
-int i2c_master_open(struct i2c_master *master, void *context, uint32_t frequency, uint8_t scl, uint8_t sda)
+int8_t i2c_master_open(struct i2c_master *master, void *context, uint32_t frequency, uint8_t scl, uint8_t sda)
 {
 	/* save information */
 #ifdef USE_I2C_BITBANG_DYNAMIC
 	master->scl = scl;
 	master->sda = sda;
-	master->frequency = frequency;
+	master->frequency = frequency > 0 ? frequency : 100000;
 #endif
 
 	/* clock is always output */
@@ -105,19 +105,10 @@ int i2c_master_open(struct i2c_master *master, void *context, uint32_t frequency
 	gpio_open_drain(I2C_BITBANG_SDA, true);
 	gpio_output(I2C_BITBANG_SDA);
 
-	/* reset the bus by sending a start and stop */
-	gpio_high(I2C_BITBANG_SCL);
-	gpio_high(I2C_BITBANG_SDA);
-	os_delay_us(10);
-	gpio_low(I2C_BITBANG_SDA);
-	os_delay_us(10);
-	gpio_low(I2C_BITBANG_SCL);
-	os_delay_us(10);
-	gpio_high(I2C_BITBANG_SCL);
-	os_delay_us(10);
-	gpio_high(I2C_BITBANG_SDA);
-	os_delay_us(10);
-	gpio_input(I2C_BITBANG_SDA);
+	/* reset the bus by opening non-existing device */
+	struct i2c_device dev;
+	i2c_open(&dev, master, 0xff);
+	i2c_close(&dev);
 
 	return 0;
 }
@@ -128,7 +119,7 @@ void i2c_master_close(struct i2c_master *master)
 	gpio_input(I2C_BITBANG_SDA);
 }
 
-int i2c_open(struct i2c_device *dev, struct i2c_master *master, uint8_t address)
+int8_t i2c_open(struct i2c_device *dev, struct i2c_master *master, uint8_t address)
 {
 	dev->master = master;
 	dev->address = address;
@@ -141,7 +132,7 @@ void i2c_close(struct i2c_device *dev)
 
 }
 
-int i2c_read(struct i2c_device *dev, void *data, size_t size)
+int8_t i2c_read(struct i2c_device *dev, void *data, int8_t size)
 {
 #ifdef USE_I2C_BITBANG_DYNAMIC
 	struct i2c_master *master = dev->master;
@@ -162,7 +153,7 @@ int i2c_read(struct i2c_device *dev, void *data, size_t size)
 	I2C_READ_ACK();
 
 	/* read data */
-	for (uint8_t *p = data; size > 0; size--, p++) {
+	for (uint8_t *p = data, s = size; s > 0; s--, p++) {
 		gpio_high(I2C_BITBANG_SDA); /* this sets pull-up on in avr */
 		gpio_input(I2C_BITBANG_SDA);
 		*p = 0xff;
@@ -177,10 +168,10 @@ int i2c_read(struct i2c_device *dev, void *data, size_t size)
 	/* stop */
 	I2C_STOP();
 
-	return 0;
+	return size;
 }
 
-int i2c_write(struct i2c_device *dev, void *data, size_t size)
+int8_t i2c_write(struct i2c_device *dev, void *data, int8_t size)
 {
 #ifdef USE_I2C_BITBANG_DYNAMIC
 	struct i2c_master *master = dev->master;
@@ -201,7 +192,7 @@ int i2c_write(struct i2c_device *dev, void *data, size_t size)
 	I2C_READ_ACK();
 
 	/* write data */
-	for (uint8_t *p = data; size > 0; size--, p++) {
+	for (uint8_t *p = data, s = size; s > 0; s--, p++) {
 		gpio_output(I2C_BITBANG_SDA);
 		for (uint8_t i = 0x80; i; i = i >> 1) {
 			I2C_WRITE(*p & i);
@@ -213,7 +204,7 @@ int i2c_write(struct i2c_device *dev, void *data, size_t size)
 	/* stop */
 	I2C_STOP();
 
-	return 0;
+	return size;
 }
 
 #endif

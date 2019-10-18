@@ -8,9 +8,11 @@
 #include <sys/stat.h>
 #include <unistd.h>
 #endif
-/* cannot include a file globally in xc8 */
-#ifdef TARGET_PIC8
-#include "../config.h"
+
+#ifndef I2C_CONTEXT
+#define I2C_CONTEXT NULL
+#define I2C_SCL 0
+#define I2C_SDA 0
 #endif
 
 
@@ -33,7 +35,7 @@ int app_main(int argc, char *argv[])
 int main(int argc, char *argv[])
 #endif
 {
-	void *context = NULL;
+	void *context = I2C_CONTEXT;
 	struct i2c_master master;
 	struct i2c_device dev;
 
@@ -43,7 +45,7 @@ int main(int argc, char *argv[])
 
 	/* check i2c device if using linux */
 #ifdef USE_FTDI
-	ERROR_IF_R(os_ftdi_use(OS_FTDI_GPIO_0_TO_63, CFG_FTDI_VID, CFG_FTDI_PID, CFG_FTDI_DESC, CFG_FTDI_SERIAL), 1, "unable to open ftdi device for gpio 0-63");
+	ERROR_IF_R(os_ftdi_use(OS_FTDI_GPIO_0_TO_63, FTDI_VID, FTDI_PID, FTDI_DESC, FTDI_SERIAL), 1, "unable to open ftdi device for gpio 0-63");
 #endif
 #if defined(TARGET_LINUX) && !defined(USE_I2C_BITBANG)
 	ERROR_IF_R(argc < 2, 1, "give i2c device as first argument");
@@ -55,20 +57,21 @@ int main(int argc, char *argv[])
 
 	/* try to find a temperature and humidity chip */
 	for (int i = 0; drivers[i].open; i++) {
-		if (drivers[i].open(&dev, &master, 0, 0, 0) == 0) {
-
-			/* should call optional *_conf() function here too */
-
+		int err = drivers[i].open(&dev, &master, 0, 0, 0);
+		if (err == 0) {
 			printf("Found %s\r\n", drivers[i].name);
-
 			while (1) {
 				float t, h;
 				drivers[i].read(&dev, &t, &h);
 				printf("temperature: %f, humidity: %f\r\n", t, h);
 				os_delay_ms(1000);
 			}
+		} else {
+			printf("%d: %s\n", err, error_last);
 		}
 	}
+
+	ERROR_MSG("did not find a supported t&h chip");
 
 	/* close i2c */
 	i2c_master_close(&master);

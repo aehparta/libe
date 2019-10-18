@@ -24,7 +24,7 @@ extern "C" {
 
 #define mcp3221_open(dev, master, address) i2c_open(dev, master, address)
 #define mcp3221_close(dev) i2c_close(dev)
-int16_t mcp3221_read(struct i2c_device *dev);
+int32_t mcp3221_read(struct i2c_device *dev, uint8_t channel);
 
 
 /* hook when compiling i2c tool */

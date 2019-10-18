@@ -29,9 +29,10 @@ extern "C" {
 #define SHT31_REPEATABILITY_LOW         0x16
 
 
-int8_t sht31_open(struct i2c_device *dev, struct i2c_master *master, uint8_t ref, uint8_t res, uint8_t h_res);
+int8_t sht31_open(struct i2c_device *dev, struct i2c_master *master, uint8_t ref, int8_t res, int8_t h_res);
 #define sht31_close(dev) i2c_close(dev)
-int sht31_read(struct i2c_device *dev, float *t, float *h);
+int8_t sht31_heater(struct i2c_device *dev, bool on);
+int8_t sht31_read(struct i2c_device *dev, float *t, float *h);
 
 /* hook when compiling i2c tool */
 #ifdef COMPILE_TOOL_I2C
