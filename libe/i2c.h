@@ -40,8 +40,8 @@ int8_t i2c_master_open(struct i2c_master *master, void *context, uint32_t freque
 void i2c_master_close(struct i2c_master *master);
 int8_t i2c_open(struct i2c_device *dev, struct i2c_master *master, uint8_t address);
 void i2c_close(struct i2c_device *dev);
-int8_t i2c_read(struct i2c_device *dev, void *data, int8_t size);
-int8_t i2c_write(struct i2c_device *dev, void *data, int8_t size);
+int8_t i2c_read(struct i2c_device *dev, void *data, uint8_t size);
+int8_t i2c_write(struct i2c_device *dev, void *data, uint8_t size);
 
 static inline int8_t i2c_write_byte(struct i2c_device *dev, uint8_t value)
 {

@@ -30,13 +30,7 @@ int8_t sht31_heater(struct i2c_device *dev, bool on)
 	uint8_t data[2];
 	data[0] = 0x30;
 	data[1] = on ? 0x6d : 0x66;
-	int8_t err = i2c_write(dev, data, 2);
-	if (err == 2) {
-		return 0;
-	} else if (err < 0) {
-		return -1;
-	}
-	return -2;
+	return i2c_write(dev, data, 2);
 }
 
 int8_t sht31_read(struct i2c_device *dev, float *t, float *h)
@@ -46,10 +40,10 @@ int8_t sht31_read(struct i2c_device *dev, float *t, float *h)
 	/* issue read */
 	data[0] = 0x24;
 	data[1] = dev->driver_bits[0];
-	IF_R(i2c_write(dev, data, 2) != 2, -1);
+	IF_R(i2c_write(dev, data, 2), -1);
 
 	/* wait for result */
-	while (i2c_read(dev, data, 6) != 6);
+	while (i2c_read(dev, data, 6));
 
 	/* convert result */
 	if (t) {
@@ -108,7 +102,7 @@ int tool_i2c_sht31_exec(struct i2c_master *master, uint8_t address, char *comman
 
 	/* setup heater */
 	if (heater) {
-		if (sht31_heater(&dev, heater) < 0) {
+		if (sht31_heater(&dev, heater)) {
 			fprintf(stderr, "Unable to enable heater, reason: %s\n", error_last);
 			sht31_close(&dev);
 			return -1;

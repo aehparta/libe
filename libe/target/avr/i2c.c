@@ -12,7 +12,7 @@
 #define TWCR_BASE ((1 << TWINT) | (1 << TWEA) | (1 << TWEN))
 
 
-int i2c_master_open(struct i2c_master *master, void *context, uint32_t frequency, uint8_t scl, uint8_t sda)
+int8_t i2c_master_open(struct i2c_master *master, void *context, uint32_t frequency, uint8_t scl, uint8_t sda)
 {
 	/* default to 100 kHz */
 	if (frequency < 1) {
@@ -39,7 +39,7 @@ void i2c_master_close(struct i2c_master *master)
 	TWCR = 0x00;
 }
 
-int i2c_open(struct i2c_device *dev, struct i2c_master *master, uint8_t address)
+int8_t i2c_open(struct i2c_device *dev, struct i2c_master *master, uint8_t address)
 {
 	dev->master = master;
 	dev->address = address << 1;
@@ -51,7 +51,7 @@ void i2c_close(struct i2c_device *dev)
 
 }
 
-int i2c_read(struct i2c_device *dev, void *data, size_t size)
+int8_t i2c_read(struct i2c_device *dev, void *data, uint8_t size)
 {
 	int err = -1;
 
@@ -73,7 +73,7 @@ out_err:
 	return err;
 }
 
-int i2c_write(struct i2c_device *dev, void *data, size_t size)
+int8_t i2c_write(struct i2c_device *dev, void *data, uint8_t size)
 {
 	int err = -1;
 

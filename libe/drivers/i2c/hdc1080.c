@@ -18,14 +18,14 @@ int8_t hdc1080_open(struct i2c_device *dev, struct i2c_master *master, uint8_t r
 
 	/* read manufacturer id */
 	data[0] = 0xfe;
-	IF_R(i2c_write(dev, data, 1) != 1, -1);
-	IF_R(i2c_read(dev, data, 2) != 2, -1);
+	IF_R(i2c_write(dev, data, 1), -1);
+	IF_R(i2c_read(dev, data, 2), -1);
 	error_if(data[0] != 0x54 || data[1] != 0x49, -11, "invalid manufacturer id read from hdc1080");
 
 	/* read device id */
 	data[0] = 0xff;
-	IF_R(i2c_write(dev, data, 1) != 1, -1);
-	IF_R(i2c_read(dev, data, 2) != 2, -1);
+	IF_R(i2c_write(dev, data, 1), -1);
+	IF_R(i2c_read(dev, data, 2), -1);
 	error_if(data[0] != 0x10 || data[1] != 0x50, -12, "invalid device id read from hdc1080");
 
 	if (res < 0 || h_res < 0) {
@@ -42,7 +42,7 @@ int8_t hdc1080_open(struct i2c_device *dev, struct i2c_master *master, uint8_t r
 		data[1] |= 2;
 	}
 	data[2] = 0x00;
-	error_if(i2c_write(dev, data, 3) != 3, -2, "unable to configure chip");
+	error_if(i2c_write(dev, data, 3), -2, "unable to configure chip");
 	/* save configuration so later modifications dont need to read it */
 	dev->driver_bits[0] = data[1];
 
@@ -55,17 +55,7 @@ int8_t hdc1080_heater(struct i2c_device *dev, bool on)
 	data[0] = 0x02;
 	data[1] = dev->driver_bits[0] = on ? dev->driver_bits[0] | 0x20 : dev->driver_bits[0] & 0x1f;
 	data[2] = 0x00;
-
-	int8_t err = i2c_write(dev, data, 3);
-	if (err == 3) {
-		/* configuration written */
-		return 0;
-	} else if (err < 0) {
-		/* device did not respond or other similar error */
-		return err;
-	}
-	/* device propably responded, but something else went wrong */
-	return -2;
+	return i2c_write(dev, data, 3);
 }
 
 int8_t hdc1080_read(struct i2c_device *dev, float *t, float *h)
@@ -74,10 +64,10 @@ int8_t hdc1080_read(struct i2c_device *dev, float *t, float *h)
 
 	/* trigger measurement */
 	data[0] = 0x00;
-	IF_R(i2c_write(dev, data, 1) != 1, -1);
+	IF_R(i2c_write(dev, data, 1), -1);
 
 	/* read until result is ready */
-	while (i2c_read(dev, data, 4) != 4);
+	while (i2c_read(dev, data, 4));
 
 	/* convert result bits to actual temperature */
 	if (t) {
@@ -139,7 +129,7 @@ int tool_i2c_hdc1080_exec(struct i2c_master *master, uint8_t address, char *comm
 
 	/* setup heater */
 	if (heater) {
-		if (hdc1080_heater(&dev, heater) < 0) {
+		if (hdc1080_heater(&dev, heater)) {
 			fprintf(stderr, "Unable to enable heater, reason: %s\n", error_last);
 			hdc1080_close(&dev);
 			return -1;

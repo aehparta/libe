@@ -23,8 +23,8 @@ int8_t sht21_open(struct i2c_device *dev, struct i2c_master *master, uint8_t ref
 	uint8_t data[2] = { 0xe7, 0x00 };
 
 	/* read user register first */
-	error_if(i2c_write(dev, data, 1) != 1, -2, "sht21 user register read failed");
-	error_if(i2c_read(dev, data + 1, 1) != 1, -2, "sht21 user register read failed");
+	error_if(i2c_write(dev, data, 1), -2, "sht21 user register read failed");
+	error_if(i2c_read(dev, data + 1, 1), -2, "sht21 user register read failed");
 
 	/* clear other than reserved bits */
 	data[1] &= 0x38;
@@ -58,7 +58,7 @@ int8_t sht21_open(struct i2c_device *dev, struct i2c_master *master, uint8_t ref
 
 	/* write */
 	data[0] = 0xe6;
-	error_if(i2c_write(dev, data, 2) != 2, -2, "sht21 configuration failed");
+	error_if(i2c_write(dev, data, 2), -2, "sht21 configuration failed");
 
 	return 0;
 }
@@ -68,16 +68,7 @@ int8_t sht21_heater(struct i2c_device *dev, bool on)
 	uint8_t data[2];
 	data[0] = 0xe6;
 	data[1] = on ? dev->driver_bits[0] | 0x04 : dev->driver_bits[0] & 0xfb;
-	int8_t err = i2c_write(dev, data, 2);
-	if (err == 2) {
-		/* configuration written */
-		return 0;
-	} else if (err < 0) {
-		/* device did not respond or other similar error */
-		return err;
-	}
-	/* device propably responded, but something else went wrong */
-	return -2;
+	return i2c_write(dev, data, 2);
 }
 
 static float sht21_read_temperature(struct i2c_device *dev)
@@ -86,10 +77,10 @@ static float sht21_read_temperature(struct i2c_device *dev)
 
 	/* trigger measurement */
 	data[0] = 0xf3;
-	IF_R(i2c_write(dev, data, 1) != 1, -1);
+	IF_R(i2c_write(dev, data, 1), -1);
 
 	/* read until result is ready */
-	while (i2c_read(dev, data, 3) != 3);
+	while (i2c_read(dev, data, 3));
 
 	/* clear status bits */
 	data[1] &= 0xfc;
@@ -103,10 +94,10 @@ static float sht21_read_humidity(struct i2c_device *dev)
 
 	/* trigger measurement */
 	data[0] = 0xf5;
-	IF_R(i2c_write(dev, data, 1) != 1, -1);
+	IF_R(i2c_write(dev, data, 1), -1);
 
 	/* read until result is ready */
-	while (i2c_read(dev, data, 3) != 3);
+	while (i2c_read(dev, data, 3));
 
 	/* clear status bits */
 	data[1] &= 0xfc;
@@ -184,7 +175,7 @@ int tool_i2c_sht21_exec(struct i2c_master *master, uint8_t address, char *comman
 
 	/* setup heater */
 	if (heater) {
-		if (sht21_heater(&dev, heater) < 0) {
+		if (sht21_heater(&dev, heater)) {
 			fprintf(stderr, "Unable to enable heater, reason: %s\n", error_last);
 			sht21_close(&dev);
 			return -1;

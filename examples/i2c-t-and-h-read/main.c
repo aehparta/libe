@@ -57,8 +57,7 @@ int main(int argc, char *argv[])
 
 	/* try to find a temperature and humidity chip */
 	for (int i = 0; drivers[i].open; i++) {
-		int err = drivers[i].open(&dev, &master, 0, 0, 0);
-		if (err == 0) {
+		if (!drivers[i].open(&dev, &master, 0, 0, 0)) {
 			printf("Found %s\r\n", drivers[i].name);
 			while (1) {
 				float t, h;
@@ -67,7 +66,9 @@ int main(int argc, char *argv[])
 				os_delay_ms(1000);
 			}
 		} else {
-			printf("%d: %s\n", err, error_last);
+#ifdef USE_ERROR
+			printf("%s not found, error: %s\n", error_last, drivers[i].name);
+#endif
 		}
 	}
 

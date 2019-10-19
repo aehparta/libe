@@ -52,7 +52,7 @@ void i2c_close(struct i2c_device *dev)
 
 }
 
-int8_t i2c_read(struct i2c_device *dev, void *data, int8_t size)
+int8_t i2c_read(struct i2c_device *dev, void *data, uint8_t size)
 {
     struct i2c_msg msgs[1];
     struct i2c_rdwr_ioctl_data msgset[1];
@@ -70,7 +70,7 @@ int8_t i2c_read(struct i2c_device *dev, void *data, int8_t size)
     return 0;
 }
 
-int8_t i2c_write(struct i2c_device *dev, void *data, int8_t size)
+int8_t i2c_write(struct i2c_device *dev, void *data, uint8_t size)
 {
     struct i2c_msg msgs[1];
     struct i2c_rdwr_ioctl_data msgset[1];
