@@ -2,8 +2,8 @@
  * x86 specific gpio.
  */
 
-#ifndef _TARGET_GPIO_H_
-#define _TARGET_GPIO_H_
+#ifndef _TARGET_X86_GPIO_H_
+#define _TARGET_X86_GPIO_H_
 
 #ifdef __cplusplus
 extern "C" {
@@ -28,4 +28,4 @@ extern "C" {
 }
 #endif
 
-#endif /* _TARGET_GPIO_H_ */
+#endif /* _TARGET_X86_GPIO_H_ */

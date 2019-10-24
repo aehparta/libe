@@ -9,7 +9,7 @@
 extern "C" {
 #endif
 
-int os_init(void);
+int8_t os_init(void);
 void os_quit(void);
 #define os_wdt_reset()
 

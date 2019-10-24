@@ -38,6 +38,11 @@ int main(void)
 	gpio_output(pin);
 	gpio_output(LED_GPIO1);
 
+#ifdef TARGET_RPI
+	/* check errors */
+	ERROR_IF_R(error_last, 1, "was unable to set gpio as output, reason: %s", error_last);
+#endif
+
 	while (1) {
 		/* clear watchdog, it is on as default example in pic8 */
 		os_wdt_reset();

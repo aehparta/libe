@@ -1,9 +1,4 @@
 
-# check that LIBE_PATH is set
-ifeq ($(LIBE_PATH),)
-    $(error LIBE_PATH not set)
-endif
-
 # unravel use
 libe_USE += $(foreach use,$(USE),$(shell echo $(use) | tr '[:lower:]' '[:upper:]'))
 libe_USE += $(foreach use,$(USE_$(TARGET)),$(shell echo $(use) | tr '[:lower:]' '[:upper:]'))
