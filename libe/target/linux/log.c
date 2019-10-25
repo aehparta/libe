@@ -27,6 +27,10 @@ static mtx_t log_mutex;
 #define MTX_UNLOCK(mtx) mtx_unlock(mtx)
 #endif
 
+#ifdef USE_LOG_CALLBACK
+static void (*log_callback)(int level, const char *file, int line, const char *func, const char *msg);
+#endif
+
 
 int log_init(void)
 {
@@ -63,6 +67,9 @@ void log_msg(int level, const char *file, int line, const char *func, const char
 	char *vabuf = NULL;
 	if (vasprintf(&vabuf, msg, args) > 0) {
 		LOG_PRINTF("%s", vabuf);
+#ifdef USE_LOG_CALLBACK
+		log_callback(level, file, line, func, vabuf);
+#endif
 		free(vabuf);
 	}
 	va_end(args);
@@ -70,5 +77,12 @@ void log_msg(int level, const char *file, int line, const char *func, const char
 
 	MTX_UNLOCK(&log_mutex);
 }
+
+#ifdef USE_LOG_CALLBACK
+void log_set_callback(void (*callback)(int level, const char *file, int line, const char *func, const char *msg))
+{
+	log_callback = callback;
+}
+#endif
 
 #endif

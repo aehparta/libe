@@ -65,12 +65,24 @@ void log_msg(int level, const char *file, int line, const char *func, const char
 /* quit logging */
 void log_quit(void);
 
+/* set maximum log level to be recorder */
+// NOT IMPLEMENTED void log_set_level(int level);
+
+#ifdef USE_LOG_CALLBACK
+/* set callback to be called when log entry is recorded */
+void log_set_callback(void (*callback)(int level, const char *file, int line, const char *func, const char *msg));
+#else
+#define log_set_callback(level,file,line,func,msg)
+#endif
+
 #else
 
 /* if logging is disabled, define empty ones */
 #define log_init()
 #define log_msg(level, file, line, func, msg, ...)
 #define log_quit()
+#define log_set_level(level)
+#define log_set_callback(level,file,line,func,msg)
 
 #endif /* USE_LOG */
 
