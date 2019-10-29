@@ -164,7 +164,7 @@ int tool_i2c_sht21_exec(struct i2c_master *master, uint8_t address, char *comman
 	}
 
 	/* open chip */
-	err = sht21_open(&dev, master, 0, t_res, h_res);
+	err = sht21_open(&dev, master, 0, res, 0);
 	if (err == -2) {
 		fprintf(stderr, "Chip initialization failed, reason: %s\n", error_last);
 		return -1;
