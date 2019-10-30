@@ -9,38 +9,33 @@
 #include "hdc1080.h"
 
 
-int8_t hdc1080_open(struct i2c_device *dev, struct i2c_master *master, uint8_t ref, int8_t res, int8_t h_res)
+int8_t hdc1080_open(struct i2c_device *dev, struct i2c_master *master, float reference, int32_t resolution)
 {
 	uint8_t data[3];
 
 	/* try to detect hdc1080, sht21 has the same address */
-	error_if(i2c_open(dev, master, HDC1080_ADDR), -10, "hdc1080 not detected");
+	error_if(i2c_open(dev, master, HDC1080_ADDR), -1, "hdc1080 not detected");
 
 	/* read manufacturer id */
 	data[0] = 0xfe;
 	IF_R(i2c_write(dev, data, 1), -1);
 	IF_R(i2c_read(dev, data, 2), -1);
-	error_if(data[0] != 0x54 || data[1] != 0x49, -11, "invalid manufacturer id read from hdc1080");
+	error_if(data[0] != 0x54 || data[1] != 0x49, -1, "invalid manufacturer id read from hdc1080");
 
 	/* read device id */
 	data[0] = 0xff;
 	IF_R(i2c_write(dev, data, 1), -1);
 	IF_R(i2c_read(dev, data, 2), -1);
-	error_if(data[0] != 0x10 || data[1] != 0x50, -12, "invalid device id read from hdc1080");
+	error_if(data[0] != 0x10 || data[1] != 0x50, -1, "invalid device id read from hdc1080");
 
-	if (res < 0 || h_res < 0) {
+	if (resolution < 0) {
 		/* skip configuration */
 		return 0;
 	}
 
 	/* configure */
 	data[0] = 0x02;
-	data[1] = (1 << 4) | (res == 11 ? 1 : 0);
-	if (h_res == 11) {
-		data[1] |= 1;
-	} else if (h_res == 8) {
-		data[1] |= 2;
-	}
+	data[1] = (1 << 4) | (resolution == 11 ? 0x05 : 0x00);
 	data[2] = 0x00;
 	error_if(i2c_write(dev, data, 3), -2, "unable to configure chip");
 	/* save configuration so later modifications dont need to read it */
@@ -90,9 +85,7 @@ void tool_i2c_hdc1080_help(void)
 	    "  read [options]       Read temperature and humidity\n"
 	    "Options:\n"
 	    "  heat                 Enable heater, without this option the heater is disabled\n"
-	    "  mode=[0|1]           0 is to aquire temperature and humidity separately, 1 in sequence (default)\n"
-	    "  t_res=[14|11]        Temperature resolution in bits, 14 is default\n"
-	    "  h_res=[14|11|8]      Humidity resolution in bits, 14 is default\n"
+	    "  resolution=[14|11]   Temperature and humidity resolution in bits, 14 is default\n"
 	);
 }
 
@@ -101,7 +94,7 @@ int tool_i2c_hdc1080_exec(struct i2c_master *master, uint8_t address, char *comm
 	int err = -1;
 	struct i2c_device dev;
 	bool heater = false;
-	uint8_t t_res = 14, h_res = 14;
+	uint8_t resolution = 14;
 
 	/* only one command */
 	if (strcmp(command, "read")) {
@@ -112,13 +105,11 @@ int tool_i2c_hdc1080_exec(struct i2c_master *master, uint8_t address, char *comm
 	/* parse extra arguments, stupid but simple way */
 	for (int i = 1; i < argc; i++) {
 		heater = strcmp(argv[i], "heat") == 0 ? true : heater;
-		t_res = strcmp(argv[i], "t_res=11") == 0 ? 11 : t_res;
-		h_res = strcmp(argv[i], "h_res=11") == 0 ? 11 : h_res;
-		h_res = strcmp(argv[i], "h_res=8") == 0 ? 8 : h_res;
+		resolution = strcmp(argv[i], "resolution=11") == 0 ? 11 : resolution;
 	}
 
 	/* open chip */
-	err = hdc1080_open(&dev, master, 0, t_res, h_res);
+	err = hdc1080_open(&dev, master, 0, resolution);
 	if (err == -2) {
 		fprintf(stderr, "Chip initialization failed, reason: %s\n", error_last);
 		return -1;

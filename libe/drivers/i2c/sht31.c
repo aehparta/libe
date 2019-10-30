@@ -15,13 +15,13 @@
 #include "sht31.h"
 
 
-int8_t sht31_open(struct i2c_device *dev, struct i2c_master *master, uint8_t ref, int8_t res, int8_t h_res)
+int8_t sht31_open(struct i2c_device *dev, struct i2c_master *master, float reference, int32_t repeatability)
 {
-	ref = ref ? SHT31_ADDR : ref;
+	uint8_t addr = reference ? SHT31_ADDR : reference;
 	/* try to detect sht31 */
-	error_if(i2c_open(dev, master, ref), -1, "sht31 not detected");
+	error_if(i2c_open(dev, master, addr), -1, "sht31 not detected");
 	/* save repeatability */
-	dev->driver_bits[0] = res;
+	dev->driver_bits[0] = (uint8_t)repeatability;
 	return 0;
 }
 
@@ -91,7 +91,7 @@ int tool_i2c_sht31_exec(struct i2c_master *master, uint8_t address, char *comman
 	address = address ? address : SHT31_ADDR;
 
 	/* open chip */
-	err = sht31_open(&dev, master, address, SHT31_REPEATABILITY_HIGH, 0);
+	err = sht31_open(&dev, master, address, SHT31_REPEATABILITY_HIGH);
 	if (err == -2) {
 		fprintf(stderr, "Chip initialization failed, reason: %s\n", error_last);
 		return -1;

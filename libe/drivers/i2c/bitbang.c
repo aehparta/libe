@@ -19,7 +19,7 @@
 
 #if !defined(I2C_BITBANG_DELAY_FUNC)
 #ifdef USE_I2C_BITBANG_DYNAMIC
-#define I2C_BITBANG_DELAY_FUNC              os_sleepf(1 / master->frequency)
+#define I2C_BITBANG_DELAY_FUNC              os_sleepf(1 / master->frequency / 2)
 #elif defined(TARGET_AVR)
 /* on avr lock i2c clock to approximately 100 kHz using the better _delay_loop() instead of _delay_us() */
 #define I2C_BITBANG_DELAY_FUNC              _delay_loop_1(F_CPU / 200000 / 3)

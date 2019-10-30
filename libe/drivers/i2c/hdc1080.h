@@ -19,7 +19,7 @@ extern "C" {
 #define HDC1080_ADDR        0x40
 
 
-int8_t hdc1080_open(struct i2c_device *dev, struct i2c_master *master, uint8_t ref, int8_t res, int8_t h_res);
+int8_t hdc1080_open(struct i2c_device *dev, struct i2c_master *master, float reference, int32_t resolution);
 #define hdc1080_close(dev) i2c_close(dev)
 int8_t hdc1080_heater(struct i2c_device *dev, bool on);
 int8_t hdc1080_read(struct i2c_device *dev, float *t, float *h);

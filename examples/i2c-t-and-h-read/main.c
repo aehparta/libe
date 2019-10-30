@@ -18,7 +18,7 @@
 
 struct driver {
 	char *name;
-	int8_t (*open)(struct i2c_device *dev, struct i2c_master *master, uint8_t ref, int8_t res, int8_t h_res);
+	int8_t (*open)(struct i2c_device *dev, struct i2c_master *master, float reference, int32_t resolution);
 	int8_t (*read)(struct i2c_device *dev, float *t, float *h);
 };
 
@@ -57,7 +57,7 @@ int main(int argc, char *argv[])
 
 	/* try to find a temperature and humidity chip */
 	for (int i = 0; drivers[i].open; i++) {
-		if (!drivers[i].open(&dev, &master, 0, 0, 0)) {
+		if (!drivers[i].open(&dev, &master, 0, 0)) {
 			printf("Found %s\r\n", drivers[i].name);
 			while (1) {
 				float t, h;
@@ -67,7 +67,7 @@ int main(int argc, char *argv[])
 			}
 		} else {
 #ifdef USE_ERROR
-			printf("%s not found, error: %s\n", error_last, drivers[i].name);
+			printf("%s not found, error: %s\n", drivers[i].name, error_last);
 #endif
 		}
 	}
