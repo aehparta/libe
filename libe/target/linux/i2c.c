@@ -66,7 +66,7 @@ int8_t i2c_read(struct i2c_device *dev, void *data, uint8_t size)
 	msgset[0].nmsgs = 1;
 
 	if (ioctl(dev->master->fd, I2C_RDWR, &msgset) < 0) {
-		error_last = strerror(errno);
+		error_set_last(strerror(errno));
 		/* sleep a bit
 		 * linux kernel i2c driver with a i2c-tiny-usb seems to be "too fast" or something
 		 * and has problems without this delay when error occurs
@@ -92,7 +92,7 @@ int8_t i2c_write(struct i2c_device *dev, void *data, uint8_t size)
 	msgset[0].nmsgs = 1;
 
 	if (ioctl(dev->master->fd, I2C_RDWR, &msgset) < 0) {
-		error_last = strerror(errno);
+		error_set_last(strerror(errno));
 		/* sleep a bit
 		 * linux kernel i2c driver with a i2c-tiny-usb seems to be "too fast" or something
 		 * and has problems without this delay when error occurs
