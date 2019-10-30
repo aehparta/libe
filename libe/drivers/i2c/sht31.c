@@ -15,7 +15,7 @@
 #include "sht31.h"
 
 
-int8_t sht31_open(struct i2c_device *dev, struct i2c_master *master, float reference, int32_t repeatability)
+int8_t sht31_open(struct i2c_device *dev, struct i2c_master *master, int32_t reference, int32_t repeatability)
 {
 	uint8_t addr = reference ? SHT31_ADDR : reference;
 	/* try to detect sht31 */

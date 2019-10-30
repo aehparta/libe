@@ -9,7 +9,7 @@
 #include "hdc1080.h"
 
 
-int8_t hdc1080_open(struct i2c_device *dev, struct i2c_master *master, float reference, int32_t resolution)
+int8_t hdc1080_open(struct i2c_device *dev, struct i2c_master *master, int32_t reference, int32_t resolution)
 {
 	uint8_t data[3];
 

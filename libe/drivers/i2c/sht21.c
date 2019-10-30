@@ -9,7 +9,7 @@
 #include "sht21.h"
 
 
-int8_t sht21_open(struct i2c_device *dev, struct i2c_master *master, float reference, int32_t resolution)
+int8_t sht21_open(struct i2c_device *dev, struct i2c_master *master, int32_t reference, int32_t resolution)
 {
 	/* try to detect sht21 */
 	error_if(i2c_open(dev, master, SHT21_ADDR), -1, "sht21 not detected");

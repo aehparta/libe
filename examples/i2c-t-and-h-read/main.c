@@ -18,7 +18,7 @@
 
 struct driver {
 	char *name;
-	int8_t (*open)(struct i2c_device *dev, struct i2c_master *master, float reference, int32_t resolution);
+	int8_t (*open)(struct i2c_device *dev, struct i2c_master *master, int32_t reference, int32_t resolution);
 	int8_t (*read)(struct i2c_device *dev, float *t, float *h);
 };
 
