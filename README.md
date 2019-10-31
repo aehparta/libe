@@ -12,7 +12,7 @@ I am starting to feel that the following will be well enough designed and can be
 * Build system
 * System setup
     * Time management side of the system API is not yet properly thought through
-    * os_delay_ms() and os_delay_us() are stable
+    * os_delay_ms() and os_delay_us() are though
 * GPIO 
 * I2C
 * Generic sensor interface
