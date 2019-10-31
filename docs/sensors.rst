@@ -10,7 +10,7 @@ Reference
 Reference for following capitalized words in this page:
 
 * ``SENSOR``
-	* sensor name being used, *always lower case*
+	* sensor name being used (as a prefix to functions), e.g. *hdc1080* or *adc* which then translates to *hdc1080_open(..)* or *adc_read(..)*
 * ``DEV``
 	* ``struct i2c_device *`` in case of sensor connected to I2C bus
 	* ``struct spi_device *`` in case of sensor connected to SPI bus
