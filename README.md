@@ -7,7 +7,7 @@ Generic library targeted mostly for microcontrollers.
 
 ## Status
 
-I am starting to feel that the following will be well enough designed and can be considered stable soon:
+I am starting to feel that the following are well enough designed and can be considered stable soon:
 
 * Build system
 * System setup
