@@ -117,7 +117,7 @@ ADC Drivers
 
 None at the moment. Only documentation written to be used when writing actual drivers.
 
-adc
+adc *(internal)*
 ----------------------------------------
 
 Internal device ADC driver, if exists.
