@@ -9,3 +9,4 @@ Welcome to libe's documentation!
    gpio
    i2c/index
    spi/index
+   sensors

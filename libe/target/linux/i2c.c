@@ -20,7 +20,7 @@ int8_t i2c_master_open(struct i2c_master *master, void *context, uint32_t freque
 {
 	struct stat st;
 
-	/* check that i2c device is valid character device */
+	/* check that i2c device is a valid character device */
 	error_if(!context, -1, "invalid I2C device given");
 	error_if_errno(stat(context, &st), -2);
 	error_if_errno((st.st_mode & S_IFMT) != S_IFCHR, -3);
