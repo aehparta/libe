@@ -3,7 +3,7 @@
 
 Generic library targeted mostly for microcontrollers.
 
-[Documentation at readthedocs](https://libe.readthedocs.io/en/latest/)
+[Documentation at readthedocs.](https://libe.readthedocs.io/en/latest/)
 
 ## Features
 
