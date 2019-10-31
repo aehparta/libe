@@ -16,6 +16,7 @@ I am starting to feel that the following are well enough designed and can be con
 * GPIO 
 * I2C
 * Generic sensor interface
+    * Temperature&humidity interface
 
 ## Features
 
