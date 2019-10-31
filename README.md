@@ -5,6 +5,17 @@ Generic library targeted mostly for microcontrollers.
 
 [Documentation at readthedocs.](https://libe.readthedocs.io/en/latest/)
 
+## Status
+
+I am starting to feel that the following will be well enough designed and can be considered stable soon:
+
+* Build system
+* System setup
+    * Time side of the system API is not stable
+* GPIO 
+* I2C
+* Generic sensor interface
+
 ## Features
 
 ### GPIO
