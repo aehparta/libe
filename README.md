@@ -3,6 +3,8 @@
 
 Generic library targeted mostly for microcontrollers.
 
+[Documentation at readthedocs](https://libe.readthedocs.io/en/latest/)
+
 ## Features
 
 ### GPIO
