@@ -36,7 +36,8 @@ endif
 ifneq ($(filter $(libe_DEFINES),USE_SPI),)
     libe_SRC += \
         $(T_PATH)/spi.c \
-        $(LIBE_PATH)/libe/drivers/spi/nrf.c
+        $(LIBE_PATH)/libe/drivers/spi/nrf24l01p.c \
+        $(LIBE_PATH)/libe/drivers/spi/nrf24l01p_ble.c
     ifneq ($(filter $(libe_DEFINES),USE_WIZNET),)
         ifeq ($(wildcard ioLibrary_Driver),)
             $(info Fetching WIZNET ioLibrary_Driver sources)

@@ -7,7 +7,7 @@
 
 
 struct spi_master master;
-struct nrf_device nrf;
+struct nrf24l01p_device nrf;
 
 
 int p_init(int argc, char *argv[])
@@ -33,22 +33,22 @@ int p_init(int argc, char *argv[])
 	           ), -1, "failed to open spi master");
 
 	/* nrf initialization */
-	ERROR_IF_R(nrf_open(&nrf, &master, CFG_NRF_SS, CFG_NRF_CE), -1, "nrf24l01+ failed to initialize");
+	ERROR_IF_R(nrf24l01p_open(&nrf, &master, CFG_NRF_SS, CFG_NRF_CE), -1, "nrf24l01+ failed to initialize");
 	/* change channel, default is 70 */
-	nrf_set_channel(&nrf, 10);
+	nrf24l01p_set_channel(&nrf, 10);
 	/* change speed, default is 250k */
-	nrf_set_speed(&nrf, NRF_SPEED_2M);
+	nrf24l01p_set_speed(&nrf, NRF24L01P_SPEED_2M);
 	/* enable radio in listen mode */
-	nrf_mode_rx(&nrf);
-	nrf_flush_rx(&nrf);
-	nrf_enable_radio(&nrf);
+	nrf24l01p_mode_rx(&nrf);
+	nrf24l01p_flush_rx(&nrf);
+	nrf24l01p_enable_radio(&nrf);
 
 	return 0;
 }
 
 void p_exit(int retval)
 {
-	nrf_close(&nrf);
+	nrf24l01p_close(&nrf);
 	spi_master_close(&master);
 	log_quit();
 	os_quit();
@@ -73,7 +73,7 @@ int main(int argc, char *argv[])
 		int i, ok;
 		uint8_t data[32];
 
-		ok = nrf_recv(&nrf, data);
+		ok = nrf24l01p_recv(&nrf, data);
 		if (ok < 0) {
 			CRIT_MSG("device disconnected?");
 			break;
@@ -89,7 +89,7 @@ int main(int argc, char *argv[])
 				for (i = 0; i < 32; i++) {
 					data[i] = 31 - i;
 				}
-				nrf_send(&nrf, data);
+				nrf24l01p_send(&nrf, data);
 				continue;
 			}
 
