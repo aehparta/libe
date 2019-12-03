@@ -3,7 +3,7 @@
 TARGET = X86
 
 # enable spi
-USE += SPI LOG
+USE += SPI LOG GPIO
 USE_X86 += FTDI
 
 # init make system
