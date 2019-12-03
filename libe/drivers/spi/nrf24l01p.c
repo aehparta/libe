@@ -23,7 +23,7 @@ int nrf24l01p_open(struct nrf24l01p_device *nrf, struct spi_master *master, int 
 	}
 
 	nrf24l01p_setup(nrf);
-	IF_R((nrf24l01p_read_reg(nrf, NRF24L01P_REG_CONFIG, NULL) & 0x0f) != 0x08, -1);
+	IF_R((nrf24l01p_read_reg(nrf, NRF24L01P_REG_CONFIG, NULL) & 0x0f) != 0x0a, -1);
 
 	return 0;
 }
@@ -58,7 +58,7 @@ int nrf24l01p_read_reg(struct nrf24l01p_device *nrf, uint8_t reg, uint8_t *statu
 
 int nrf24l01p_write_reg(struct nrf24l01p_device *nrf, uint8_t reg, uint8_t data)
 {
-	uint8_t cmd[] = { (reg & 0x1f) | 0x20, data & 0xff };
+	uint8_t cmd[] = { (reg & 0x1f) | 0x20, data };
 	IF_R(spi_transfer(&nrf->spi, cmd, sizeof(cmd)), -1);
 	return cmd[0];
 }
@@ -97,7 +97,7 @@ void nrf24l01p_setup(struct nrf24l01p_device *nrf)
 {
 	nrf24l01p_disable_radio(nrf);
 	/* default config */
-	nrf24l01p_write_reg(nrf, NRF24L01P_REG_CONFIG, 0x08);
+	nrf24l01p_write_reg(nrf, NRF24L01P_REG_CONFIG, 0x0a);
 	/* disable autoack */
 	nrf24l01p_write_reg(nrf, NRF24L01P_REG_EN_AA, 0x00);
 	/* data pipes: 0 and 1 */
@@ -105,7 +105,7 @@ void nrf24l01p_setup(struct nrf24l01p_device *nrf)
 	/* address width: 5 bytes */
 	nrf24l01p_write_reg(nrf, NRF24L01P_REG_SETUP_AW, 0x03);
 	/* disable retransmission */
-	nrf24l01p_write_reg(nrf, NRF24L01P_REG_SETUP_RETR, 0x20);
+	nrf24l01p_write_reg(nrf, NRF24L01P_REG_SETUP_RETR, 0x00);
 	/* channel 70 */
 	nrf24l01p_write_reg(nrf, NRF24L01P_REG_RF_CH, 70);
 	/* 250 kbps, full power */
@@ -127,12 +127,14 @@ void nrf24l01p_setup(struct nrf24l01p_device *nrf)
 
 int nrf24l01p_mode_tx(struct nrf24l01p_device *nrf)
 {
-	return nrf24l01p_write_reg(nrf, NRF24L01P_REG_CONFIG, 0x0e);
+	uint8_t r = nrf24l01p_read_reg(nrf, NRF24L01P_REG_CONFIG, NULL) & 0xfe;
+	return nrf24l01p_write_reg(nrf, NRF24L01P_REG_CONFIG, r);
 }
 
 int nrf24l01p_mode_rx(struct nrf24l01p_device *nrf)
 {
-	return nrf24l01p_write_reg(nrf, NRF24L01P_REG_CONFIG, 0x0f);
+	uint8_t r = nrf24l01p_read_reg(nrf, NRF24L01P_REG_CONFIG, NULL) | 0x01;
+	return nrf24l01p_write_reg(nrf, NRF24L01P_REG_CONFIG, r);
 }
 
 int nrf24l01p_flush_tx(struct nrf24l01p_device *nrf)

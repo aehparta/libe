@@ -12,6 +12,7 @@ struct spi_master master;
 struct nrf24l01p_ble_device nrf;
 uint8_t mac[6] = { 'L', 'I', 'B', 'E', 'B', 'T' };
 
+
 int p_init(int argc, char *argv[])
 {
 	/* very low level platform initialization */
@@ -22,7 +23,7 @@ int p_init(int argc, char *argv[])
 	/* initialize spi master */
 #ifdef USE_FTDI
 	/* open ft232h type device and try to see if it has a nrf24l01+ connected to it through mpsse-spi */
-	ERROR_IF_R(os_ftdi_use(OS_FTDI_GPIO_0_TO_63, 0x0403, 0x6014, NULL, NULL), -1, "unable to open ftdi device for gpio 0-63");
+	ERROR_IF_R(os_ftdi_use(OS_FTDI_GPIO_0_TO_63, 0x0403, 0x6014, NULL, "KTVPIRB"), -1, "unable to open ftdi device for gpio 0-63");
 	os_ftdi_set_mpsse(CFG_SPI_SCLK);
 #endif
 	ERROR_IF_R(spi_master_open(
@@ -36,6 +37,7 @@ int p_init(int argc, char *argv[])
 
 	/* nrf initialization */
 	ERROR_IF_R(nrf24l01p_ble_open(&nrf, &master, CFG_NRF_SS, CFG_NRF_CE, mac), -1, "nrf24l01+ failed to initialize");
+	nrf24l01p_ble_set_channel(&nrf, 2);
 
 	return 0;
 }
@@ -55,6 +57,8 @@ int app_main(int argc, char *argv[])
 int main(int argc, char *argv[])
 #endif
 {
+	uint8_t data[32] = { 0xb3, 0xc3, 0x1d, 0x7a, 0xbf, 0xb0, 0x7e, 0x0d, 0xee, 0x0c, 0x28, 0xf2, 0x79, 0x98, 0x55, 0xa5, 0x66, 0xa5, 0x77, 0x6b, 0xda, 0xf5 };
+
 	/* init */
 	if (p_init(argc, argv)) {
 		ERROR_MSG("initialization failed");
@@ -64,6 +68,11 @@ int main(int argc, char *argv[])
 	/* program loop */
 	INFO_MSG("starting main program loop");
 	while (1) {
+		char *str = "Hello there!";
+		uint32_t x = 0x0055aa17;
+		// nrf24l01p_ble_adv_single(&nrf, 0xff, str, strlen(str));
+		nrf24l01p_ble_adv_single(&nrf, 0xff, &x, sizeof(x));
+		nrf24l01p_ble_hop(&nrf);
 
 		/* lets not waste all cpu */
 		os_sleepf(1.0);

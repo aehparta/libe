@@ -24,7 +24,8 @@ struct nrf24l01p_ble_device {
 int nrf24l01p_ble_open(struct nrf24l01p_ble_device *nrf, struct spi_master *master, int ss, int ce, uint8_t mac[6]);
 void nrf24l01p_ble_close(struct nrf24l01p_ble_device *nrf);
 void nrf24l01p_ble_set_channel(struct nrf24l01p_ble_device *nrf, uint8_t channel);
-void nrf24l01p_ble_send(struct nrf24l01p_ble_device *nrf, uint8_t* packet, uint8_t len);
+void nrf24l01p_ble_hop(struct nrf24l01p_ble_device *nrf);
+int nrf24l01p_ble_adv_single(struct nrf24l01p_ble_device *nrf, uint8_t type, void *data, uint8_t size);
 
 
 #ifdef __cplusplus
