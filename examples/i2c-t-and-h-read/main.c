@@ -67,12 +67,12 @@ int main(int argc, char *argv[])
 			}
 		} else {
 #ifdef USE_ERROR
-			printf("%s not found, error: %s\n", error_last, drivers[i].name);
+			fprintf(stderr, "%s not found, error: %s\n", drivers[i].name, error_last);
 #endif
 		}
 	}
 
-	ERROR_MSG("did not find a supported t&h chip");
+	ERROR_MSG("did not find any supported t&h chip");
 
 	/* close i2c */
 	i2c_master_close(&master);

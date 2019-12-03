@@ -27,7 +27,7 @@ int8_t sht21_open(struct i2c_device *dev, struct i2c_master *master, uint8_t ref
 	error_if(i2c_read(dev, data + 1, 1), -2, "sht21 user register read failed");
 
 	/* clear other than reserved bits */
-	data[1] &= 0x38;
+	data[1] &= 0xb9;
 
 	/* setup resolution */
 	switch (res) {
@@ -134,11 +134,11 @@ void tool_i2c_sht21_help(void)
 	    "  read [options]       Read temperature and humidity\n"
 	    "Options:\n"
 	    "  heat                 Enable heater, without this option the heater is disabled\n"
-	    "  res=[0,1,2,3]        SHT21 resolution setting:\n"
-	    "                         0: T = 14 bits, RH = 12 bits (default)\n"
-	    "                         1: T = 12 bits, RH = 8 bits\n"
-	    "                         2: T = 13 bits, RH = 10 bits\n"
-	    "                         3: T = 11 bits, RH = 11 bits\n"
+	    "  res=[11,12,13,14     SHT21 resolution setting:\n"
+	    "                         14: T = 14 bits, RH = 12 bits (default)\n"
+	    "                         12: T = 12 bits, RH = 8 bits\n"
+	    "                         13: T = 13 bits, RH = 10 bits\n"
+	    "                         11: T = 11 bits, RH = 11 bits\n"
 	);
 }
 
@@ -164,7 +164,7 @@ int tool_i2c_sht21_exec(struct i2c_master *master, uint8_t address, char *comman
 	}
 
 	/* open chip */
-	err = sht21_open(&dev, master, 0, t_res, h_res);
+	err = sht21_open(&dev, master, 0, res, 0);
 	if (err == -2) {
 		fprintf(stderr, "Chip initialization failed, reason: %s\n", error_last);
 		return -1;

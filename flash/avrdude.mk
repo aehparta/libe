@@ -2,7 +2,7 @@
 # programming support using avrdude
 
 # do not allow to include if target is wrong
-ifneq ($(TARGET),avr)
+ifneq ($(TARGET),AVR)
     $(error TARGET is not AVR)
 endif
 
