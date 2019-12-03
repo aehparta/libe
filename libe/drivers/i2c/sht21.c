@@ -9,13 +9,13 @@
 #include "sht21.h"
 
 
-int8_t sht21_open(struct i2c_device *dev, struct i2c_master *master, uint8_t ref, int8_t res, int8_t h_res)
+int8_t sht21_open(struct i2c_device *dev, struct i2c_master *master, int32_t reference, int32_t resolution)
 {
 	/* try to detect sht21 */
 	error_if(i2c_open(dev, master, SHT21_ADDR), -1, "sht21 not detected");
 	/* hdc1080 has the same address but there is no way to identify sht21 */
 
-	if (res < 0) {
+	if (resolution < 0) {
 		/* skip configuration */
 		return 0;
 	}
@@ -30,7 +30,7 @@ int8_t sht21_open(struct i2c_device *dev, struct i2c_master *master, uint8_t ref
 	data[1] &= 0xb9;
 
 	/* setup resolution */
-	switch (res) {
+	switch (resolution) {
 	default:
 	case 14:
 		/* RH = 12 bits, T = 14 bits */
@@ -134,10 +134,11 @@ void tool_i2c_sht21_help(void)
 	    "  read [options]       Read temperature and humidity\n"
 	    "Options:\n"
 	    "  heat                 Enable heater, without this option the heater is disabled\n"
-	    "  res=[11,12,13,14     SHT21 resolution setting:\n"
+	    "  resolution=[14|13|12|11]\n"
+	    "                       SHT21 resolution setting:\n"
 	    "                         14: T = 14 bits, RH = 12 bits (default)\n"
-	    "                         12: T = 12 bits, RH = 8 bits\n"
 	    "                         13: T = 13 bits, RH = 10 bits\n"
+	    "                         12: T = 12 bits, RH = 8 bits\n"
 	    "                         11: T = 11 bits, RH = 11 bits\n"
 	);
 }
@@ -147,7 +148,7 @@ int tool_i2c_sht21_exec(struct i2c_master *master, uint8_t address, char *comman
 	int err = -1;
 	struct i2c_device dev;
 	bool heater = false;
-	uint8_t res = 0;
+	uint8_t resolution = 0;
 
 	/* only one command */
 	if (strcmp(command, "read")) {
@@ -158,13 +159,17 @@ int tool_i2c_sht21_exec(struct i2c_master *master, uint8_t address, char *comman
 	/* parse extra arguments, stupid but simple way */
 	for (int i = 1; i < argc; i++) {
 		heater = strcmp(argv[i], "heat") == 0 ? true : heater;
-		if (argv[i] == strstr(argv[i], "res=") && strlen(argv[i]) == 5) {
-			res = argv[i][4] - '0';
+		if (argv[i] == strstr(argv[i], "resolution=") && strlen(argv[i]) == 5) {
+			resolution = atoi(&argv[i][11]);
 		}
 	}
 
 	/* open chip */
+<<<<<<< HEAD
 	err = sht21_open(&dev, master, 0, res, 0);
+=======
+	err = sht21_open(&dev, master, 0, resolution);
+>>>>>>> 99eb627a0abe7bc8bca59765e49aed4a3edc8931
 	if (err == -2) {
 		fprintf(stderr, "Chip initialization failed, reason: %s\n", error_last);
 		return -1;

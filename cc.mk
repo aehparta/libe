@@ -1,9 +1,4 @@
 
-# check that LIBE_PATH is set
-ifeq ($(LIBE_PATH),)
-    $(error LIBE_PATH not set)
-endif
-
 # check target specific mcu
 ifneq ($(MCU_$(TARGET)),)
     MCU = $(shell echo $(MCU_$(TARGET)) | tr '[:lower:]' '[:upper:]')

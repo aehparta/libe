@@ -41,7 +41,8 @@ int spi_open(struct spi_device *device, struct spi_master *master, uint8_t ss);
 void spi_close(struct spi_device *device);
 int spi_transfer(struct spi_device *device, uint8_t *data, size_t size);
 
-#include <libe/drivers/spi/nrf.h>
+#include <libe/drivers/spi/nrf24l01p.h>
+#include <libe/drivers/spi/nrf24l01p_ble.h>
 
 #ifdef __cplusplus
 }

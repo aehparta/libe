@@ -9,28 +9,43 @@
 
 #include <stdio.h>
 #include <stdarg.h>
-#include <pthread.h>
-#include <threads.h>
 #include <libe/libe.h>
 
-
+#ifdef __STDC_NO_THREADS__
+#include <pthread.h>
+static pthread_mutex_t log_mutex;
+#define MTX_INIT(mtx) pthread_mutex_init(mtx, NULL)
+#define MTX_DESTROY(mtx) pthread_mutex_destroy(mtx)
+#define MTX_LOCK(mtx) pthread_mutex_lock(mtx)
+#define MTX_UNLOCK(mtx) pthread_mutex_unlock(mtx)
+#else
+#include <threads.h>
 static mtx_t log_mutex;
+#define MTX_INIT(mtx) mtx_init(mtx, mtx_plain)
+#define MTX_DESTROY(mtx) mtx_destroy(mtx)
+#define MTX_LOCK(mtx) mtx_lock(mtx)
+#define MTX_UNLOCK(mtx) mtx_unlock(mtx)
+#endif
+
+#ifdef USE_LOG_CALLBACK
+static void (*log_callback)(int level, const char *file, int line, const char *func, const char *msg);
+#endif
 
 
 int log_init(void)
 {
-	mtx_init(&log_mutex, mtx_plain);
+	MTX_INIT(&log_mutex);
 	return 0;
 }
 
 void log_quit(void)
 {
-	mtx_destroy(&log_mutex);
+	MTX_DESTROY(&log_mutex);
 }
 
 void log_msg(int level, const char *file, int line, const char *func, const char *msg, ...)
 {
-	mtx_lock(&log_mutex);
+	MTX_LOCK(&log_mutex);
 
 	if (level == LOG_LEVEL_DEBUG) {
 		LOG_PRINTF(LDC_PURPLE "D:");
@@ -52,12 +67,22 @@ void log_msg(int level, const char *file, int line, const char *func, const char
 	char *vabuf = NULL;
 	if (vasprintf(&vabuf, msg, args) > 0) {
 		LOG_PRINTF("%s", vabuf);
+#ifdef USE_LOG_CALLBACK
+		log_callback(level, file, line, func, vabuf);
+#endif
 		free(vabuf);
 	}
 	va_end(args);
 	LOG_PRINTF("\r\n");
 
-	mtx_unlock(&log_mutex);
+	MTX_UNLOCK(&log_mutex);
 }
+
+#ifdef USE_LOG_CALLBACK
+void log_set_callback(void (*callback)(int level, const char *file, int line, const char *func, const char *msg))
+{
+	log_callback = callback;
+}
+#endif
 
 #endif

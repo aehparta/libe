@@ -20,7 +20,7 @@ int8_t i2c_master_open(struct i2c_master *master, void *context, uint32_t freque
 {
 	struct stat st;
 
-	/* check that i2c device is valid character device */
+	/* check that i2c device is a valid character device */
 	error_if(!context, -1, "invalid I2C device given");
 	error_if_errno(stat(context, &st), -2);
 	error_if_errno((st.st_mode & S_IFMT) != S_IFCHR, -3);
@@ -54,38 +54,54 @@ void i2c_close(struct i2c_device *dev)
 
 int8_t i2c_read(struct i2c_device *dev, void *data, uint8_t size)
 {
-    struct i2c_msg msgs[1];
-    struct i2c_rdwr_ioctl_data msgset[1];
+	struct i2c_msg msgs[1];
+	struct i2c_rdwr_ioctl_data msgset[1];
 
-    msgs[0].addr = dev->address;
-    msgs[0].flags = I2C_M_RD;
-    msgs[0].len = size;
-    msgs[0].buf = data;
+	msgs[0].addr = dev->address;
+	msgs[0].flags = I2C_M_RD;
+	msgs[0].len = size;
+	msgs[0].buf = data;
 
-    msgset[0].msgs = msgs;
-    msgset[0].nmsgs = 1;
+	msgset[0].msgs = msgs;
+	msgset[0].nmsgs = 1;
 
-    error_if_errno(ioctl(dev->master->fd, I2C_RDWR, &msgset) < 0, -1);
+	if (ioctl(dev->master->fd, I2C_RDWR, &msgset) < 0) {
+		error_set_last(strerror(errno));
+		/* sleep a bit
+		 * linux kernel i2c driver with a i2c-tiny-usb seems to be "too fast" or something
+		 * and has problems without this delay when error occurs
+		 */
+		os_delay_us(500);
+		return -1;
+	}
 
-    return 0;
+	return 0;
 }
 
 int8_t i2c_write(struct i2c_device *dev, void *data, uint8_t size)
 {
-    struct i2c_msg msgs[1];
-    struct i2c_rdwr_ioctl_data msgset[1];
+	struct i2c_msg msgs[1];
+	struct i2c_rdwr_ioctl_data msgset[1];
 
-    msgs[0].addr = dev->address;
-    msgs[0].flags = 0;
-    msgs[0].len = size;
-    msgs[0].buf = data;
+	msgs[0].addr = dev->address;
+	msgs[0].flags = 0;
+	msgs[0].len = size;
+	msgs[0].buf = data;
 
-    msgset[0].msgs = msgs;
-    msgset[0].nmsgs = 1;
+	msgset[0].msgs = msgs;
+	msgset[0].nmsgs = 1;
 
-    error_if_errno(ioctl(dev->master->fd, I2C_RDWR, &msgset) < 0, -1);
+	if (ioctl(dev->master->fd, I2C_RDWR, &msgset) < 0) {
+		error_set_last(strerror(errno));
+		/* sleep a bit
+		 * linux kernel i2c driver with a i2c-tiny-usb seems to be "too fast" or something
+		 * and has problems without this delay when error occurs
+		 */
+		os_delay_us(500);
+		return -1;
+	}
 
-    return 0;
+	return 0;
 }
 
 #endif

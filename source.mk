@@ -1,9 +1,4 @@
 
-# check that LIBE_PATH is set
-ifeq ($(LIBE_PATH),)
-    $(error LIBE_PATH not set)
-endif
-
 # target path helper
 T_PATH = $(LIBE_PATH)/libe/target/$(shell echo $(TARGET) | tr '[:upper:]' '[:lower:]')
 
@@ -41,7 +36,8 @@ endif
 ifneq ($(filter $(libe_DEFINES),USE_SPI),)
     libe_SRC += \
         $(T_PATH)/spi.c \
-        $(LIBE_PATH)/libe/drivers/spi/nrf.c
+        $(LIBE_PATH)/libe/drivers/spi/nrf24l01p.c \
+        $(LIBE_PATH)/libe/drivers/spi/nrf24l01p_ble.c
     ifneq ($(filter $(libe_DEFINES),USE_WIZNET),)
         ifeq ($(wildcard ioLibrary_Driver),)
             $(info Fetching WIZNET ioLibrary_Driver sources)

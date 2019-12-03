@@ -3,6 +3,21 @@
 
 Generic library targeted mostly for microcontrollers.
 
+[Documentation at readthedocs.](https://libe.readthedocs.io/en/latest/)
+
+## Status
+
+I am starting to feel that the following are well enough designed and can be considered stable soon:
+
+* Build system
+* System setup
+    * Time management side of the system API is not yet properly thought through
+    * os_delay_ms() and os_delay_us() are though
+* GPIO 
+* I2C
+* Generic sensor interface
+    * Temperature&humidity interface
+
 ## Features
 
 ### GPIO

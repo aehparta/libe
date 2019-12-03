@@ -1,9 +1,4 @@
 
-# check that LIBE_PATH is set
-ifeq ($(LIBE_PATH),)
-    $(error LIBE_PATH not set)
-endif
-
 # get target from environment if set
 ifneq ($(target),)
     TARGET = $(shell echo $(target) | tr '[:lower:]' '[:upper:]')

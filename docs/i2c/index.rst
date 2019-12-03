@@ -108,11 +108,13 @@ Frequency
 
 As default the frequency will be set using a delay according to following rules:
 
-* If dynamic mode is enabled using ``USE_I2C_BITBANG_DYNAMIC``, then delay is frequency given to :c:func:`i2c_master_open` and implemented as ``os_sleepf(1 / master->frequency)`` which is very inaccurate on smaller targets
+* If dynamic mode is enabled using ``USE_I2C_BITBANG_DYNAMIC``, then delay is frequency given to :c:func:`i2c_master_open` and implemented as ``os_sleepf(1 / master->frequency / 2)`` which is very inaccurate on smaller targets
 * If target is AVR then ``_delay_loop1(F_CPU / 200000 / 3)`` is used to achieve an inaccurate approximate of 100 kHz
 * On other targets ``os_delay_us(4)`` is used to achieve an inaccurate approximate of 100 kHz
 
 Bitbang driver also supports custom delay. This can be defined using ``I2C_BITBANG_DELAY_FUNC`` macro.
+Remember that delay function should create a delay half of the actual frequency since it is called twice
+per clock cycle to generate the clock for I2C.
 
 In Makefile:
 

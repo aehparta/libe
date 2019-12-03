@@ -1,5 +1,7 @@
 /*
- * nrf24l01+ example listener
+ * nrf24l01+ example ble advertiser
+ *
+ * Send BLE packets using nrf24l01+.
  */
 
 #include <libe/libe.h>
@@ -7,8 +9,8 @@
 
 
 struct spi_master master;
-struct nrf24l01p_device nrf;
-
+struct nrf24l01p_ble_device nrf;
+uint8_t mac[6] = { 'L', 'I', 'B', 'E', 'B', 'T' };
 
 int p_init(int argc, char *argv[])
 {
@@ -33,22 +35,14 @@ int p_init(int argc, char *argv[])
 	           ), -1, "failed to open spi master");
 
 	/* nrf initialization */
-	ERROR_IF_R(nrf24l01p_open(&nrf, &master, CFG_NRF_SS, CFG_NRF_CE), -1, "nrf24l01+ failed to initialize");
-	/* change channel, default is 70 */
-	nrf24l01p_set_channel(&nrf, 10);
-	/* change speed, default is 250k */
-	nrf24l01p_set_speed(&nrf, NRF24L01P_SPEED_2M);
-	/* enable radio in listen mode */
-	nrf24l01p_mode_rx(&nrf);
-	nrf24l01p_flush_rx(&nrf);
-	nrf24l01p_enable_radio(&nrf);
+	ERROR_IF_R(nrf24l01p_ble_open(&nrf, &master, CFG_NRF_SS, CFG_NRF_CE, mac), -1, "nrf24l01+ failed to initialize");
 
 	return 0;
 }
 
 void p_exit(int retval)
 {
-	nrf24l01p_close(&nrf);
+	nrf24l01p_ble_close(&nrf);
 	spi_master_close(&master);
 	log_quit();
 	os_quit();
@@ -70,40 +64,9 @@ int main(int argc, char *argv[])
 	/* program loop */
 	INFO_MSG("starting main program loop");
 	while (1) {
-		int i, ok;
-		uint8_t data[32];
-
-		ok = nrf24l01p_recv(&nrf, data);
-		if (ok < 0) {
-			CRIT_MSG("device disconnected?");
-			break;
-		} else if (ok > 0) {
-			/* if packet is a "ping" packet, respond */
-			for (i = 0; i < 32; i++) {
-				if (data[i] != i) {
-					break;
-				}
-			}
-			if (i == 32) {
-				printf("ping packet received, send reply\r\n");
-				for (i = 0; i < 32; i++) {
-					data[i] = 31 - i;
-				}
-				nrf24l01p_send(&nrf, data);
-				continue;
-			}
-
-			/* print info */
-			printf("packet received, data as ascii and hex dumps:\r\n");
-			LOG_COLOR(LDC_DGRAYB);
-			ASCII_DUMP(data, sizeof(data), 0);
-			LOG_COLOR(LDC_YELLOWB);
-			HEX_DUMP(data, sizeof(data));
-			LOG_COLOR(LDC_DEFAULT);
-		}
 
 		/* lets not waste all cpu */
-		os_sleepf(0.001);
+		os_sleepf(1.0);
 	}
 
 	p_exit(EXIT_SUCCESS);

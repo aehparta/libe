@@ -10,9 +10,9 @@ USE_X86 += FTDI
 include $(LIBE_PATH)/init.mk
 
 # our own sources etc
-BUILD_BINS = nrf24l01_ping
-PROGRAM_BIN = nrf24l01_ping
-nrf24l01_ping_SRC = main.c $(libe_SRC)
+BUILD_BINS = nrf24l01_ble_adv
+PROGRAM_BIN = nrf24l01_ble_adv
+nrf24l01_ble_adv_SRC = main.c $(libe_SRC)
 
 # build
 include $(LIBE_PATH)/build.mk
