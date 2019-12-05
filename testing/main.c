@@ -14,50 +14,18 @@ int main(void)
 	os_init();
 	log_init();
 
-	printf("Hellou\r\n");
-
-	// gpio_input(GPIOA2);
-	// gpio_output(GPIOA1);
-	// gpio_output(GPIOA0);
-	// gpio_output(GPIOA4);
-	// gpio_output(GPIOA5);
-
-	// gpio_low(GPIOA5);
-	// gpio_high(GPIOA4);
-	// gpio_high(GPIOA1);
-	// gpio_low(GPIOA0);
-
-	// os_delay_ms(100);
-
-	// gpio_low(GPIOA4);
-	// os_delay_us(10);
-	// for (int i = 0; i < 8; i++) {
-	// 	gpio_high(GPIOA0);
-	// 	os_delay_us(10);
-	// 	printf("%d", gpio_read(GPIOA2));
-	// 	gpio_low(GPIOA0);
-	// 	os_delay_us(10);
-	// }
-	// gpio_high(GPIOA4);
-	// printf("\r\n");
-
-	// os_delay_ms(500);
-	// return 0;
-
-	uint8_t x[4] = { 0xff, 0xff, 0xff, 0xff };
-
 	struct spi_master master;
-	struct spi_device dev;
+	struct nrf24l01p_device nrf;
 
 	spi_master_open(&master, NULL, 0, GPIOA2, GPIOA1, GPIOA0);
-	spi_open(&dev, &master, GPIOA4);
-	os_delay_ms(1);
-	spi_transfer(&dev, x, 4);
-	spi_close(&dev);
-	spi_master_close(&master);
+	ERROR_IF(nrf24l01p_open(&nrf, &master, GPIOA4, GPIOA5), "failed to open");
+	nrf24l01p_set_standby(&nrf, true);
+	nrf24l01p_set_power_down(&nrf, true);
 
-	printf("%02x %02x %02x %02x\r\n", x[0], x[1], x[2], x[3]);
-	os_delay_ms(1000);
+	DEBUG_MSG("doing stuff");
+	while (1) {
+		os_wdt_reset();
+	}
 
 	return 0;
 }
