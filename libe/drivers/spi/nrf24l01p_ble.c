@@ -1,6 +1,9 @@
 /*
  * libe cross-platform library
  *
+ * Thanks to Dmitry Grinberg's work:
+ * http://dmitry.gr/index.php?r=05.Projects&proj=15&proj=11.%20Bluetooth%20LE%20fakery
+ * 
  * Authors: Antti Partanen <aehparta@iki.fi>
  */
 
@@ -15,11 +18,11 @@ static void btLeWhiten(uint8_t* data, uint8_t size, uint8_t whitenCoeff);
 int nrf24l01p_ble_open(struct nrf24l01p_ble_device *nrf, struct spi_master *master, int ss, int ce, uint8_t mac[6])
 {
 	IF_R(nrf24l01p_open(&nrf->nrf, master, ss, ce), -1);
-	/* disable crc and always stay in transmit mode, nothing can be received anyways */
+	/* disable crc and always stay in transmit mode */
 	nrf24l01p_write_reg(&nrf->nrf, NRF24L01P_REG_CONFIG, 0x02);
 	/* address width: 4 bytes */
 	nrf24l01p_write_reg(&nrf->nrf, NRF24L01P_REG_SETUP_AW, 0x02);
-	/* 1 Mbpsm */
+	/* 1 Mbps */
 	nrf24l01p_write_reg(&nrf->nrf, NRF24L01P_REG_RF_SETUP, 0x06);
 	/* receiving data pipes: 0 */
 	nrf24l01p_write_reg(&nrf->nrf, NRF24L01P_REG_EN_RXADDR, 0x01);
@@ -75,7 +78,7 @@ void nrf24l01p_ble_hop(struct nrf24l01p_ble_device *nrf)
 	}
 }
 
-int nrf24l01p_ble_adv(struct nrf24l01p_ble_device *nrf, void *data, uint8_t size)
+int nrf24l01p_ble_advertise(struct nrf24l01p_ble_device *nrf, void *data, uint8_t size)
 {
 	uint8_t l = 0;
 	uint8_t cmd[33];
@@ -83,7 +86,7 @@ int nrf24l01p_ble_adv(struct nrf24l01p_ble_device *nrf, void *data, uint8_t size
 	/* max size is 18 bytes */
 	IF_R(size > 18, -1);
 	memset(cmd + 18, 0, 33 - 18);
-	
+
 	/* tx buffer write command */
 	cmd[l++] = 0xa0;
 	/* we use 0x40 to say it is a non-connectable undirected advertisement and address we're sending is random (not assigned) */
@@ -131,11 +134,11 @@ int nrf24l01p_ble_adv(struct nrf24l01p_ble_device *nrf, void *data, uint8_t size
 	/* write data to tx buffer */
 	IF_R(spi_transfer(&nrf->nrf.spi, cmd, sizeof(cmd)), -1);
 	/* enable radio */
-	nrf24l01p_enable_radio(&nrf->nrf);
+	nrf24l01p_set_standby(&nrf->nrf, false);
 	/* wait data to be transmitted */
 	while (!(nrf24l01p_read_status(&nrf->nrf) & 0x20));
 	/* disable radio */
-	nrf24l01p_disable_radio(&nrf->nrf);
+	nrf24l01p_set_standby(&nrf->nrf, true);
 	nrf24l01p_flush_tx(&nrf->nrf);
 
 	return size;
@@ -150,10 +153,8 @@ static void btLeCrc(uint8_t *data, uint8_t size, uint8_t *dst)
 	uint8_t v, t, d;
 
 	while (size--) {
-
 		d = *data++;
 		for (v = 0; v < 8; v++, d >>= 1) {
-
 			t = dst[0] >> 7;
 
 			dst[0] <<= 1;
@@ -164,7 +165,6 @@ static void btLeCrc(uint8_t *data, uint8_t size, uint8_t *dst)
 
 
 			if (t != (d & 1)) {
-
 				dst[2] ^= 0x5B;
 				dst[1] ^= 0x06;
 			}
@@ -174,15 +174,11 @@ static void btLeCrc(uint8_t *data, uint8_t size, uint8_t *dst)
 
 static void btLeWhiten(uint8_t* data, uint8_t size, uint8_t whitenCoeff)
 {
-
 	uint8_t  m;
 
 	while (size--) {
-
 		for (m = 1; m; m <<= 1) {
-
 			if (whitenCoeff & 0x80) {
-
 				whitenCoeff ^= 0x11;
 				(*data) ^= m;
 			}

@@ -11,7 +11,7 @@
 #include <libe/libe.h>
 
 
-int nrf24l01p_open(struct nrf24l01p_device *nrf, struct spi_master *master, int ss, int ce)
+int8_t nrf24l01p_open(struct nrf24l01p_device *nrf, struct spi_master *master, uint8_t ss, uint8_t ce)
 {
 	gpio_low(ce);
 	gpio_output(ce);
@@ -23,30 +23,31 @@ int nrf24l01p_open(struct nrf24l01p_device *nrf, struct spi_master *master, int 
 	}
 
 	nrf24l01p_setup(nrf);
-	IF_R((nrf24l01p_read_reg(nrf, NRF24L01P_REG_CONFIG, NULL) & 0x0f) != 0x0a, -1);
+	IF_R((nrf24l01p_read_reg(nrf, NRF24L01P_REG_CONFIG, NULL) & 0x0f) != 0x0f, -1);
 
 	return 0;
 }
 
 void nrf24l01p_close(struct nrf24l01p_device *nrf)
 {
-	nrf24l01p_disable_radio(nrf);
+	nrf24l01p_set_standby(nrf, true);
+	nrf24l01p_set_power_down(nrf, true);
 	spi_close(&nrf->spi);
 }
 
-int nrf24l01p_simple_cmd(struct nrf24l01p_device *nrf, uint8_t command)
+int8_t nrf24l01p_simple_cmd(struct nrf24l01p_device *nrf, uint8_t command)
 {
 	uint8_t cmd[] = { command };
 	IF_R(spi_transfer(&nrf->spi, cmd, sizeof(cmd)), -1);
 	return cmd[0];
 }
 
-int nrf24l01p_read_status(struct nrf24l01p_device *nrf)
+int8_t nrf24l01p_read_status(struct nrf24l01p_device *nrf)
 {
 	return nrf24l01p_simple_cmd(nrf, 0xff);
 }
 
-int nrf24l01p_read_reg(struct nrf24l01p_device *nrf, uint8_t reg, uint8_t *status)
+int8_t nrf24l01p_read_reg(struct nrf24l01p_device *nrf, uint8_t reg, uint8_t *status)
 {
 	uint8_t cmd[] = { reg & 0x1f, 0x00 };
 	IF_R(spi_transfer(&nrf->spi, cmd, sizeof(cmd)), -1);
@@ -56,48 +57,18 @@ int nrf24l01p_read_reg(struct nrf24l01p_device *nrf, uint8_t reg, uint8_t *statu
 	return cmd[1];
 }
 
-int nrf24l01p_write_reg(struct nrf24l01p_device *nrf, uint8_t reg, uint8_t data)
+int8_t nrf24l01p_write_reg(struct nrf24l01p_device *nrf, uint8_t reg, uint8_t data)
 {
 	uint8_t cmd[] = { (reg & 0x1f) | 0x20, data };
 	IF_R(spi_transfer(&nrf->spi, cmd, sizeof(cmd)), -1);
 	return cmd[0];
 }
 
-int nrf24l01p_enable_radio(struct nrf24l01p_device *nrf)
-{
-	gpio_high(nrf->ce);
-	return 0;
-}
-
-int nrf24l01p_disable_radio(struct nrf24l01p_device *nrf)
-{
-	gpio_low(nrf->ce);
-	return 0;
-}
-
-int nrf24l01p_set_address(struct nrf24l01p_device *nrf, uint8_t pipe, uint8_t a0, uint8_t a1, uint8_t a2, uint8_t a3, uint8_t a4)
-{
-	if (pipe < NRF24L01P_REG_RX_ADDR_P0 && pipe > NRF24L01P_REG_TX_ADDR) {
-		return -1;
-	} else if (pipe >= NRF24L01P_REG_RX_ADDR_P2 && pipe <= NRF24L01P_REG_RX_ADDR_P5) {
-		/* single byte secondary pipes */
-		uint8_t cmd[] = { pipe | 0x20, a0 };
-		IF_R(spi_transfer(&nrf->spi, cmd, sizeof(cmd)), -1);
-		return cmd[0];
-	} else {
-		/* full 5 byte primary channels (0, 1 and transmit) */
-		uint8_t cmd[] = { pipe | 0x20, a0, a1, a2, a3, a4 };
-		IF_R(spi_transfer(&nrf->spi, cmd, sizeof(cmd)), -1);
-		return cmd[0];
-	}
-	return -1;
-}
-
 void nrf24l01p_setup(struct nrf24l01p_device *nrf)
 {
-	nrf24l01p_disable_radio(nrf);
-	/* default config */
-	nrf24l01p_write_reg(nrf, NRF24L01P_REG_CONFIG, 0x0a);
+	nrf24l01p_set_standby(nrf, true);
+	/* default config: enable crc (2 bytes), power up, rx mode */
+	nrf24l01p_write_reg(nrf, NRF24L01P_REG_CONFIG, 0x0f);
 	/* disable autoack */
 	nrf24l01p_write_reg(nrf, NRF24L01P_REG_EN_AA, 0x00);
 	/* data pipes: 0 and 1 */
@@ -125,44 +96,78 @@ void nrf24l01p_setup(struct nrf24l01p_device *nrf)
 	nrf24l01p_write_reg(nrf, NRF24L01P_REG_FEATURE, 0);
 }
 
-int nrf24l01p_mode_tx(struct nrf24l01p_device *nrf)
+int8_t nrf24l01p_mode_tx(struct nrf24l01p_device *nrf)
 {
 	uint8_t r = nrf24l01p_read_reg(nrf, NRF24L01P_REG_CONFIG, NULL) & 0xfe;
 	return nrf24l01p_write_reg(nrf, NRF24L01P_REG_CONFIG, r);
 }
 
-int nrf24l01p_mode_rx(struct nrf24l01p_device *nrf)
+int8_t nrf24l01p_mode_rx(struct nrf24l01p_device *nrf)
 {
 	uint8_t r = nrf24l01p_read_reg(nrf, NRF24L01P_REG_CONFIG, NULL) | 0x01;
 	return nrf24l01p_write_reg(nrf, NRF24L01P_REG_CONFIG, r);
 }
 
-int nrf24l01p_flush_tx(struct nrf24l01p_device *nrf)
+int8_t nrf24l01p_flush_tx(struct nrf24l01p_device *nrf)
 {
-	int err = nrf24l01p_simple_cmd(nrf, 0xe1);
+	int8_t err = nrf24l01p_simple_cmd(nrf, 0xe1);
 	nrf24l01p_write_reg(nrf, NRF24L01P_REG_STATUS, 0x30);
 	return err;
 }
 
-int nrf24l01p_flush_rx(struct nrf24l01p_device *nrf)
+int8_t nrf24l01p_flush_rx(struct nrf24l01p_device *nrf)
 {
-	int err = nrf24l01p_simple_cmd(nrf, 0xe2);
+	int8_t err = nrf24l01p_simple_cmd(nrf, 0xe2);
 	nrf24l01p_write_reg(nrf, NRF24L01P_REG_STATUS, 0x40);
 	return err;
 }
 
-void nrf24l01p_set_power(struct nrf24l01p_device *nrf, uint8_t power)
+int8_t nrf24l01p_set_address(struct nrf24l01p_device *nrf, uint8_t pipe, uint8_t a0, uint8_t a1, uint8_t a2, uint8_t a3, uint8_t a4)
+{
+	if (pipe < NRF24L01P_REG_RX_ADDR_P0 && pipe > NRF24L01P_REG_TX_ADDR) {
+		return -1;
+	} else if (pipe >= NRF24L01P_REG_RX_ADDR_P2 && pipe <= NRF24L01P_REG_RX_ADDR_P5) {
+		/* single byte secondary pipes */
+		uint8_t cmd[] = { pipe | 0x20, a0 };
+		IF_R(spi_transfer(&nrf->spi, cmd, sizeof(cmd)), -1);
+		return cmd[0];
+	} else {
+		/* full 5 byte primary channels (0, 1 and transmit) */
+		uint8_t cmd[] = { pipe | 0x20, a0, a1, a2, a3, a4 };
+		IF_R(spi_transfer(&nrf->spi, cmd, sizeof(cmd)), -1);
+		return cmd[0];
+	}
+	return -1;
+}
+
+int8_t nrf24l01p_set_standby(struct nrf24l01p_device *nrf, bool standby)
+{
+	if (standby) {
+		gpio_low(nrf->ce);
+	} else {
+		gpio_high(nrf->ce);
+	}
+	return 0;
+}
+
+int8_t nrf24l01p_set_power_down(struct nrf24l01p_device *nrf, bool pd)
+{
+	uint8_t r = (nrf24l01p_read_reg(nrf, NRF24L01P_REG_CONFIG, NULL) & 0xfd) | (pd ? 0x02 : 0x00);
+	return nrf24l01p_write_reg(nrf, NRF24L01P_REG_CONFIG, r);
+}
+
+int8_t nrf24l01p_set_tx_power(struct nrf24l01p_device *nrf, uint8_t power)
 {
 	uint8_t r = nrf24l01p_read_reg(nrf, NRF24L01P_REG_RF_SETUP, NULL) & ~0x6;
-	nrf24l01p_write_reg(nrf, NRF24L01P_REG_RF_SETUP, r | ((power & 0x3) << 1));
+	return nrf24l01p_write_reg(nrf, NRF24L01P_REG_RF_SETUP, r | ((power & 0x3) << 1));
 }
 
-void nrf24l01p_set_channel(struct nrf24l01p_device *nrf, uint8_t channel)
+int8_t nrf24l01p_set_channel(struct nrf24l01p_device *nrf, uint8_t channel)
 {
-	nrf24l01p_write_reg(nrf, NRF24L01P_REG_RF_CH, channel);
+	return nrf24l01p_write_reg(nrf, NRF24L01P_REG_RF_CH, channel);
 }
 
-void nrf24l01p_set_speed(struct nrf24l01p_device *nrf, uint8_t speed)
+int8_t nrf24l01p_set_speed(struct nrf24l01p_device *nrf, uint8_t speed)
 {
 	uint8_t r = nrf24l01p_read_reg(nrf, NRF24L01P_REG_RF_SETUP, NULL) & ~0x28;
 	if (speed == NRF24L01P_SPEED_250k) {
@@ -170,13 +175,19 @@ void nrf24l01p_set_speed(struct nrf24l01p_device *nrf, uint8_t speed)
 	} else if (speed == NRF24L01P_SPEED_2M) {
 		r |= 0x08;
 	}
-	nrf24l01p_write_reg(nrf, NRF24L01P_REG_RF_SETUP, r);
+	return nrf24l01p_write_reg(nrf, NRF24L01P_REG_RF_SETUP, r);
 }
 
-int nrf24l01p_recv(struct nrf24l01p_device *nrf, void *data)
+int8_t nrf24l01p_set_crc(struct nrf24l01p_device *nrf, uint8_t crc)
+{
+	uint8_t r = (nrf24l01p_read_reg(nrf, NRF24L01P_REG_CONFIG, NULL) & 0xfd) | (crc ? 0x08 : 0x00) | (crc == 2 ? 0x04 : 0x00);
+	return nrf24l01p_write_reg(nrf, NRF24L01P_REG_CONFIG, r);
+}
+
+int8_t nrf24l01p_recv(struct nrf24l01p_device *nrf, void *data)
 {
 	/* check status */
-	int status = nrf24l01p_read_status(nrf);
+	int8_t status = nrf24l01p_read_status(nrf);
 
 	if (status < 0) {
 		return -1;
@@ -195,7 +206,7 @@ int nrf24l01p_recv(struct nrf24l01p_device *nrf, void *data)
 	return 32;
 }
 
-int nrf24l01p_send(struct nrf24l01p_device *nrf, void *data)
+int8_t nrf24l01p_send(struct nrf24l01p_device *nrf, void *data)
 {
 	/* write data to tx buffer first */
 	uint8_t cmd[33] = {
@@ -205,15 +216,15 @@ int nrf24l01p_send(struct nrf24l01p_device *nrf, void *data)
 	memcpy(cmd + 1, data, 32);
 	IF_R(spi_transfer(&nrf->spi, cmd, sizeof(cmd)), -1);
 	/* switch to transmit mode */
-	nrf24l01p_disable_radio(nrf);
+	nrf24l01p_set_standby(nrf, true);
 	nrf24l01p_mode_tx(nrf);
-	nrf24l01p_enable_radio(nrf);
+	nrf24l01p_set_standby(nrf, false);
 	/* wait data to be transmitted */
 	while (!(nrf24l01p_read_status(nrf) & 0x20));
 	/* switch back to listen mode */
-	nrf24l01p_disable_radio(nrf);
+	nrf24l01p_set_standby(nrf, true);
 	nrf24l01p_flush_tx(nrf);
 	nrf24l01p_mode_rx(nrf);
-	nrf24l01p_enable_radio(nrf);
+	nrf24l01p_set_standby(nrf, false);
 	return 32;
 }

@@ -67,16 +67,38 @@ int main(int argc, char *argv[])
 	/* program loop */
 	INFO_MSG("starting main program loop");
 	while (1) {
+		static uint32_t counter = 0;
 		uint8_t l = 0;
 		uint8_t buf[18];
 		memset(buf, 0, sizeof(buf));
+
+		/* length of data including type */
 		buf[l++] = 5;
+		/* data type, examples:
+		 * 8: short name
+		 * 255: custom
+		 */
 		buf[l++] = 0x08;
+		/* data itself */
 		buf[l++] = 'l';
 		buf[l++] = 'i';
 		buf[l++] = 'b';
 		buf[l++] = 'e';
-		nrf24l01p_ble_adv(&nrf, buf, l);
+
+		/* length of data including type */
+		buf[l++] = 5;
+		/* data type, examples:
+		 * 8: short name
+		 * 255: custom
+		 */
+		buf[l++] = 0xff;
+		/* data itself, 32 bit unsigned integer in this case */
+		*((uint32_t *)&buf[l++]) = counter++;
+
+		/* advertise */
+		nrf24l01p_ble_advertise(&nrf, buf, l);
+
+		/* next ble advertise channel */
 		nrf24l01p_ble_hop(&nrf);
 
 		/* lets not waste all cpu */

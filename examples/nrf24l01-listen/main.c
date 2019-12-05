@@ -38,10 +38,11 @@ int p_init(int argc, char *argv[])
 	nrf24l01p_set_channel(&nrf, 10);
 	/* change speed, default is 250k */
 	nrf24l01p_set_speed(&nrf, NRF24L01P_SPEED_2M);
+	/* disable crc, default is 2 bytes */
+	nrf24l01p_set_crc(&nrf, 0);
 	/* enable radio in listen mode */
-	nrf24l01p_mode_rx(&nrf);
 	nrf24l01p_flush_rx(&nrf);
-	nrf24l01p_enable_radio(&nrf);
+	nrf24l01p_set_standby(&nrf, false);
 
 	return 0;
 }
