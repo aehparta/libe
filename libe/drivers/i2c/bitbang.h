@@ -4,8 +4,8 @@
  * Authors: Antti Partanen <aehparta@iki.fi>
  */
 
-#ifndef _LIBE_BITBANG_H_
-#define _LIBE_BITBANG_H_
+#ifndef _LIBE_I2C_BITBANG_H_
+#define _LIBE_I2C_BITBANG_H_
 
 #ifdef USE_I2C_BITBANG
 
@@ -50,4 +50,4 @@ struct i2c_device {
 
 #endif /* USE_I2C_BITBANG */
 
-#endif /* _LIBE_BITBANG_H_ */
+#endif /* _LIBE_I2C_BITBANG_H_ */

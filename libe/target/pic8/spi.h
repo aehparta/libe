@@ -13,11 +13,13 @@
 extern "C" {
 #endif
 
-/* ftdi spi master context */
+/* spi master context */
 struct spi_master {
+	/* pick compiler crashes without this.. */
+	uint8_t placeholder;
 };
 
-/* ftdi spi device context */
+/* spi device context */
 struct spi_device {
 	uint8_t ss;
 };

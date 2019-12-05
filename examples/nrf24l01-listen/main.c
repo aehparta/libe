@@ -35,11 +35,11 @@ int p_init(int argc, char *argv[])
 	/* nrf initialization */
 	ERROR_IF_R(nrf24l01p_open(&nrf, &master, CFG_NRF_SS, CFG_NRF_CE), -1, "nrf24l01+ failed to initialize");
 	/* change channel, default is 70 */
-	nrf24l01p_set_channel(&nrf, 10);
+	// nrf24l01p_set_channel(&nrf, 10);
 	/* change speed, default is 250k */
-	nrf24l01p_set_speed(&nrf, NRF24L01P_SPEED_2M);
+	// nrf24l01p_set_speed(&nrf, NRF24L01P_SPEED_2M);
 	/* disable crc, default is 2 bytes */
-	nrf24l01p_set_crc(&nrf, 0);
+	// nrf24l01p_set_crc(&nrf, 0);
 	/* enable radio in listen mode */
 	nrf24l01p_flush_rx(&nrf);
 	nrf24l01p_set_standby(&nrf, false);
@@ -74,9 +74,12 @@ int main(int argc, char *argv[])
 		int i, ok;
 		uint8_t data[32];
 
+		os_wdt_reset();
+
 		ok = nrf24l01p_recv(&nrf, data);
 		if (ok < 0) {
 			CRIT_MSG("device disconnected?");
+			os_delay_ms(1000);
 			break;
 		} else if (ok > 0) {
 			/* if packet is a "ping" packet, respond */

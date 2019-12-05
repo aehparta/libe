@@ -34,8 +34,12 @@ endif
 
 # add spi and drivers for chips
 ifneq ($(filter $(libe_DEFINES),USE_SPI),)
+    ifneq ($(filter $(libe_DEFINES),USE_SPI_BITBANG),)
+        libe_SRC += $(LIBE_PATH)/libe/drivers/spi/bitbang.c
+    else
+        libe_SRC += $(T_PATH)/spi.c
+    endif
     libe_SRC += \
-        $(T_PATH)/spi.c \
         $(LIBE_PATH)/libe/drivers/spi/nrf24l01p.c \
         $(LIBE_PATH)/libe/drivers/spi/nrf24l01p_ble.c
     ifneq ($(filter $(libe_DEFINES),USE_WIZNET),)

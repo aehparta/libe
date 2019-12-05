@@ -4,6 +4,8 @@
  * Authors: Antti Partanen <aehparta@iki.fi>
  */
 
+#ifdef USE_NRF24L01P
+
 #include <stdlib.h>
 #ifndef TARGET_PIC8
 #include <string.h>
@@ -23,7 +25,8 @@ int8_t nrf24l01p_open(struct nrf24l01p_device *nrf, struct spi_master *master, u
 	}
 
 	nrf24l01p_setup(nrf);
-	IF_R((nrf24l01p_read_reg(nrf, NRF24L01P_REG_CONFIG, NULL) & 0x0f) != 0x0f, -1);
+	IF_R((nrf24l01p_read_reg(nrf, NRF24L01P_REG_CONFIG, NULL) & 0x0f) != 0x0d, -1);
+	nrf24l01p_set_power_down(nrf, false);
 
 	return 0;
 }
@@ -67,8 +70,8 @@ int8_t nrf24l01p_write_reg(struct nrf24l01p_device *nrf, uint8_t reg, uint8_t da
 void nrf24l01p_setup(struct nrf24l01p_device *nrf)
 {
 	nrf24l01p_set_standby(nrf, true);
-	/* default config: enable crc (2 bytes), power up, rx mode */
-	nrf24l01p_write_reg(nrf, NRF24L01P_REG_CONFIG, 0x0f);
+	/* default config: enable crc (2 bytes), power down, rx mode */
+	nrf24l01p_write_reg(nrf, NRF24L01P_REG_CONFIG, 0x0d);
 	/* disable autoack */
 	nrf24l01p_write_reg(nrf, NRF24L01P_REG_EN_AA, 0x00);
 	/* data pipes: 0 and 1 */
@@ -152,7 +155,7 @@ int8_t nrf24l01p_set_standby(struct nrf24l01p_device *nrf, bool standby)
 
 int8_t nrf24l01p_set_power_down(struct nrf24l01p_device *nrf, bool pd)
 {
-	uint8_t r = (nrf24l01p_read_reg(nrf, NRF24L01P_REG_CONFIG, NULL) & 0xfd) | (pd ? 0x02 : 0x00);
+	uint8_t r = (nrf24l01p_read_reg(nrf, NRF24L01P_REG_CONFIG, NULL) & 0xfd) | (pd ? 0x00 : 0x02);
 	return nrf24l01p_write_reg(nrf, NRF24L01P_REG_CONFIG, r);
 }
 
@@ -228,3 +231,5 @@ int8_t nrf24l01p_send(struct nrf24l01p_device *nrf, void *data)
 	nrf24l01p_set_standby(nrf, false);
 	return 32;
 }
+
+#endif

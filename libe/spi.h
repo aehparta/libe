@@ -11,6 +11,9 @@
 
 #include <stdint.h>
 #include "os.h"
+#ifdef USE_SPI_BITBANG
+#include "drivers/spi/bitbang.h"
+#else
 #ifdef TARGET_AVR
 #include "target/avr/spi.h"
 #elif TARGET_PIC8
@@ -28,7 +31,7 @@
 #elif TARGET_RPI
 #include "target/rpi/spi.h"
 #endif
-
+#endif /* else USE_SPI_BITBANG */
 
 #ifdef __cplusplus
 extern "C" {

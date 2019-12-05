@@ -3,7 +3,7 @@
 TARGET = X86
 
 # enable spi
-USE += SPI LOG GPIO
+USE += SPI LOG GPIO NRF24L01P
 USE_X86 += FTDI
 
 # init make system
