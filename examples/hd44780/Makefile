@@ -2,6 +2,8 @@
 # default target is x86
 TARGET = X86
 
+USE = GPIO HD44780
+
 # enable ftdi when x86
 USE_X86 += FTDI
 
