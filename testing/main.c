@@ -11,28 +11,21 @@ int app_main(int argc, char *argv[])
 int main(void)
 #endif
 {
-	struct i2c_master master;
-	struct i2c_device dev;
-	
-	i2c_master_open(&master, NULL, 0, 0, 0);
+	os_init();
+	log_init();
 
-	os_delay_ms(1);
+	struct spi_master master;
+	struct nrf24l01p_device nrf;
 
-	i2c_open(&dev, &master, 0x50);
-	os_delay_us(50);
-	i2c_write_byte(&dev, 0xa5);
-	i2c_close(&dev);
+	spi_master_open(&master, NULL, 0, GPIOA2, GPIOA1, GPIOA0);
+	ERROR_IF(nrf24l01p_open(&nrf, &master, GPIOA4, GPIOA5), "failed to open");
+	nrf24l01p_set_standby(&nrf, true);
+	nrf24l01p_set_power_down(&nrf, true);
 
-	while(1);
+	DEBUG_MSG("doing stuff");
+	while (1) {
+		os_wdt_reset();
+	}
 
-	// os_init();
-	// log_init();
-
-	// os_gpio_output(x);
-	// os_gpio_set(0, 1);
-	// LATA |= 2;
-
-	// log_quit();
-	// os_quit();
 	return 0;
 }

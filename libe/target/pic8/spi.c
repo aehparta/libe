@@ -9,6 +9,8 @@
 #include <stdlib.h>
 #include <libe/libe.h>
 
+static void spi_ss_change(uint8_t ss, bool state);
+
 
 int spi_master_open(struct spi_master *master, void *context, uint32_t frequency, uint8_t miso, uint8_t mosi, uint8_t sclk)
 {
@@ -17,16 +19,9 @@ int spi_master_open(struct spi_master *master, void *context, uint32_t frequency
 #else
 	SSPSTAT = 0;
 #endif
-#ifdef SSPCON1
-	SSPCON1 = 0x20;
-#elif defined(SSP1CON1)
-	SSP1CON1 = 0x20;
-#else
-	SSPCON = 0x20;
-#endif
-	os_gpio_input(miso);
-	os_gpio_output(mosi);
-	os_gpio_output(sclk);
+	gpio_input(miso);
+	gpio_output(mosi);
+	gpio_output(sclk);
 
 	/* if device supports mapping of pins */
 #ifdef SSP1DATPPS
@@ -35,8 +30,18 @@ int spi_master_open(struct spi_master *master, void *context, uint32_t frequency
 #ifdef SSP1CLKPPS
 	SSP1CLKPPS = sclk;
 #endif
-	os_pin_pps(sclk, 0x13);
-	os_pin_pps(mosi, 0x14);
+	// os_pin_pps(sclk, 0x13);
+	// os_pin_pps(mosi, 0x14);
+	RA0PPS = 0x13;
+	RA1PPS = 0x14;
+	
+#ifdef SSPCON1
+	SSPCON1 = 0x20;
+#elif defined(SSP1CON1)
+	SSP1CON1 = 0x20;
+#else
+	SSPCON = 0x20;
+#endif
 
 	return 0;
 }
@@ -59,20 +64,20 @@ void spi_master_close(struct spi_master *master)
 
 int spi_open(struct spi_device *device, struct spi_master *master, uint8_t ss)
 {
-	os_gpio_output(ss);
-	os_gpio_high(ss);
+	gpio_output(ss);
+	spi_ss_change(ss, 1);
 	device->ss = ss;
 	return 0;
 }
 
 void spi_close(struct spi_device *device)
 {
-	os_gpio_input(device->ss);
+	gpio_input(device->ss);
 }
 
 int spi_transfer(struct spi_device *device, uint8_t *data, size_t size)
 {
-	os_gpio_low(device->ss);
+	spi_ss_change(device->ss, 0);
 	for ( ; size > 0; size--) {
 #ifdef SSP1BUF
 		SSP1BUF = *data;
@@ -85,7 +90,7 @@ int spi_transfer(struct spi_device *device, uint8_t *data, size_t size)
 #endif
 		data++;
 	}
-	os_gpio_high(device->ss);
+	spi_ss_change(device->ss, 1);
 
 	return 0;
 }
@@ -130,5 +135,19 @@ int spi_transfer(struct spi_device *device, uint8_t *data, size_t size)
 // 		PORTD = data;
 // 	}
 // }
+
+
+/* internals */
+
+
+static void spi_ss_change(uint8_t ss, bool state)
+{
+	if (state) {
+		gpio_high(ss);
+	} else {
+		gpio_low(ss);
+	}
+}
+
 
 #endif

@@ -5,7 +5,7 @@
  * Authors: Antti Partanen <aehparta@iki.fi>
  */
 
-#ifdef USE_GPIO
+#if defined(USE_GPIO) && defined(USE_HD44780)
 
 #include <libe/libe.h>
 

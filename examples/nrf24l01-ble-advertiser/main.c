@@ -56,8 +56,6 @@ int app_main(int argc, char *argv[])
 int main(int argc, char *argv[])
 #endif
 {
-	// uint8_t data[32] = { 0xb3, 0xc3, 0x1d, 0x7a, 0xbf, 0xb0, 0x7e, 0x0d, 0xee, 0x0c, 0x28, 0xf2, 0x79, 0x98, 0x55, 0xa5, 0x66, 0xa5, 0x77, 0x6b, 0xda, 0xf5 };
-
 	/* init */
 	if (p_init(argc, argv)) {
 		ERROR_MSG("initialization failed");
@@ -67,16 +65,40 @@ int main(int argc, char *argv[])
 	/* program loop */
 	INFO_MSG("starting main program loop");
 	while (1) {
+		static uint32_t counter = 0;
 		uint8_t l = 0;
 		uint8_t buf[18];
 		memset(buf, 0, sizeof(buf));
+
+		os_wdt_reset();
+
+		/* length of data including type */
 		buf[l++] = 5;
+		/* data type, examples:
+		 * 8: short name
+		 * 255: custom
+		 */
 		buf[l++] = 0x08;
+		/* data itself */
 		buf[l++] = 'l';
 		buf[l++] = 'i';
 		buf[l++] = 'b';
 		buf[l++] = 'e';
-		nrf24l01p_ble_adv(&nrf, buf, l);
+
+		/* length of data including type */
+		buf[l++] = 5;
+		/* data type, examples:
+		 * 8: short name
+		 * 255: custom
+		 */
+		buf[l++] = 0xff;
+		/* data itself, 32 bit unsigned integer in this case */
+		*((uint32_t *)&buf[l++]) = counter++;
+
+		/* advertise */
+		nrf24l01p_ble_advertise(&nrf, buf, l);
+
+		/* next ble advertise channel */
 		nrf24l01p_ble_hop(&nrf);
 
 		/* lets not waste all cpu */

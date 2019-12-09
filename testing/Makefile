@@ -1,29 +1,10 @@
 
-# check that LIBE_PATH is set
-ifeq ($(LIBE_PATH),)
-    $(error LIBE_PATH not set)
-endif
+TARGET = PIC8
+MCU_PIC8 = pic16f18345
+F_CPU_PIC8 = 16000000
 
-TARGET = X86
-
-MCU_AVR = atmega128
-F_CPU_ATMEGA328 = 1000
-
-USE = I2C
-USE_X86 = I2C_BITBANG FTDI GPIO
-USE_ATMEGA8 = LOG
-
-CFLAGS_ATMEGA8 = -Dxxx=yyy
-LDFLAGS_ATMEGA8 = -lm
-
-# enable gpio
-# libe_USE += GPIO
-
-# enable spi
-# libe_USE += SPI LOG
-# ifdef TARGET_X86
-#     libe_USE += FTDI
-# endif
+USE = SPI GPIO LOG SPI_BITBANG NRF24L01P
+DEFINES_PIC8 = SPI_BITBANG_SCLK=GPIOA0 SPI_BITBANG_MOSI=GPIOA1 SPI_BITBANG_MISO=GPIOA2
 
 # init
 include $(LIBE_PATH)/init.mk
@@ -33,13 +14,7 @@ BUILD_BINS = testing
 PROGRAM_BIN = testing
 testing_SRC = main.c $(libe_SRC)
 
-# other
-ifeq ($(TARGET), avr)
-	CFLAGS += -DI2C_BITBANG_SCL=28 -DI2C_BITBANG_SDA=27
-endif
-ifeq ($(TARGET), pic8)
-	CFLAGS += -DI2C_BITBANG_SCL=0 -DI2C_BITBANG_SDA=1
-endif
+DEFINES_PIC8 += SPI_SS=0
 
 # build
 include $(LIBE_PATH)/build.mk
