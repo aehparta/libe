@@ -8,10 +8,7 @@
 #include <sys/stat.h>
 #include <unistd.h>
 #endif
-/* cannot include a file globally in xc8 */
-#ifdef TARGET_PIC8
 #include "../config.h"
-#endif
 
 
 #ifdef TARGET_ESP32
@@ -41,6 +38,8 @@ int main(int argc, char *argv[])
 
 	/* open i2c */
 	ERROR_IF_R(i2c_master_open(&i2c, context, CFG_I2C_FREQUENCY, CFG_I2C_SCL, CFG_I2C_SDA), 1, "unable to open i2c device");
+	// gpio_pullup(I2C_BITBANG_SCL, true);
+	// gpio_pullup(I2C_BITBANG_SDA, true);
 
 	/* open mcp3221 */
 	ERROR_IF_R(mcp3221_open(&dev1, &i2c, MCP3221_ADDR_A2), 1, "unable to find mcp3221-a2");
@@ -48,9 +47,9 @@ int main(int argc, char *argv[])
 
 	/* read mcp3221 */
 	while (1) {
-		int16_t v1, v2;
-		v1 = mcp3221_read(&dev1);
-		v2 = mcp3221_read(&dev2);
+		int32_t v1 = 0, v2 = 0;
+		v1 += mcp3221_read(&dev1, 0);
+		v2 += mcp3221_read(&dev2, 0);
 		if (v1 < 0) {
 			ERROR_MSG("failed reading mcp3221-a2");
 		}

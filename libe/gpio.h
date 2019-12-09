@@ -39,6 +39,14 @@ extern "C" {
 #define gpio_low(pin) gpio_set(pin, 0)
 #define gpio_high(pin) gpio_set(pin, 1)
 
+#ifndef gpio_pullup
+#define gpio_pullup(pin, state)
+#endif
+
+#ifndef gpio_open_drain
+#define gpio_open_drain(pin, state)
+#endif
+
 #define GPIOA0      0
 #define GPIOA1      1
 #define GPIOA2      2

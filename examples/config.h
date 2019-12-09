@@ -156,9 +156,9 @@
 #ifdef TARGET_ESP32
 /* i2c */
 #define CFG_I2C_CONTEXT     NULL
-#define CFG_I2C_FREQUENCY   100000
-#define CFG_I2C_SCL         32
-#define CFG_I2C_SDA         33
+#define CFG_I2C_FREQUENCY   400000
+#define CFG_I2C_SCL         23
+#define CFG_I2C_SDA         18
 /* spi */
 #define CFG_SPI_CONTEXT     ((void *)HSPI_HOST)
 #define CFG_SPI_FREQUENCY   0

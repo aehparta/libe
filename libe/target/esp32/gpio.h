@@ -14,6 +14,7 @@ extern "C" {
 #define gpio_enable(pin, direction) do { gpio_pad_select_gpio(pin); gpio_set_direction(pin, direction ? GPIO_MODE_OUTPUT : GPIO_MODE_INPUT); } while(0);
 #define gpio_set(pin, state) gpio_set_level(pin, state ? 1 : 0);
 #define gpio_read(pin) gpio_get_level(pin)
+#define gpio_pullup(pin, state) do { if (state) { gpio_pullup_en(pin); } else { gpio_pullup_dis(pin); } } while(0)
 // gpio_set_pull_mode(pin, GPIO_PULLUP_ONLY);
 
 #ifdef __cplusplus

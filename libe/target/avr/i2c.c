@@ -53,7 +53,7 @@ void i2c_close(struct i2c_device *dev)
 
 int8_t i2c_read(struct i2c_device *dev, void *data, uint8_t size)
 {
-	int err = -1;
+	int8_t err = -1;
 
 	/* send start and assume it was sent ok */
 	TWCR = TWCR_BASE | (1 << TWSTA);
@@ -69,13 +69,17 @@ int8_t i2c_read(struct i2c_device *dev, void *data, uint8_t size)
 		goto out_err;
 	}
 
+	err = 0;
+
 out_err:
+	/* always send stop */
+	TWCR = TWCR_BASE | (1 << TWSTO);
 	return err;
 }
 
 int8_t i2c_write(struct i2c_device *dev, void *data, uint8_t size)
 {
-	int err = -1;
+	int8_t err = -1;
 
 	/* send start and assume it was sent ok */
 	TWCR = TWCR_BASE | (1 << TWSTA);

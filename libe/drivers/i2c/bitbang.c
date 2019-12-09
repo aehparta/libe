@@ -45,7 +45,6 @@
 		I2C_BITBANG_DELAY_FUNC; \
 		gpio_high(I2C_BITBANG_SCL); \
 		I2C_BITBANG_DELAY_FUNC; \
-		gpio_high(I2C_BITBANG_SDA); /* this sets pull-up on in avr */ \
 		gpio_input(I2C_BITBANG_SDA); \
 	} while (0)
 
@@ -71,7 +70,6 @@
 
 #define I2C_READ_ACK() \
 	do { \
-		gpio_high(I2C_BITBANG_SDA); /* this sets pull-up on in avr */ \
 		gpio_input(I2C_BITBANG_SDA); \
 		I2C_BITBANG_DELAY_FUNC; \
 		gpio_high(I2C_BITBANG_SCL); \
@@ -96,12 +94,10 @@ int8_t i2c_master_open(struct i2c_master *master, void *context, uint32_t freque
 
 	/* clock is always output */
 	gpio_high(I2C_BITBANG_SCL);
-	gpio_pullup(I2C_BITBANG_SCL, true);
 	gpio_open_drain(I2C_BITBANG_SCL, true);
 	gpio_output(I2C_BITBANG_SCL);
 	/* data is input as default, but output at start */
 	gpio_high(I2C_BITBANG_SDA);
-	gpio_pullup(I2C_BITBANG_SDA, true);
 	gpio_open_drain(I2C_BITBANG_SDA, true);
 	gpio_output(I2C_BITBANG_SDA);
 
@@ -154,7 +150,6 @@ int8_t i2c_read(struct i2c_device *dev, void *data, uint8_t size)
 
 	/* read data */
 	for (uint8_t *p = data; size > 0; size--, p++) {
-		gpio_high(I2C_BITBANG_SDA); /* this sets pull-up on in avr */
 		gpio_input(I2C_BITBANG_SDA);
 		*p = 0xff;
 		for (uint8_t i = 0x80; i; i = i >> 1) {
