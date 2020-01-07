@@ -22,8 +22,8 @@ int main(void)
 	ERROR_IF_R(i2c_open(&dev, &i2c, 0x08), 1, "unable to open act4751");
 
 	b[0] = 0x0a;
-	b[1] = 0x31;
-	b[2] = 0x17;
+	b[1] = 0x32;
+	b[2] = 0x10;
 	i2c_write(&dev, b, 3);
 
 	b[0] = 0x05;

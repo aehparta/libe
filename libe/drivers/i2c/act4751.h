@@ -25,17 +25,17 @@ extern "C" {
 int8_t act4751_open(struct i2c_device *dev, struct i2c_master *master, uint8_t address, uint16_t rilim);
 #define act4751_close(dev) i2c_close(dev)
 
-float act4751_set_main_voltage(struct i2c_device *dev, float voltage);
+int8_t act4751_set_main_voltage(struct i2c_device *dev, float voltage);
 float act4751_get_main_voltage(struct i2c_device *dev);
 
-float act4751_set_main_current(struct i2c_device *dev, float current);
+int8_t act4751_set_main_current(struct i2c_device *dev, float current);
 float act4751_get_main_current(struct i2c_device *dev);
 
-float act4751_set_ldo_voltage(struct i2c_device *dev, float voltage);
+int8_t act4751_set_ldo_voltage(struct i2c_device *dev, float voltage);
 float act4751_get_ldo_voltage(struct i2c_device *dev);
 
-bool act4751_set_mini_buck(struct i2c_device *dev, bool enable);
-bool act4751_get_mini_buck(struct i2c_device *dev);
+int8_t act4751_set_mini_buck(struct i2c_device *dev, bool enable);
+int8_t act4751_get_mini_buck(struct i2c_device *dev);
 
 #ifdef __cplusplus
 }

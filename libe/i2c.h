@@ -73,6 +73,7 @@ static inline uint8_t i2c_read_reg_byte(struct i2c_device *dev, uint8_t reg)
 #include "drivers/i2c/sht21.h"
 #include "drivers/i2c/sht31.h"
 #include "drivers/i2c/cap1293.h"
+#include "drivers/i2c/act4751.h"
 
 #ifdef __cplusplus
 }
