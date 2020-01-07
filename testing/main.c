@@ -11,20 +11,36 @@ int app_main(int argc, char *argv[])
 int main(void)
 #endif
 {
+	struct i2c_master i2c;
+	struct i2c_device dev;
+	uint8_t b[16];
+
 	os_init();
 	log_init();
 
-	struct spi_master master;
-	struct nrf24l01p_device nrf;
+	ERROR_IF_R(i2c_master_open(&i2c, NULL, 0, 0, 0), 1, "unable to open i2c master");
+	ERROR_IF_R(i2c_open(&dev, &i2c, 0x08), 1, "unable to open act4751");
 
-	spi_master_open(&master, NULL, 0, GPIOA2, GPIOA1, GPIOA0);
-	ERROR_IF(nrf24l01p_open(&nrf, &master, GPIOA4, GPIOA5), "failed to open");
-	nrf24l01p_set_standby(&nrf, true);
-	nrf24l01p_set_power_down(&nrf, true);
+	b[0] = 0x0a;
+	b[1] = 0x31;
+	b[2] = 0x17;
+	i2c_write(&dev, b, 3);
 
-	DEBUG_MSG("doing stuff");
+	b[0] = 0x05;
+	b[1] = 0x03;
+	i2c_write(&dev, b, 2);
+
 	while (1) {
 		os_wdt_reset();
+
+		b[0] = 0x00;
+		i2c_write(&dev, b, 1);
+		i2c_read(&dev, b, 16);
+		
+		// printf("%02x %02x %02x %02x\r\n", b[0], b[1], b[2], b[3]);
+		HEX_DUMP(b, 16);
+
+		os_delay_ms(1000);
 	}
 
 	return 0;

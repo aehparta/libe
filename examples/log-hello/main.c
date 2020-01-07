@@ -16,7 +16,7 @@ int main(int argc, char *argv[])
 	/* debug/log init:
 	 *
 	 * example in AVR as default, log_init() initializes logging into USART0 with speed
-	 * as close to 38400 as possible with given CPU clock
+	 * as close to 9600 as possible with given CPU clock
 	 */
 	log_init();
 

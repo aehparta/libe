@@ -9,7 +9,7 @@
 
 #include <libe/libe.h>
 
-#define TWCR_BASE ((1 << TWINT) | (1 << TWEA) | (1 << TWEN))
+#define TWCR_BASE ((1 << TWINT) | (1 << TWEN))
 
 
 int8_t i2c_master_open(struct i2c_master *master, void *context, uint32_t frequency, uint8_t scl, uint8_t sda)
@@ -23,13 +23,8 @@ int8_t i2c_master_open(struct i2c_master *master, void *context, uint32_t freque
 	float f_div = (F_CPU / frequency - 16);
 	f_div = f_div < 0 ? 0 : f_div;
 	/* bit rate register value */
-	TWBR = f_div / 2; /* using prescaler 1 from TWSR */
+	TWBR = (uint8_t)f_div / 2; /* using prescaler 1 from TWSR */
 	TWSR = 0x00;
-
-	/* reset bus */
-	TWCR = TWCR_BASE | (1 << TWSTA);
-	while (!(TWCR & (1 << TWINT)));
-	TWCR = TWCR_BASE | (1 << TWSTO);
 
 	return 0;
 }
@@ -67,6 +62,13 @@ int8_t i2c_read(struct i2c_device *dev, void *data, uint8_t size)
 	if ((TWSR & 0xf8) != 0x40) {
 		error_set_last("no ack received");
 		goto out_err;
+	}
+
+	/* read data */
+	for (uint8_t *p = data; size > 0; size--, p++) {
+		TWCR = TWCR_BASE | (size <= 1 ? 0 : (1 << TWEA));
+		while (!(TWCR & (1 << TWINT)));
+		*p = TWDR;
 	}
 
 	err = 0;
