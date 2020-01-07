@@ -175,9 +175,7 @@ Functions
 	:param int8_t size: count of bytes to read
 	:return:
 
-		* ``size`` on success
-		* less than ``size`` if only some of the data was read
-		* 0 if ack was received after address but no data was read succesfully
+		* 0 on success
 		* -1 if device did not respond
 
 	Read data from I2C device.
@@ -191,9 +189,7 @@ Functions
 	:param int8_t size: count of bytes to write
 	:return:
 
-		* ``size`` on success
-		* less than ``size`` if only some of the data was written
-		* 0 if ack was received after address but no data was written succesfully
+		* 0 on success
 		* -1 if device did not respond
 
 	Write data to I2C device.
@@ -215,7 +211,7 @@ Functions
 	:type dev: struct i2c_device *
 	:param uint8_t reg: register to write
 	:param uint8_t value: value to write
-	:return: 2 on success
+	:return: 0 on success
 
 	Write register value to I2C device.
 	This is same as writing two bytes to I2C device, in this case ``reg`` followed by ``value``.
