@@ -28,8 +28,8 @@ extern "C" {
 int8_t act4751_set_main_voltage(struct i2c_device *dev, float voltage);
 float act4751_get_main_voltage(struct i2c_device *dev);
 
-int8_t act4751_set_main_current(struct i2c_device *dev, float current);
-float act4751_get_main_current(struct i2c_device *dev);
+float act4751_set_main_current(struct i2c_device *dev, float current, uint16_t rilim);
+float act4751_get_main_current(struct i2c_device *dev, uint16_t rilim);
 
 
 #ifdef __cplusplus

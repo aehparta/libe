@@ -36,14 +36,26 @@ float act4751_get_main_voltage(struct i2c_device *dev)
 	return (float)(((uint16_t)d[1] & 0x7) | ((uint16_t)d[0] << 3)) / 80.0;
 }
 
-int8_t act4751_set_main_current(struct i2c_device *dev, float current)
+float act4751_set_main_current(struct i2c_device *dev, float current, uint16_t rilim)
 {
-	return 0;
+	/* calculate register value */
+	float max = 0.000000391 * 256.0 * (float)rilim * 2.4976023;
+	uint16_t v = (uint8_t)(current / max * 256.0);
+	if (v > 0) {
+		v -= 1;
+	}
+	if (v > 0xff) {
+		v = 0xff;
+	}
+	/* write register */
+	IF_R(i2c_write_reg_byte(dev, 0x0c, (uint8_t)v), -1.0);
+	return act4751_get_main_current(dev, rilim);
 }
 
-float act4751_get_main_current(struct i2c_device *dev)
+float act4751_get_main_current(struct i2c_device *dev, uint16_t rilim)
 {
-	return 0;
+	float v = i2c_read_reg_byte(dev, 0x0c);
+	return (0.000000391 * 256.0 * (float)rilim * 2.4976023) * ((v + 1.0) / 256.0);
 }
 
 #endif
