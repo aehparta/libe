@@ -7,7 +7,6 @@
 #ifdef USE_I2C
 
 #include "cap1293.h"
-#include <libe/i2c.h>
 
 int cap1293_open(struct i2c_device *dev, struct i2c_master *master)
 {
