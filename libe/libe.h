@@ -29,6 +29,8 @@ extern "C" {
 #include "i2c.h"
 /* spi drivers */
 #include "spi.h"
+/* internal adc drivers */
+#include "adci.h"
 
 #ifdef __cplusplus
 }

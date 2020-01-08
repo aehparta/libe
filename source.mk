@@ -79,6 +79,11 @@ ifneq ($(filter $(libe_DEFINES),USE_I2C),)
     endif
 endif
 
+# add internal adc drivers
+ifneq ($(filter $(libe_DEFINES),USE_ADC),)
+    libe_SRC += $(T_PATH)/adci.c
+endif
+
 # add non-volatile memory (eeprom or similar)
 ifneq ($(filter $(libe_DEFINES),USE_NVM),)
     libe_SRC += $(T_PATH)/nvm.c
