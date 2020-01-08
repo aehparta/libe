@@ -15,7 +15,6 @@
 #endif
 
 struct adc {
-	uint8_t placeholder;
 };
 
 int8_t adci_open(struct adc *adc, void *context);
