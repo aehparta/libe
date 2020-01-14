@@ -8,6 +8,10 @@
 
 #include <libe/libe.h>
 
+#ifndef USE_GPIO
+#error "You need to enable GPIO to use I2C bitbang driver"
+#endif
+
 #ifndef USE_I2C_BITBANG_DYNAMIC
 #ifndef I2C_BITBANG_SCL
 #error "I2C_BITBANG_SCL pin definition missing, it must be set when using I2C bitbang"

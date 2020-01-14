@@ -19,7 +19,7 @@ int8_t adci_open(struct adc *adc, void *context)
 	return 0;
 }
 
-uint32_t adci_frequency(struct adc *adc, uint32_t frequency)
+uint32_t adci_sps(struct adc *adc, uint32_t frequency)
 {
 	uint32_t div;
 

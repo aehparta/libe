@@ -18,7 +18,7 @@ struct adc {
 };
 
 int8_t adci_open(struct adc *adc, void *context);
-uint32_t adci_frequency(struct adc *adc, uint32_t frequency);
+uint32_t adci_sps(struct adc *adc, uint32_t frequency);
 uint32_t adci_read_raw(struct adc *adc, uint8_t channel);
 
 

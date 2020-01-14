@@ -35,10 +35,7 @@ int broadcast_init(uint16_t port)
 	wifi_init();
 #endif
 
-	bport = port;
-	if (bport == 0) {
-		bport = BROADCAST_DEFAULT_PORT;
-	}
+	bport = port > 0 ? port : BROADCAST_DEFAULT_PORT;
 
 	/* create socket */
 	bsock = socket(AF_INET, SOCK_DGRAM, 0);
