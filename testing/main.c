@@ -21,14 +21,14 @@ int main(void)
 	ERROR_IF_R(i2c_master_open(&i2c, NULL, 0, 0, 0), 1, "unable to open i2c master");
 	ERROR_IF_R(i2c_open(&dev, &i2c, 0x08), 1, "unable to open act4751");
 
-	b[0] = 0x0a;
-	b[1] = 0x32;
-	b[2] = 0x10;
-	i2c_write(&dev, b, 3);
+	// b[0] = 0x0a;
+	// b[1] = 0x32;
+	// b[2] = 0x10;
+	// i2c_write(&dev, b, 3);
 
-	b[0] = 0x05;
-	b[1] = 0x03;
-	i2c_write(&dev, b, 2);
+	// b[0] = 0x05;
+	// b[1] = 0x03;
+	// i2c_write(&dev, b, 2);
 
 	while (1) {
 		os_wdt_reset();

@@ -57,14 +57,16 @@ static inline int8_t i2c_write_reg_byte(struct i2c_device *dev, uint8_t reg, uin
 static inline uint8_t i2c_read_reg_byte(struct i2c_device *dev, uint8_t reg)
 {
 	uint8_t value;
-	if (i2c_write(dev, &reg, 1) != 1) {
+	if (i2c_write(dev, &reg, 1) != 0) {
 		return 0xff;
 	}
-	if (i2c_read(dev, &value, 1) != 1) {
+	if (i2c_read(dev, &value, 1) != 0) {
 		return 0xff;
 	}
 	return value;
 }
+
+#define i2c_read_modify_write_reg_byte(dev, reg, mask_and_first, set_or_then) i2c_write_reg_byte(dev, reg, (i2c_read_reg_byte(dev, reg) & (mask_and_first)) | (set_or_then))
 
 /* drivers */
 #include "drivers/i2c/hdc1080.h"

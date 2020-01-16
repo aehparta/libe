@@ -22,18 +22,21 @@ int8_t act4751_set_main_voltage(struct i2c_device *dev, float voltage)
 	if (voltage > 24.0) {
 		vbits = 0x7ff;
 	}
-	/* if voltage is zero, just disable main buck */
-	// if (voltage <= 0.0) {
-	// 	i2c_write_reg_byte(dev, 0x05, 0x00);
-	// 	return 0.0;
-	// }
+	/* if voltage is zero, just disable main buck
+	 * NOTE: this will not work if EN-pin is not pulled low
+	 * (iEN is an OR between physical EN-pin and register EN-bit)
+	 */
+	if (voltage <= 0.0) {
+		i2c_write_reg_byte(dev, ACT4751_REG_COMMAND, 0x00);
+		return 0.0;
+	}
 	/* write first and second register simultaneously */
-	d[0] = 0x0a;
+	d[0] = ACT4751_REG_DACOUT;
 	d[1] = (uint8_t)(vbits >> 3);
 	d[2] = (i2c_read_reg_byte(dev, 0x0b) & 0xf8) | (uint8_t)(vbits & 0x7);
 	i2c_write(dev, d, 3);
 	/* apply */
-	i2c_write_reg_byte(dev, 0x05, 0x03);
+	i2c_write_reg_byte(dev, ACT4751_REG_COMMAND, 0x03);
 	return 0;
 }
 
@@ -41,7 +44,7 @@ float act4751_get_main_voltage(struct i2c_device *dev)
 {
 	uint8_t d[2];
 	/* select register */
-	d[0] = 0x0a;
+	d[0] = ACT4751_REG_DACOUT;
 	IF_R(i2c_write(dev, d, 1), NAN);
 	/* read values */
 	IF_R(i2c_read(dev, d, 2), NAN);
@@ -62,23 +65,23 @@ int8_t act4751_set_main_current(struct i2c_device *dev, float current)
 		v = 0xff;
 	}
 	/* write register */
-	i2c_write_reg_byte(dev, 0x0c, (uint8_t)v);
+	i2c_write_reg_byte(dev, ACT4751_REG_ILIM, (uint8_t)v);
 	return 0;
 }
 
 float act4751_get_main_current(struct i2c_device *dev)
 {
 	uint16_t *r = (uint16_t *)dev->driver_bits;
-	float v = i2c_read_reg_byte(dev, 0x0c);
+	float v = i2c_read_reg_byte(dev, ACT4751_REG_ILIM);
 	return (0.000000391 * 256.0 * (float)(*r) * 2.4976023) * ((v + 1.0) / 256.0);
 }
 
 int8_t act4751_set_ldo_voltage(struct i2c_device *dev, float voltage)
 {
-	uint8_t cfg2 = i2c_read_reg_byte(dev, 0x09);
+	uint8_t cfg2 = i2c_read_reg_byte(dev, ACT4751_REG_CFG2);
 	/* if voltage is zero, disable ldo */
 	if (voltage <= 0.0) {
-		i2c_write_reg_byte(dev, 0x09, cfg2 & ~0x01);
+		i2c_write_reg_byte(dev, ACT4751_REG_CFG2, cfg2 & ~0x01);
 		return 0.0;
 	}
 	/* calculate register value */
@@ -90,7 +93,7 @@ int8_t act4751_set_ldo_voltage(struct i2c_device *dev, float voltage)
 	i2c_write_reg_byte(dev, 0x0d, v);
 	/* enable ldo if disabled */
 	if (!(cfg2 & 0x01)) {
-		i2c_write_reg_byte(dev, 0x09, cfg2 | 0x01);
+		i2c_write_reg_byte(dev, ACT4751_REG_CFG2, cfg2 | 0x01);
 	}
 	return 0;
 }
@@ -103,15 +106,15 @@ float act4751_get_ldo_voltage(struct i2c_device *dev)
 
 int8_t act4751_set_mini_buck(struct i2c_device *dev, bool enable)
 {
-	uint8_t cfg2 = i2c_read_reg_byte(dev, 0x09) & ~0x02;
-	i2c_write_reg_byte(dev, 0x09, cfg2 | (enable ? 0x02 : 0x00));
+	uint8_t cfg2 = i2c_read_reg_byte(dev, ACT4751_REG_CFG2) & ~0x02;
+	i2c_write_reg_byte(dev, ACT4751_REG_CFG2, cfg2 | (enable ? 0x02 : 0x00));
 	return 0;
 }
 
 int8_t act4751_get_mini_buck(struct i2c_device *dev)
 {
 	uint8_t d;
-	error_if(i2c_write_byte(dev, 0x09), -1, "act4751 not responding");
+	error_if(i2c_write_byte(dev, ACT4751_REG_CFG2), -1, "act4751 not responding");
 	error_if(i2c_read(dev, &d, 1), -1, "act4751 read failed");
 	return d & 0x02 ? 1 : 0;
 }
