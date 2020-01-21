@@ -8,6 +8,7 @@
 #define _LIBE_ACT4751_H_
 
 #include <stdint.h>
+#include <math.h>
 #include <libe/libe.h>
 
 #ifdef __cplusplus

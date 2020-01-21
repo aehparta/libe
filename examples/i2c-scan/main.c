@@ -8,12 +8,8 @@
 #include <sys/stat.h>
 #include <unistd.h>
 #endif
+#include "../config.h"
 
-#ifndef I2C_CONTEXT
-#define I2C_CONTEXT NULL
-#define I2C_SCL 0
-#define I2C_SDA 0
-#endif
 
 #ifdef TARGET_ESP32
 int app_main(int argc, char *argv[])
@@ -21,7 +17,7 @@ int app_main(int argc, char *argv[])
 int main(int argc, char *argv[])
 #endif
 {
-	void *context = I2C_CONTEXT;
+	void *context = CFG_I2C_CONTEXT;
 	struct i2c_master i2c;
 	struct i2c_device dev;
 
@@ -39,7 +35,7 @@ int main(int argc, char *argv[])
 #endif
 
 	/* open i2c */
-	ERROR_IF_R(i2c_master_open(&i2c, context, 0, I2C_SCL, I2C_SDA), 1, "unable to open i2c device");
+	ERROR_IF_R(i2c_master_open(&i2c, context, CFG_I2C_FREQUENCY, CFG_I2C_SCL, CFG_I2C_SDA), 1, "unable to open i2c device");
 
 	while (1) {
 		/* scan i2c bus */
