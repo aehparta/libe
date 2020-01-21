@@ -108,3 +108,10 @@ endif
 ifneq ($(filter $(libe_DEFINES),USE_FTDI),)
     libe_SRC += $(LIBE_PATH)/libe/target/linux/ftdi.c
 endif
+
+# add display drivers and draw functions
+ifneq ($(filter $(libe_DEFINES),USE_DISPLAY),)
+    libe_SRC += \
+        $(LIBE_PATH)/libe/draw.c \
+        $(LIBE_PATH)/libe/drivers/display/ssd1306.c
+endif

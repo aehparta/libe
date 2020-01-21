@@ -8,11 +8,14 @@
 #include <stdbool.h>
 #include <avr/interrupt.h>
 #include <avr/wdt.h>
+#include <avr/pgmspace.h>
 #include <util/delay.h>
 
 #ifdef __cplusplus
 extern "C" {
 #endif
+
+#define TARGET_FLASH_MEMORY PROGMEM
 
 #define OS_DELAY_AS_MACROS_OR_INLINE    1
 
@@ -23,6 +26,7 @@ int8_t os_init(void);
 
 #define os_delay_ms(x)      _delay_ms(x)
 #define os_delay_us(x)      _delay_us(x)
+
 
 #ifdef __cplusplus
 }

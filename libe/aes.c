@@ -11,13 +11,6 @@
 #define MUL3(x)  ((x) ^ MUL2(x))
 #define SUB4(x)  (((uint32_t)s_box(((x) & 0xFF000000) >> 24) << 24) | ((uint32_t)s_box(((x) & 0xFF0000) >> 16) << 16) | ((uint32_t)s_box(((x) & 0xFF00) >> 8) << 8) | (uint32_t)s_box(((x) & 0xFF)))
 
-#ifdef TARGET_AVR
-  #include <avr/pgmspace.h>
-  #define TARGET_FLASH_MEMORY PROGMEM
-#else
-  #define TARGET_FLASH_MEMORY
-#endif
-
 // for reading aes tables
 #ifdef TARGET_AVR
 #define s_box(index)            pgm_read_byte(&(_s_box[index]))
