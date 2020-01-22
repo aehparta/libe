@@ -15,8 +15,6 @@
 extern "C" {
 #endif
 
-#define TARGET_FLASH_MEMORY PROGMEM
-
 #define OS_DELAY_AS_MACROS_OR_INLINE    1
 
 int8_t os_init(void);

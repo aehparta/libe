@@ -49,8 +49,8 @@ typedef double os_time_t;
 typedef long double os_time_t;
 #endif
 
-#ifndef TARGET_FLASH_MEMORY
-#define TARGET_FLASH_MEMORY
+#ifndef PROGMEM
+#define PROGMEM
 #endif
 
 /**

@@ -6,7 +6,7 @@
 
 #include <libe/libe.h>
 
-static uint8_t TARGET_FLASH_MEMORY ssd1306_init_commands[] = {
+const static uint8_t PROGMEM ssd1306_init_commands[] = {
 	SSD1306_DISPLAYOFF, // display off
 	SSD1306_MEMORYMODE, SSD1306_HORIZONTAL_ADDRESSING_MODE, // Page Addressing mode
 	SSD1306_COMSCANDEC,             // Scan from 127 to 0 (Reverse scan)

@@ -3,7 +3,8 @@
 TARGET = X86
 
 # enable log and i2c
-USE += I2C LOG DISPLAY SDL2
+USE += I2C LOG DISPLAY
+USE_X86 += SDL2
 
 # init
 include $(LIBE_PATH)/init.mk
