@@ -32,6 +32,19 @@ struct opt {
 	};
 };
 
+#define OPT_START_GENERIC   0x00
+#define OPT_START_MASTER    0x20
+#define OPT_START_DEVICE    0x40
+#define OPT_START_DISPLAY   0x60
+#define OPT_START_UNKNOWN2  0x80
+#define OPT_START_UNKNOWN3  0xa0
+#define OPT_START_UNKNOWN4  0xc0
+#define OPT_START_UNKNOWN5  0xe0
+
+enum {
+	OPT_UNKNOWN = OPT_START_GENERIC,
+};
+
 #include "os.h"
 #include "log.h"
 #include "wifi.h"

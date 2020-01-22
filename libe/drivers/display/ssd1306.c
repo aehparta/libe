@@ -37,6 +37,11 @@ int8_t ssd1306_i2c_open(struct display *display, void *context, uint8_t address,
 
 	display->w = w ? w : 128;
 	display->h = h ? h : 64;
+	display->clip_x1 = 0;
+	display->clip_y1 = 0;
+	display->clip_x2 = display->w - 1;
+	display->clip_y2 = display->h - 1;
+
 	// display->close = NULL;
 	display->opt = ssd1306_i2c_opt;
 	display->pixel = ssd1306_i2c_pixel;
