@@ -77,30 +77,52 @@ int32_t ssd1306_i2c_opt(struct display *display, struct opt *opt)
 
 void ssd1306_i2c_pixel(struct display *display, int16_t x, int16_t y, uint32_t color)
 {
-	uint8_t b = 0;
+	// uint8_t b = 0;
 
-	if (display->buffer) {
-		b = display->buffer[0];
-	}
+	// if (display->buffer) {
+	// 	b = display->buffer[0];
+	// }
 
-	// uint8_t cmds[] = {
-	// 	SSD1306_PAGEADDR, 0, 0xff,
-	// 	SSD1306_COLUMNADDR, 0, display->w - 1,
-	// };
+	uint8_t cmds[] = {
+		SSD1306_COLUMNADDR, 0, display->w - 1,
+		SSD1306_PAGEADDR, 0, 0x07,
+		SSD1306_SETSTARTLINE, 0,
+		SSD1306_SETSTARTLINE, 0,
+		SSD1306_SETSTARTLINE, 0,
+		SSD1306_SETSTARTLINE, 0,
+		SSD1306_SETSTARTLINE, 0,
+		SSD1306_SETSTARTLINE, 0,
+		SSD1306_SETSTARTLINE, 0,
+		SSD1306_SETSTARTLINE, 0,
+		SSD1306_SETSTARTLINE, 0,
+		SSD1306_SETSTARTLINE, 0,
+	};
 	// DEBUG_MSG("ssd1306: draw pixel, x: %d, y: %d, color: %lu", x, y, color);
-	// i2c_write(&display->i2c, cmds, sizeof(cmds));
-	i2c_write_reg_byte(&display->i2c, SSD1306_SETSTARTLINE, 0x0f);
-	i2c_write_reg_byte(&display->i2c, SSD1306_SETSTARTLINE, 0xf0);
-	i2c_write_reg_byte(&display->i2c, SSD1306_SETSTARTLINE, 0x0f);
-	i2c_write_reg_byte(&display->i2c, SSD1306_SETSTARTLINE, 0xf0);
-	i2c_write_reg_byte(&display->i2c, SSD1306_SETSTARTLINE, 0x0f);
-	i2c_write_reg_byte(&display->i2c, SSD1306_SETSTARTLINE, 0xf0);
-	i2c_write_reg_byte(&display->i2c, SSD1306_SETSTARTLINE, 0x0f);
-	i2c_write_reg_byte(&display->i2c, SSD1306_SETSTARTLINE, 0xf0);
-	i2c_write_reg_byte(&display->i2c, SSD1306_SETSTARTLINE, 0x0f);
-	i2c_write_reg_byte(&display->i2c, SSD1306_SETSTARTLINE, 0xf0);
-	i2c_write_reg_byte(&display->i2c, SSD1306_SETSTARTLINE, 0x0f);
-	i2c_write_reg_byte(&display->i2c, SSD1306_SETSTARTLINE, 0xf0);
+	i2c_write(&display->i2c, cmds, sizeof(cmds));
+
+	// i2c_write_byte(&display->i2c, 0xf0);
+	// i2c_write_byte(&display->i2c, 0x0f);
+	// i2c_write_byte(&display->i2c, 0xf0);
+	// i2c_write_byte(&display->i2c, 0x0f);
+	// i2c_write_byte(&display->i2c, 0xf0);
+	// i2c_write_byte(&display->i2c, 0x0f);
+	// i2c_write_byte(&display->i2c, 0xf0);
+	// i2c_write_byte(&display->i2c, 0x0f);
+	// i2c_write_byte(&display->i2c, 0xf0);
+	// i2c_write_byte(&display->i2c, 0x0f);
+	// i2c_write_byte(&display->i2c, 0xf0);
+	// i2c_write_byte(&display->i2c, 0x0f);
+	// i2c_write_byte(&display->i2c, 0xf0);
+	// i2c_write_byte(&display->i2c, 0x0f);
+	// i2c_write_byte(&display->i2c, 0xf0);
+	// i2c_write_byte(&display->i2c, 0x0f);
+	// i2c_write_byte(&display->i2c, 0xf0);
+	// i2c_write_byte(&display->i2c, 0x0f);
+	// i2c_write_byte(&display->i2c, 0xf0);
+	// i2c_write_byte(&display->i2c, 0x0f);
+	// i2c_write_byte(&display->i2c, 0xf0);
+	// i2c_write_byte(&display->i2c, 0x0f);
+	// i2c_write_byte(&display->i2c, 0xf0);
 	// i2c_write_byte(&display->i2c, SSD1306_SETSTARTLINE);
 	// i2c_write_byte(&display->i2c, 0x01);
 	// i2c_write_byte(&display->i2c, 0x01);

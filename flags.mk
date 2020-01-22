@@ -57,3 +57,8 @@ endif
 ifneq ($(ldflags),)
 	LDFLAGS += $(foreach flag,$(ldflags),$(flag))
 endif
+
+# add libraries
+ifneq ($(filter $(libe_DEFINES),USE_SDL2),)
+	LDFLAGS += -lSDL2
+endif

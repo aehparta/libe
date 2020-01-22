@@ -17,6 +17,7 @@ enum {
 	DISPLAY_OPT_GET_BUFFER,
 	DISPLAY_OPT_GET_W,
 	DISPLAY_OPT_GET_H,
+	DISPLAY_OPT_SET_SCALING,
 };
 
 struct display {
@@ -34,6 +35,9 @@ struct display {
 	int16_t h;
 	uint8_t *buffer;
 	uint8_t driver_bits[4];
+#ifdef USE_SDL2
+	uint8_t scaling;
+#endif
 
 	void (*close)(struct display *display);
 	int32_t (*opt)(struct display *display, struct opt *opt);
@@ -49,6 +53,7 @@ struct display {
 
 /* drivers */
 #include "drivers/display/ssd1306.h"
+#include "drivers/display/sdl2.h"
 
 
 #ifdef __cplusplus
