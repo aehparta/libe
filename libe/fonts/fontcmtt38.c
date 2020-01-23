@@ -35,7 +35,7 @@
 //
 //*****************************************************************************
 
-#include "grlib.h"
+#include <libe/libe.h>
 
 //*****************************************************************************
 //
@@ -423,7 +423,7 @@ static const uint8_t g_pucCmtt38Data[4325] =
 // The font definition for the 38 point Cmtt font.
 //
 //*****************************************************************************
-const Graphics_Font g_sFontCmtt38 =
+const struct font g_sFontCmtt38 =
 {
     //
     // The format of the font.

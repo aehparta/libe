@@ -35,7 +35,7 @@
 //
 //*****************************************************************************
 
-#include "grlib.h"
+#include <libe/libe.h>
 
 //*****************************************************************************
 //
@@ -355,7 +355,7 @@ static const uint8_t g_pucCmsc30Data[3512] =
 // The font definition for the 30 point Cmsc font.
 //
 //*****************************************************************************
-const Graphics_Font g_sFontCmsc30 =
+const struct font g_sFontCmsc30 =
 {
     //
     // The format of the font.

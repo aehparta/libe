@@ -53,6 +53,7 @@ struct display {
 	void (*vline)(struct display *display, int16_t x, int16_t y, int16_t length, uint32_t color);
 	void (*rect)(struct display *display, int16_t x, int16_t y, int16_t w, int16_t h, uint32_t color);
 	void (*fill)(struct display *display, int16_t x, int16_t y, int16_t w, int16_t h, uint32_t color);
+	void (*update)(struct display *display);
 };
 
 static inline void display_close(struct display *display)
@@ -68,6 +69,11 @@ static inline int8_t display_opt(struct display *display, struct opt *opt)
 		return display->opt(display, opt);
 	}
 	return -1;
+}
+
+static inline void display_update(struct display *display)
+{
+	display->update(display);
 }
 
 /* basic draw routines */

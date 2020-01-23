@@ -51,6 +51,7 @@ extern "C" {
 int8_t ssd1306_i2c_open(struct display *display, void *context, uint8_t address, int16_t w, int16_t h);
 int32_t ssd1306_i2c_opt(struct display *display, struct opt *opt);
 void ssd1306_i2c_pixel(struct display *display, int16_t x, int16_t y, uint32_t color);
+void ssd1306_update(struct display *display);
 
 
 #ifdef __cplusplus

@@ -35,7 +35,7 @@
 //
 //*****************************************************************************
 
-#include "grlib.h"
+#include <libe/libe.h>
 
 //*****************************************************************************
 //
@@ -570,7 +570,7 @@ static const uint8_t g_pucCm44iData[6090] =
 // The font definition for the 44 point Cm italic font.
 //
 //*****************************************************************************
-const Graphics_Font g_sFontCm44i =
+const struct font g_sFontCm44i =
 {
     //
     // The format of the font.

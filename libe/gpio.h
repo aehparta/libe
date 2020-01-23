@@ -7,11 +7,12 @@
 
 #ifndef _LIBE_GPIO_H_
 #define _LIBE_GPIO_H_
-#ifdef USE_GPIO
 
 #ifdef __cplusplus
 extern "C" {
 #endif
+
+#ifdef USE_GPIO
 
 #ifdef TARGET_AVR
 #include "target/avr/gpio.h"
@@ -46,6 +47,11 @@ extern "C" {
 #ifndef gpio_open_drain
 #define gpio_open_drain(pin, state)
 #endif
+
+/* gpio drivers */
+#include "drivers/gpio/hd44780.h"
+
+#endif /* USE_GPIO */
 
 #define GPIOA0      0
 #define GPIOA1      1
@@ -119,13 +125,8 @@ extern "C" {
 #define GPIOH6      62
 #define GPIOH7      63
 
-/* gpio drivers */
-#include "drivers/gpio/hd44780.h"
-
-
 #ifdef __cplusplus
 }
 #endif
 
-#endif /* USE_GPIO */
 #endif /* _LIBE_GPIO_H_ */

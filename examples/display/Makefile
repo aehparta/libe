@@ -3,8 +3,9 @@
 TARGET = X86
 
 # enable log and i2c
-USE += I2C LOG DISPLAY
-USE_X86 += SDL2
+USE += LOG DISPLAY
+# USE_X86 += SDL2
+USE_AVR += I2C
 
 # init
 include $(LIBE_PATH)/init.mk
@@ -13,6 +14,7 @@ include $(LIBE_PATH)/init.mk
 BUILD_BINS = display
 PROGRAM_BIN = display
 display_SRC = main.c $(libe_SRC)
+display_SRC += $(LIBE_PATH)/libe/fonts/fontfixed6x8.c $(LIBE_PATH)/libe/fonts/fontcm30.c
 
 # build
 include $(LIBE_PATH)/build.mk

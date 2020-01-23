@@ -35,7 +35,7 @@
 //
 //*****************************************************************************
 
-#include "grlib.h"
+#include <libe/libe.h>
 
 //*****************************************************************************
 //
@@ -234,7 +234,7 @@ static const uint8_t g_pucCmss18iData[2060] =
 // The font definition for the 18 point Cmss italic font.
 //
 //*****************************************************************************
-const Graphics_Font g_sFontCmss18i =
+const struct font g_sFontCmss18i =
 {
     //
     // The format of the font.

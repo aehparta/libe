@@ -35,7 +35,7 @@
 //
 //*****************************************************************************
 
-#include "grlib.h"
+#include <libe/libe.h>
 
 //*****************************************************************************
 //
@@ -305,7 +305,7 @@ static const uint8_t g_pucCm26Data[2912] =
 // The font definition for the 26 point Cm font.
 //
 //*****************************************************************************
-const Graphics_Font g_sFontCm26 =
+const struct font g_sFontCm26 =
 {
     //
     // The format of the font.

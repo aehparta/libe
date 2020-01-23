@@ -15,6 +15,7 @@ int8_t display_sdl2_open(struct display *display, void *context, uint8_t address
 void display_sdl2_close(struct display *display);
 int32_t display_sdl2_opt(struct display *display, struct opt *opt);
 void display_sdl2_pixel(struct display *display, int16_t x, int16_t y, uint32_t color);
+void display_sdl2_update(struct display *display);
 
 
 #ifdef __cplusplus

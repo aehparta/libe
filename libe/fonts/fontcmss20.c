@@ -35,7 +35,7 @@
 //
 //*****************************************************************************
 
-#include "grlib.h"
+#include <libe/libe.h>
 
 //*****************************************************************************
 //
@@ -249,7 +249,7 @@ static const uint8_t g_pucCmss20Data[2241] =
 // The font definition for the 20 point Cmss font.
 //
 //*****************************************************************************
-const Graphics_Font g_sFontCmss20 =
+const struct font g_sFontCmss20 =
 {
     //
     // The format of the font.

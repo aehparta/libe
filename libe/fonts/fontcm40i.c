@@ -35,7 +35,7 @@
 //
 //*****************************************************************************
 
-#include "grlib.h"
+#include <libe/libe.h>
 
 //*****************************************************************************
 //
@@ -501,7 +501,7 @@ static const uint8_t g_pucCm40iData[5260] =
 // The font definition for the 40 point Cm italic font.
 //
 //*****************************************************************************
-const Graphics_Font g_sFontCm40i =
+const struct font g_sFontCm40i =
 {
     //
     // The format of the font.

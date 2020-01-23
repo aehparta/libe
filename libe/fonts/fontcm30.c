@@ -359,7 +359,7 @@ const struct font g_sFontCm30 =
     //
     // The format of the font.
     //
-    EUI_FONT_FMT_PIXEL_RLE,
+    FONT_FMT_PIXEL_RLE,
 
     //
     // The maximum width of the font.

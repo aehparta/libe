@@ -12,8 +12,8 @@ const static uint8_t PROGMEM ssd1306_init_commands[] = {
 	SSD1306_COMSCANDEC,             // Scan from 127 to 0 (Reverse scan)
 	SSD1306_SETSTARTLINE | 0x00,    // First line to start scanning from
 	SSD1306_SETCONTRAST, 0x7F,      // contast value to 0x7F according to datasheet
-	SSD1306_SEGREMAP | 0x01,        // Use reverse mapping. 0x00 - is normal mapping
-	SSD1306_INVERTDISPLAY,
+	SSD1306_SEGREMAP | 0x00,        // Use reverse mapping. 0x00 - is normal mapping
+	SSD1306_NORMALDISPLAY,
 	SSD1306_SETMULTIPLEX, 63,       // Reset to default MUX. See datasheet
 	SSD1306_SETDISPLAYOFFSET, 0x00, // no offset
 	SSD1306_SETDISPLAYCLOCKDIV, 0x80,// set to default ratio/osc frequency
@@ -29,8 +29,6 @@ const static uint8_t PROGMEM ssd1306_init_commands[] = {
 
 int8_t ssd1306_i2c_open(struct display *display, void *context, uint8_t address, int16_t w, int16_t h)
 {
-	memset(display, 0, sizeof(*display));
-
 	address = address < 1 ? SSD1306_ADDR1 : address;
 	IF_R(i2c_open(&display->i2c, context, address), -1);
 
@@ -42,12 +40,20 @@ int8_t ssd1306_i2c_open(struct display *display, void *context, uint8_t address,
 	display->clip_x2 = display->w - 1;
 	display->clip_y2 = display->h - 1;
 
-	// display->close = NULL;
+	display->close = NULL;
 	display->opt = ssd1306_i2c_opt;
 	display->pixel = ssd1306_i2c_pixel;
 
+	display->hline = draw_generic_hline;
+	display->vline = draw_generic_vline;
+	display->rect = draw_generic_rect;
+	display->fill = draw_generic_fill;
+
+	display->update = ssd1306_update;
+
 	/* display init sequence */
-	IF_R(i2c_write(&display->i2c, ssd1306_init_commands, sizeof(ssd1306_init_commands)), -1);
+	IF_R(i2c_write(&display->i2c, (uint8_t *)ssd1306_init_commands, sizeof(ssd1306_init_commands)), -1);
+
 // 	for (uint8_t i = 0; i < sizeof(ssd1306_init_commands); i++) {
 // #ifdef TARGET_AVR
 // 		uint8_t b = pgm_read_byte(&ssd1306_init_commands[i]);
@@ -82,61 +88,33 @@ int32_t ssd1306_i2c_opt(struct display *display, struct opt *opt)
 
 void ssd1306_i2c_pixel(struct display *display, int16_t x, int16_t y, uint32_t color)
 {
-	// uint8_t b = 0;
-
-	// if (display->buffer) {
-	// 	b = display->buffer[0];
-	// }
-
-	uint8_t cmds[] = {
-		SSD1306_COLUMNADDR, 0, display->w - 1,
-		SSD1306_PAGEADDR, 0, 0x07,
-		SSD1306_SETSTARTLINE, 0,
-		SSD1306_SETSTARTLINE, 0,
-		SSD1306_SETSTARTLINE, 0,
-		SSD1306_SETSTARTLINE, 0,
-		SSD1306_SETSTARTLINE, 0,
-		SSD1306_SETSTARTLINE, 0,
-		SSD1306_SETSTARTLINE, 0,
-		SSD1306_SETSTARTLINE, 0,
-		SSD1306_SETSTARTLINE, 0,
-		SSD1306_SETSTARTLINE, 0,
-	};
-	// DEBUG_MSG("ssd1306: draw pixel, x: %d, y: %d, color: %lu", x, y, color);
-	i2c_write(&display->i2c, cmds, sizeof(cmds));
-
-	// i2c_write_byte(&display->i2c, 0xf0);
-	// i2c_write_byte(&display->i2c, 0x0f);
-	// i2c_write_byte(&display->i2c, 0xf0);
-	// i2c_write_byte(&display->i2c, 0x0f);
-	// i2c_write_byte(&display->i2c, 0xf0);
-	// i2c_write_byte(&display->i2c, 0x0f);
-	// i2c_write_byte(&display->i2c, 0xf0);
-	// i2c_write_byte(&display->i2c, 0x0f);
-	// i2c_write_byte(&display->i2c, 0xf0);
-	// i2c_write_byte(&display->i2c, 0x0f);
-	// i2c_write_byte(&display->i2c, 0xf0);
-	// i2c_write_byte(&display->i2c, 0x0f);
-	// i2c_write_byte(&display->i2c, 0xf0);
-	// i2c_write_byte(&display->i2c, 0x0f);
-	// i2c_write_byte(&display->i2c, 0xf0);
-	// i2c_write_byte(&display->i2c, 0x0f);
-	// i2c_write_byte(&display->i2c, 0xf0);
-	// i2c_write_byte(&display->i2c, 0x0f);
-	// i2c_write_byte(&display->i2c, 0xf0);
-	// i2c_write_byte(&display->i2c, 0x0f);
-	// i2c_write_byte(&display->i2c, 0xf0);
-	// i2c_write_byte(&display->i2c, 0x0f);
-	// i2c_write_byte(&display->i2c, 0xf0);
-	// i2c_write_byte(&display->i2c, SSD1306_SETSTARTLINE);
-	// i2c_write_byte(&display->i2c, 0x01);
-	// i2c_write_byte(&display->i2c, 0x01);
+	uint8_t *p = display->buffer + (x + 1) + ((display->w + 1) * (y >> 3));
+	uint8_t mask = (1 << (y & 0x07));
+	if (color) {
+		*p = *p | mask;
+	} else {
+		*p = *p & ~mask;
+	}
 }
 
 // void ssd1306_hline(int16_t x, int16_t y, int16_t length, uint32_t color);
 // void ssd1306_vline(int16_t x, int16_t y, int16_t length, uint32_t color);
 // void ssd1306_rect(int16_t x, int16_t y, int16_t w, int16_t h, uint32_t color);
 // void ssd1306_fill(int16_t x, int16_t y, int16_t w, int16_t h, uint32_t color);
+
+void ssd1306_update(struct display *display)
+{
+	i2c_write_reg_byte(&display->i2c, 0x00, SSD1306_SETLOWCOLUMN);
+	i2c_write_reg_byte(&display->i2c, 0x00, SSD1306_SETHIGHCOLUMN);
+
+	for (uint8_t page = 0; page < (display->h >> 3); page++) {
+		i2c_write_reg_byte(&display->i2c, 0x00, SSD1306_SETPAGE | page);
+		uint8_t l = display->w + 1;
+		uint8_t *p = display->buffer + (l * page);
+		p[0] = 0x40;
+		i2c_write(&display->i2c, p, l);
+	}
+}
 
 #endif /* USE_I2C */
 

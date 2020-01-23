@@ -50,31 +50,31 @@
  * string which does not appear in the font.  When using a font which does not
  * include this character, a space is left instead.
  */
-#define EUI_ABSENT_CHAR_REPLACEMENT '.'
+#define FONT_ABSENT_CHAR_REPLACEMENT '.'
 
 /** Indicates that the font data is stored in an uncompressed format. */
-#define EUI_FONT_FMT_UNCOMPRESSED   0x00
+#define FONT_FMT_UNCOMPRESSED   0x00
 
 /** Indicates that the font data is stored using a pixel-based RLE format. */
-#define EUI_FONT_FMT_PIXEL_RLE      0x01
+#define FONT_FMT_PIXEL_RLE      0x01
 
 /**
  * A marker used in the format field of a font to indicates that the font
  * data is stored using the new tFontEx structure.
  */
-#define EUI_FONT_EX_MARKER          0x80
+#define FONT_EX_MARKER          0x80
 
 /**
  * Indicates that the font data is stored in an uncompressed format and uses
  * the tFontEx structure format.
  */
-#define EUI_FONT_FMT_EX_UNCOMPRESSED   (FONT_FMT_UNCOMPRESSED | FONT_EX_MARKER)
+#define FONT_FMT_EX_UNCOMPRESSED   (FONT_FMT_UNCOMPRESSED | FONT_EX_MARKER)
 
 /**
  * Indicates that the font data is stored using a pixel-based RLE format and
  * uses the tFontEx structure format.
  */
-#define EUI_FONT_FMT_EX_PIXEL_RLE      (FONT_FMT_PIXEL_RLE | FONT_EX_MARKER)
+#define FONT_FMT_EX_PIXEL_RLE      (FONT_FMT_PIXEL_RLE | FONT_EX_MARKER)
 
 /**
  * This structure describes a font used for drawing text onto the screen.

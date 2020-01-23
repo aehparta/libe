@@ -35,7 +35,7 @@
 //
 //*****************************************************************************
 
-#include "grlib.h"
+#include <libe/libe.h>
 
 //*****************************************************************************
 //
@@ -413,7 +413,7 @@ static const uint8_t g_pucCm36bData[4207] =
 // The font definition for the 36 point Cm bold font.
 //
 //*****************************************************************************
-const Graphics_Font g_sFontCm36b =
+const struct font g_sFontCm36b =
 {
     //
     // The format of the font.

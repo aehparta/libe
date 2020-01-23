@@ -62,7 +62,7 @@ int16_t eui_str_width(const struct font *font, char *string, int length)
 	// easier, and give the compiler a hint about extraneous loads that it can
 	// avoid.
 	//
-	if (font->format & EUI_FONT_EX_MARKER) {
+	if (font->format & FONT_EX_MARKER) {
 		const struct font_ex *font_ex = (const struct font_ex *)font;
 
 		data = font_ex->data;
@@ -73,13 +73,13 @@ int16_t eui_str_width(const struct font *font, char *string, int length)
 		//
 		// Does the default absent character replacement exist in the font?
 		//
-		if ((EUI_ABSENT_CHAR_REPLACEMENT >= first) &&
-		        (EUI_ABSENT_CHAR_REPLACEMENT <= last)) {
+		if ((FONT_ABSENT_CHAR_REPLACEMENT >= first) &&
+		        (FONT_ABSENT_CHAR_REPLACEMENT <= last)) {
 			//
 			// Yes - use the standard character when an absent character is
 			// found.
 			//
-			absent = EUI_ABSENT_CHAR_REPLACEMENT;
+			absent = FONT_ABSENT_CHAR_REPLACEMENT;
 		} else {
 			//
 			// The default absent character is not present in the font so use
@@ -92,7 +92,7 @@ int16_t eui_str_width(const struct font *font, char *string, int length)
 		offset = font->offset;
 		first = 32;
 		last = 126;
-		absent = EUI_ABSENT_CHAR_REPLACEMENT;
+		absent = FONT_ABSENT_CHAR_REPLACEMENT;
 	}
 
 	//
@@ -144,7 +144,7 @@ void eui_str_draw(struct display *display, const struct font *font, char *string
 	// Extract various parameters from the font depending upon whether it's
 	// in the tFont or Graphics_FontEx format.
 	//
-	if (font->format & EUI_FONT_EX_MARKER) {
+	if (font->format & FONT_EX_MARKER) {
 		const struct font_ex *font_ex = (const struct font_ex *)font;
 
 		glyphs = font_ex->data;
@@ -155,13 +155,13 @@ void eui_str_draw(struct display *display, const struct font *font, char *string
 		//
 		// Does the default absent character replacement exist in the font?
 		//
-		if ((EUI_ABSENT_CHAR_REPLACEMENT >= first) &&
-		        (EUI_ABSENT_CHAR_REPLACEMENT <= last)) {
+		if ((FONT_ABSENT_CHAR_REPLACEMENT >= first) &&
+		        (FONT_ABSENT_CHAR_REPLACEMENT <= last)) {
 			//
 			// Yes - use the standard character when an absent character is
 			// found.
 			//
-			absent = EUI_ABSENT_CHAR_REPLACEMENT;
+			absent = FONT_ABSENT_CHAR_REPLACEMENT;
 		} else {
 			//
 			// The default absent character is not present in the font so use
@@ -174,7 +174,7 @@ void eui_str_draw(struct display *display, const struct font *font, char *string
 		offset = font->offset;
 		first = 32;
 		last = 126;
-		absent = EUI_ABSENT_CHAR_REPLACEMENT;
+		absent = FONT_ABSENT_CHAR_REPLACEMENT;
 	}
 
 	//
@@ -233,7 +233,7 @@ void eui_str_draw(struct display *display, const struct font *font, char *string
 			//
 			// See if the font is uncompressed.
 			//
-			if ((font->format & ~EUI_FONT_EX_MARKER) == EUI_FONT_FMT_UNCOMPRESSED) {
+			if ((font->format & ~FONT_EX_MARKER) == FONT_FMT_UNCOMPRESSED) {
 				//
 				// Count the number of off pixels from this position in the
 				// glyph image.
@@ -430,7 +430,7 @@ void eui_str_draw(struct display *display, const struct font *font, char *string
 					// pixels.
 					//
 					if (((y + y0) >= display->clip_y1) && opaque) {
-						display->hline(display, x + x0, ySave + y + y0, count - 1, bg);
+						display->hline(display, x + x0, ySave + y + y0, count, bg);
 					}
 
 					//
@@ -515,7 +515,7 @@ void eui_str_draw(struct display *display, const struct font *font, char *string
 					// pixels.
 					//
 					if ((y + y0) >= display->clip_y1) {
-						display->hline(display, x + x0, ySave + y + y0, count - 1, fg);
+						display->hline(display, x + x0, ySave + y + y0, count, fg);
 					}
 
 					//

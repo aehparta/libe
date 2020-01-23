@@ -35,7 +35,7 @@
 //
 //*****************************************************************************
 
-#include "grlib.h"
+#include <libe/libe.h>
 
 //*****************************************************************************
 //
@@ -503,7 +503,7 @@ static const uint8_t g_pucCmss46Data[5289] =
 // The font definition for the 46 point Cmss font.
 //
 //*****************************************************************************
-const Graphics_Font g_sFontCmss46 =
+const struct font g_sFontCmss46 =
 {
     //
     // The format of the font.

@@ -35,7 +35,7 @@
 //
 //*****************************************************************************
 
-#include "grlib.h"
+#include <libe/libe.h>
 
 //*****************************************************************************
 //
@@ -320,7 +320,7 @@ static const uint8_t g_pucCm28bData[3087] =
 // The font definition for the 28 point Cm bold font.
 //
 //*****************************************************************************
-const Graphics_Font g_sFontCm28b =
+const struct font g_sFontCm28b =
 {
     //
     // The format of the font.

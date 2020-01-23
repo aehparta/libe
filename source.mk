@@ -114,11 +114,11 @@ ifneq ($(filter $(libe_DEFINES),USE_DISPLAY),)
     libe_SRC += \
         $(LIBE_PATH)/libe/draw.c \
         $(LIBE_PATH)/libe/draw_string.c \
-        $(LIBE_PATH)/libe/fonts/fontfixed6x8.c \
-        $(LIBE_PATH)/libe/fonts/fontcm16b.c \
-        $(LIBE_PATH)/libe/fonts/fontcm30.c \
         $(LIBE_PATH)/libe/drivers/display/ssd1306.c
     ifneq ($(filter $(libe_DEFINES),USE_SDL2),)
         libe_SRC += $(LIBE_PATH)/libe/drivers/display/sdl2.c
+    endif
+    ifneq ($(filter $(libe_DEFINES),USE_ALL_FONTS),)
+        libe_SRC += $(wildcard $(LIBE_PATH)/libe/fonts/*.c)
     endif
 endif

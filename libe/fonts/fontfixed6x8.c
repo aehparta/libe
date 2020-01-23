@@ -126,7 +126,7 @@ const struct font g_sFontFixed6x8 =
     //
     // The format of the font.
     //
-	EUI_FONT_FMT_UNCOMPRESSED,
+	FONT_FMT_UNCOMPRESSED,
 
     //
     // The maximum width of the font.

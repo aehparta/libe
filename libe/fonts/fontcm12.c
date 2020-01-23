@@ -35,7 +35,7 @@
 //
 //*****************************************************************************
 
-#include "grlib.h"
+#include <libe/libe.h>
 
 //*****************************************************************************
 //
@@ -140,7 +140,7 @@ static const uint8_t g_pucCm12Data[1375] = { 5, 5, 0, 8, 16, 11, 2, 33,
 // The font definition for the 12 point Cm font.
 //
 //*****************************************************************************
-const Graphics_Font g_sFontCm12 = {
+const struct font g_sFontCm12 = {
 //
 // The format of the font.
 //

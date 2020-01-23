@@ -35,7 +35,7 @@
 //
 //*****************************************************************************
 
-#include "grlib.h"
+#include <libe/libe.h>
 
 //*****************************************************************************
 //
@@ -182,7 +182,7 @@ static const uint8_t g_pucCmsc12Data[1434] =
 // The font definition for the 12 point Cmsc font.
 //
 //*****************************************************************************
-const Graphics_Font g_sFontCmsc12 =
+const struct font g_sFontCmsc12 =
 {
     //
     // The format of the font.

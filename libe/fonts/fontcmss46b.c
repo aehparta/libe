@@ -35,7 +35,7 @@
 //
 //*****************************************************************************
 
-#include "grlib.h"
+#include <libe/libe.h>
 
 //*****************************************************************************
 //
@@ -515,7 +515,7 @@ static const uint8_t g_pucCmss46bData[5434] =
 // The font definition for the 46 point Cmss bold font.
 //
 //*****************************************************************************
-const Graphics_Font g_sFontCmss46b =
+const struct font g_sFontCmss46b =
 {
     //
     // The format of the font.
