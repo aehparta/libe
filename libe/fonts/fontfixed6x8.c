@@ -48,7 +48,7 @@
 // The uncompressed data for the fixed-point 6x8 font.
 //
 //*****************************************************************************
-static const uint8_t g_pucFontFixed6x8Data[760] =
+static const uint8_t PROGMEM g_pucFontFixed6x8Data[760] =
 {
       8,   6,   0,   0,   0,   0,   0,   0,   8,   6,  32, 130,
       8,   0,   2,   0,   8,   6,  81,  69,   0,   0,   0,   0,
