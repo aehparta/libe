@@ -4,6 +4,7 @@
 
 #ifndef _DISPLAY_DISPLAY_H_
 #define _DISPLAY_DISPLAY_H_
+#ifdef USE_DISPLAY
 
 #ifdef __cplusplus
 extern "C" {
@@ -47,7 +48,7 @@ struct display {
 	uint8_t driver_bits[4];
 
 	void (*close)(struct display *display);
-	int32_t (*opt)(struct display *display, struct opt *opt);
+	int8_t (*opt)(struct display *display, uint8_t opt, void *value);
 	void (*pixel)(struct display *display, int16_t x, int16_t y, uint32_t color);
 	void (*hline)(struct display *display, int16_t x, int16_t y, int16_t length, uint32_t color);
 	void (*vline)(struct display *display, int16_t x, int16_t y, int16_t length, uint32_t color);
@@ -56,25 +57,8 @@ struct display {
 	void (*update)(struct display *display);
 };
 
-static inline void display_close(struct display *display)
-{
-	if (display->close) {
-		display->close(display);
-	}
-}
-
-static inline int8_t display_opt(struct display *display, struct opt *opt)
-{
-	if (display->opt) {
-		return display->opt(display, opt);
-	}
-	return -1;
-}
-
-static inline void display_update(struct display *display)
-{
-	display->update(display);
-}
+#define display_close(display) do { if ((display)->close) { (display)->close(display); } } while(0)
+#define display_update(display) do { if ((display)->update) { (display)->update(display); } } while(0)
 
 /* basic draw routines */
 #include "draw.h"
@@ -88,4 +72,5 @@ static inline void display_update(struct display *display)
 }
 #endif
 
+#endif /* USE_DISPLAY */
 #endif /* _DISPLAY_DISPLAY_H_ */

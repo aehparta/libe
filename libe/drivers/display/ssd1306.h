@@ -14,6 +14,8 @@ extern "C" {
 #define SSD1306_ADDR1   0x3c
 #define SSD1306_ADDR2   0x3d
 
+#define SSD1306_BUFFER_SIZE         1032 /* ((1 + 128) * 64 / 8) */
+
 /* SSD1306 commands */
 #define SSD1306_SETLOWCOLUMN        0x00
 #define SSD1306_SETHIGHCOLUMN       0x10
@@ -49,7 +51,7 @@ extern "C" {
 
 
 int8_t ssd1306_i2c_open(struct display *display, void *context, uint8_t address, int16_t w, int16_t h);
-int32_t ssd1306_i2c_opt(struct display *display, struct opt *opt);
+int8_t ssd1306_i2c_opt(struct display *display, uint8_t opt, void *value);
 void ssd1306_i2c_pixel(struct display *display, int16_t x, int16_t y, uint32_t color);
 void ssd1306_update(struct display *display);
 

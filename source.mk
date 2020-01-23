@@ -5,7 +5,6 @@ T_PATH = $(LIBE_PATH)/libe/target/$(shell echo $(TARGET) | tr '[:upper:]' '[:low
 # libe sources
 libe_SRC = \
     $(T_PATH)/os.c \
-    $(T_PATH)/gpio.c \
     $(LIBE_PATH)/libe/error.c
 
 # linux generic

@@ -48,7 +48,7 @@ void display_sdl2_close(struct display *display)
 	SDL_Quit();
 }
 
-int32_t display_sdl2_opt(struct display *display, struct opt *opt)
+int8_t display_sdl2_opt(struct display *display, int8_t opt, void *value)
 {
 	switch (opt->opt) {
 	case DISPLAY_OPT_GET_W:

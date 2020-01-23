@@ -6,6 +6,8 @@
 
 #include <libe/libe.h>
 
+#ifdef USE_I2C
+
 const static uint8_t PROGMEM ssd1306_init_commands[] = {
 	SSD1306_DISPLAYOFF, // display off
 	SSD1306_MEMORYMODE, SSD1306_HORIZONTAL_ADDRESSING_MODE, // Page Addressing mode
@@ -24,8 +26,6 @@ const static uint8_t PROGMEM ssd1306_init_commands[] = {
 	SSD1306_DISPLAYALLON_RESUME,
 	SSD1306_DISPLAYON
 };
-
-#ifdef USE_I2C
 
 int8_t ssd1306_i2c_open(struct display *display, void *context, uint8_t address, int16_t w, int16_t h)
 {
@@ -66,7 +66,7 @@ int8_t ssd1306_i2c_open(struct display *display, void *context, uint8_t address,
 	return 0;
 }
 
-int32_t ssd1306_i2c_opt(struct display *display, struct opt *opt)
+int8_t ssd1306_i2c_opt(struct display *display, uint8_t opt, void *value)
 {
 	switch (opt->opt) {
 	case DISPLAY_OPT_SET_BUFFER:

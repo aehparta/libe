@@ -10,11 +10,6 @@
 #endif
 #include "../config.h"
 
-uint8_t *test(void)
-{
-	static uint8_t b[1024];
-	return b;
-}
 
 #ifdef TARGET_ESP32
 int app_main(int argc, char *argv[])
@@ -23,11 +18,9 @@ int main(int argc, char *argv[])
 #endif
 {
 	void *context = CFG_I2C_CONTEXT;
-	struct i2c_master i2c;
 	struct display display;
 	struct opt opt;
-	// uint8_t buffer[129 * 64 / 8];
-	uint8_t *buffer = test();
+	uint8_t buffer[SSD1306_BUFFER_SIZE];
 	
 	/* base init */
 	os_init();
@@ -35,6 +28,7 @@ int main(int argc, char *argv[])
 
 	/* open display */
 #ifdef USE_I2C
+	struct i2c_master i2c;
 #ifdef TARGET_LINUX
 	ERROR_IF_R(argc < 2, 1, "Give i2c device as and argument\nExample: ./display-x86.elf /dev/i2c-3");
 	context = argv[1];
