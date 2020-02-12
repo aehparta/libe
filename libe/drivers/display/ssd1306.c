@@ -66,21 +66,14 @@ int8_t ssd1306_i2c_open(struct display *display, void *context, uint8_t address,
 	return 0;
 }
 
-int8_t ssd1306_i2c_opt(struct display *display, uint8_t opt, void *value)
+int8_t ssd1306_i2c_opt(struct display *display, uint8_t opt, void *value, uint8_t flags)
 {
-	switch (opt->opt) {
-	case DISPLAY_OPT_SET_BUFFER:
-		display->buffer = opt->p;
-		return 0;
-	case DISPLAY_OPT_GET_BUFFER:
-		opt->p = display->buffer;
-		return 0;
-	case DISPLAY_OPT_GET_W:
-		opt->i16 = display->w;
-		return 0;
-	case DISPLAY_OPT_GET_H:
-		opt->i16 = display->h;
-		return 0;
+	if ((flags & OPT_FLAG_MASK_SET_GET) == OPT_FLAG_SET) {
+		switch (opt) {
+		case DISPLAY_OPT_BUFFER:
+			display->buffer = value;
+			return 0;
+		}
 	}
 
 	return -1;

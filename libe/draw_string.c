@@ -30,6 +30,8 @@
  * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  * --/COPYRIGHT--*/
 
+#ifdef USE_DISPLAY
+
 #include "draw_string.h"
 
 
@@ -604,3 +606,4 @@ uint8_t eui_str_char_max_width(const struct font *font)
 }
 
 
+#endif /* USE_DISPLAY */

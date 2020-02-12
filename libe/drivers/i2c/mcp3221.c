@@ -9,7 +9,7 @@
 #include <libe/libe.h>
 
 
-int32_t mcp3221_read(struct i2c_device *dev, uint8_t channel)
+int32_t mcp3221_rd(struct i2c_device *dev, uint8_t channel)
 {
 	uint8_t data[2];
 	IF_R(i2c_read(dev, &data, 2), -1);

@@ -2,10 +2,12 @@
 # default target is x86
 TARGET = X86
 
-# enable log and i2c
+# enable log and display
 USE += LOG DISPLAY
 # USE_X86 += SDL2
 USE_AVR += I2C
+
+USE_ESP32 += I2C
 
 # init
 include $(LIBE_PATH)/init.mk

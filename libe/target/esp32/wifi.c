@@ -4,107 +4,119 @@
 
 #ifdef USE_WIFI
 
+#include <libe/libe.h>
+#include <string.h>
+#include <stdlib.h>
 #include <freertos/FreeRTOS.h>
 #include <freertos/task.h>
 #include <freertos/event_groups.h>
-#include <esp_system.h>
 #include <esp_wifi.h>
-#include <esp_wps.h>
-#include <esp_event_loop.h>
-#include <libe/log.h>
-#include <libe/wifi.h>
-#include "wifi.h"
+#include <esp_wpa2.h>
+#include <esp_event.h>
+#include <esp_log.h>
+#include <esp_system.h>
+#include <nvs_flash.h>
+#include <esp_netif.h>
+#include <esp_smartconfig.h>
 
 
+/* FreeRTOS event group to signal when we are connected & ready to make a request */
 static EventGroupHandle_t wifi_event_group;
-static esp_wps_config_t wifi_wps_config = WPS_CONFIG_INIT_DEFAULT(WPS_TYPE_PBC);
+
+/* The event group allows multiple bits for each event,
+   but we only care about one event - are we connected
+   to the AP with an IP? */
+static const int WIFI_CONNECTED_BIT = BIT0;
+static const int ESPTOUCH_DONE_BIT = BIT1;
 
 
-static esp_err_t wifi_event_handler(void *ctx, system_event_t *event)
+static void wifi_smartconfig_task(void * parm)
 {
-	static int wifi_retries = 0;
-
-	switch (event->event_id) {
-	case SYSTEM_EVENT_STA_START:
-		if (esp_wifi_connect()) {
-			ERROR_IF_R(esp_wifi_wps_enable(&wifi_wps_config), ESP_FAIL, "wifi wps enable failed");
-			ERROR_IF_R(esp_wifi_wps_start(0), ESP_FAIL, "wifi wps start failed");
-			DEBUG_MSG("wifi wps setup started");
-		} else {
-			DEBUG_MSG("wifi is connecting");
+	EventBits_t uxBits;
+	ESP_ERROR_CHECK(esp_smartconfig_set_type(SC_TYPE_ESPTOUCH));
+	smartconfig_start_config_t cfg = SMARTCONFIG_START_CONFIG_DEFAULT();
+	ESP_ERROR_CHECK(esp_smartconfig_start(&cfg));
+	while (1) {
+		uxBits = xEventGroupWaitBits(wifi_event_group, CONNECTED_BIT | ESPTOUCH_DONE_BIT, true, false, portMAX_DELAY);
+		if (uxBits & CONNECTED_BIT) {
+			INFO_MSG("WiFi Connected to ap");
 		}
-		break;
-	case SYSTEM_EVENT_STA_GOT_IP:
-		INFO_MSG("wifi got ip: %s", ip4addr_ntoa(&event->event_info.got_ip.ip_info.ip));
-		ERROR_IF_R(esp_wifi_wps_disable(), ESP_FAIL, "wifi wps disable failed");
-		wifi_retries = 0;
-		xEventGroupSetBits(wifi_event_group, WIFI_CONNECTED_BIT);
-		break;
-	case SYSTEM_EVENT_STA_DISCONNECTED:
-		if (wifi_retries < WIFI_MAXIMUM_RETRY) {
-			esp_wifi_connect();
-			xEventGroupClearBits(wifi_event_group, WIFI_CONNECTED_BIT);
-			wifi_retries++;
-			WARN_MSG("wifi retry connect to the AP");
-		} else {
-			ERROR_IF_R(esp_wifi_wps_disable(), ESP_FAIL, "wifi wps disable after disconnect failed");
-			ERROR_IF_R(esp_wifi_wps_enable(&wifi_wps_config), ESP_FAIL, "wifi wps enable after disconnect failed");
-			ERROR_IF_R(esp_wifi_wps_start(0), ESP_FAIL, "wifi wps start after disconnect failed");
-			wifi_retries = 0;
+		if (uxBits & ESPTOUCH_DONE_BIT) {
+			INFO_MSG("smartconfig over");
+			esp_smartconfig_stop();
+			vTaskDelete(NULL);
 		}
-		WARN_MSG("wifi connect to the AP fail");
-		break;
-	case SYSTEM_EVENT_STA_WPS_ER_SUCCESS:
-		/*point: the function esp_wifi_wps_start() only get ssid & password
-		 * so call the function esp_wifi_connect() here
-		 * */
-		DEBUG_MSG("SYSTEM_EVENT_STA_WPS_ER_SUCCESS");
-		ERROR_IF_R(esp_wifi_wps_disable(), ESP_FAIL, "wifi wps disable failed");
-		ERROR_IF_R(esp_wifi_connect(), ESP_FAIL, "wifi connect after wps setup failed");
-		break;
-	case SYSTEM_EVENT_STA_WPS_ER_FAILED:
-		DEBUG_MSG("SYSTEM_EVENT_STA_WPS_ER_FAILED");
-		ERROR_IF_R(esp_wifi_wps_disable(), ESP_FAIL, "wifi wps disable after failed wps attempt failed");
-		ERROR_IF_R(esp_wifi_wps_enable(&wifi_wps_config), ESP_FAIL, "wifi wps enable after failed wps attempt failed");
-		ERROR_IF_R(esp_wifi_wps_start(0), ESP_FAIL, "wifi wps start after failed wps attempt failed");
-		break;
-	case SYSTEM_EVENT_STA_WPS_ER_TIMEOUT:
-		DEBUG_MSG("SYSTEM_EVENT_STA_WPS_ER_TIMEOUT");
-		ERROR_IF_R(esp_wifi_wps_disable(), ESP_FAIL, "wifi wps disable after wps timeout failed");
-		ERROR_IF_R(esp_wifi_wps_enable(&wifi_wps_config), ESP_FAIL, "wifi wps enable after wps timeout failed");
-		ERROR_IF_R(esp_wifi_wps_start(0), ESP_FAIL, "wifi wps start after wps timeout failed");
-		break;
-	default:
-		break;
 	}
+}
 
-	return ESP_OK;
+static void wifi_event_handler(void* arg, esp_event_base_t event_base, int32_t event_id, void* event_data)
+{
+	if (event_base == WIFI_EVENT && event_id == WIFI_EVENT_STA_START) {
+		xTaskCreate(wifi_smartconfig_task, "wifi_smartconfig_task", 4096, NULL, 3, NULL);
+	} else if (event_base == WIFI_EVENT && event_id == WIFI_EVENT_STA_DISCONNECTED) {
+		esp_wifi_connect();
+		xEventGroupClearBits(wifi_event_group, CONNECTED_BIT);
+	} else if (event_base == IP_EVENT && event_id == IP_EVENT_STA_GOT_IP) {
+		xEventGroupSetBits(wifi_event_group, CONNECTED_BIT);
+	} else if (event_base == SC_EVENT && event_id == SC_EVENT_SCAN_DONE) {
+		INFO_MSG("scan done");
+	} else if (event_base == SC_EVENT && event_id == SC_EVENT_FOUND_CHANNEL) {
+		INFO_MSG("found channel");
+	} else if (event_base == SC_EVENT && event_id == SC_EVENT_GOT_SSID_PSWD) {
+		smartconfig_event_got_ssid_pswd_t *evt = (smartconfig_event_got_ssid_pswd_t *)event_data;
+
+		wifi_config_t wifi_config;
+		memset(&wifi_config, 0, sizeof(wifi_config_t));
+
+		memcpy(wifi_config.sta.ssid, evt->ssid, sizeof(wifi_config.sta.ssid));
+		memcpy(wifi_config.sta.password, evt->password, sizeof(wifi_config.sta.password));
+		
+		wifi_config.sta.bssid_set = evt->bssid_set;
+		if (wifi_config.sta.bssid_set == true) {
+			memcpy(wifi_config.sta.bssid, evt->bssid, sizeof(wifi_config.sta.bssid));
+		}
+
+		INFO_MSG("ssid: %s, password: %s", evt->ssid, evt->password);
+
+		ESP_ERROR_CHECK(esp_wifi_disconnect());
+		ESP_ERROR_CHECK(esp_wifi_set_config(ESP_IF_WIFI_STA, &wifi_config));
+		ESP_ERROR_CHECK(esp_wifi_connect());
+	} else if (event_base == SC_EVENT && event_id == SC_EVENT_SEND_ACK_DONE) {
+		xEventGroupSetBits(wifi_event_group, ESPTOUCH_DONE_BIT);
+	}
 }
 
 int wifi_init(void)
 {
+	ERROR_IF_R(esp_netif_init() != ESP_OK, -1, "esp_netif_init() failed");
 	wifi_event_group = xEventGroupCreate();
-
-	tcpip_adapter_init();
-	ERROR_IF_R(esp_event_loop_init(wifi_event_handler, NULL), -1, "wifi event loop setup failed");
+	ERROR_IF_R(esp_event_loop_create_default(), -1, "esp_event_loop_create_default() failed");
+	esp_netif_t *sta_netif = esp_netif_create_default_wifi_sta();
+	ERROR_IF_R(!sta_netif, -1, "esp_netif_create_default_wifi_sta() failed");
 
 	wifi_init_config_t cfg = WIFI_INIT_CONFIG_DEFAULT();
-	ERROR_IF_R(esp_wifi_init(&cfg), -1, "wifi config has errors");
+	ERROR_IF_R(esp_wifi_init(&cfg) != ESP_OK, -1, "esp_wifi_init() failed");
 
-	ERROR_IF_R(esp_wifi_set_mode(WIFI_MODE_STA), -1, "unable to set wifi mode to WIFI_MODE_STA");
-	ERROR_IF_R(esp_wifi_start(), -1, "unable to start wifi");
+	esp_event_handler_register(WIFI_EVENT, ESP_EVENT_ANY_ID, &wifi_event_handler, NULL);
+	esp_event_handler_register(IP_EVENT, IP_EVENT_STA_GOT_IP, &wifi_event_handler, NULL);
+	esp_event_handler_register(SC_EVENT, ESP_EVENT_ANY_ID, &wifi_event_handler, NULL);
+
+	ERROR_IF_R(esp_wifi_set_mode(WIFI_MODE_STA), -1, "esp_wifi_set_mode() failed");
+	ERROR_IF_R(esp_wifi_start(), -1, "esp_wifi_start() failed");
 
 	return 0;
 }
 
 void wifi_quit(void)
 {
-
+	esp_wifi_disconnect();
+	esp_wifi_stop();
+	esp_wifi_deinit();
 }
 
 bool wifi_connected(void)
 {
-	return xEventGroupGetBits(wifi_event_group) & WIFI_CONNECTED_BIT ? true : false;
+	return xEventGroupGetBits(wifi_event_group) & CONNECTED_BIT ? true : false;
 }
 
 #endif

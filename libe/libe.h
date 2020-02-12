@@ -29,6 +29,8 @@ extern "C" {
 #include "adci.h"
 /* display */
 #include "display.h"
+/* simple button helper macros for gpio attached buttons */
+#include "button.h"
 
 #ifdef __cplusplus
 }

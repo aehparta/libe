@@ -1,10 +1,6 @@
 
-# check that LIBE_PATH is set
-ifeq ($(LIBE_PATH),)
-    $(error LIBE_PATH not set)
-endif
-
-libe_USE += WIFI
+TARGET = ESP32
+USE += WIFI GPIO LOG
 
 # init
 include $(LIBE_PATH)/init.mk

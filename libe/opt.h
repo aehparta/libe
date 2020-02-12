@@ -31,6 +31,10 @@ enum {
 	OPT_UNKNOWN = OPT_START_GENERIC,
 };
 
+/* opt function:
+ * int8_t (*opt)(<struct> *p, uint8_t opt, void *value)
+ */
+
 #define opt_set(object, option, value) ((object)->opt ? (object)->opt(object, option, value, OPT_FLAG_SET) : -1)
 #define opt_get(object, option, value) ((object)->opt ? (object)->opt(object, option, value, OPT_FLAG_GET) : -1)
 

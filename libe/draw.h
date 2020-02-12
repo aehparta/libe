@@ -4,6 +4,7 @@
 
 #ifndef _DISPLAY_DRAW_H_
 #define _DISPLAY_DRAW_H_
+#ifdef USE_DISPLAY
 
 #ifdef __cplusplus
 extern "C" {
@@ -48,4 +49,5 @@ static inline void draw_fill(struct display *display, int16_t x, int16_t y, int1
 }
 #endif
 
+#endif
 #endif /* _DISPLAY_DRAW_H_ */

@@ -48,8 +48,8 @@ int main(int argc, char *argv[])
 	/* read mcp3221 */
 	while (1) {
 		int32_t v1 = 0, v2 = 0;
-		v1 += mcp3221_read(&dev1, 0);
-		v2 += mcp3221_read(&dev2, 0);
+		v1 += mcp3221_rd(&dev1, 0);
+		v2 += mcp3221_rd(&dev2, 0);
 		if (v1 < 0) {
 			ERROR_MSG("failed reading mcp3221-a2");
 		}

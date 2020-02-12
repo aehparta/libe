@@ -30,7 +30,7 @@ time_t os_timei(void)
 
 os_time_t os_timef(void)
 {
-	return (os_time_t)esp_timer_get_time() / 1e6L;
+	return (os_time_t)(esp_timer_get_time() / 1e6L);
 }
 
 void os_sleepi(time_t t)

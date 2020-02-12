@@ -49,6 +49,7 @@ void i2c_close(struct i2c_device *dev)
 
 int8_t i2c_read(struct i2c_device *dev, void *data, uint8_t size)
 {
+	esp_err_t err;
 	i2c_cmd_handle_t cmd = i2c_cmd_link_create();
 	i2c_master_start(cmd);
 	i2c_master_write_byte(cmd, dev->address | 1, true);
@@ -59,13 +60,14 @@ int8_t i2c_read(struct i2c_device *dev, void *data, uint8_t size)
 		i2c_master_read_byte(cmd, data + size - 1, I2C_MASTER_NACK);
 	}
 	i2c_master_stop(cmd);
-	esp_err_t err = i2c_master_cmd_begin(dev->master->port, cmd, 1000 / portTICK_RATE_MS);
+	err = i2c_master_cmd_begin(dev->master->port, cmd, 1000 / portTICK_RATE_MS);
 	i2c_cmd_link_delete(cmd);
 	return err != ESP_OK ? -1 : 0;
 }
 
 int8_t i2c_write(struct i2c_device *dev, void *data, uint8_t size)
 {
+	esp_err_t err;
 	i2c_cmd_handle_t cmd = i2c_cmd_link_create();
 	i2c_master_start(cmd);
 	i2c_master_write_byte(cmd, dev->address, true);
@@ -73,7 +75,7 @@ int8_t i2c_write(struct i2c_device *dev, void *data, uint8_t size)
 		i2c_master_write(cmd, data, size, true);
 	}
 	i2c_master_stop(cmd);
-	esp_err_t err = i2c_master_cmd_begin(dev->master->port, cmd, 1000 / portTICK_RATE_MS);
+	err = i2c_master_cmd_begin(dev->master->port, cmd, 1000 / portTICK_RATE_MS);
 	i2c_cmd_link_delete(cmd);
 	return err != ESP_OK ? -1 : 0;
 }

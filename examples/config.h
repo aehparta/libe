@@ -157,8 +157,10 @@
 /* i2c */
 #define CFG_I2C_CONTEXT     NULL
 #define CFG_I2C_FREQUENCY   400000
-#define CFG_I2C_SCL         4
-#define CFG_I2C_SDA         5
+#define CFG_I2C_SCL         23
+#define CFG_I2C_SDA         18
+// #define CFG_I2C_SCL         4 /* wemos integrated oled module */
+// #define CFG_I2C_SDA         5 /* wemos integrated oled module */
 /* spi */
 #define CFG_SPI_CONTEXT     ((void *)HSPI_HOST)
 #define CFG_SPI_FREQUENCY   0

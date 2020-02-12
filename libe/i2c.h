@@ -71,6 +71,7 @@ static inline uint8_t i2c_read_reg_byte(struct i2c_device *dev, uint8_t reg)
 /* drivers */
 #include "drivers/i2c/hdc1080.h"
 #include "drivers/i2c/mcp3221.h"
+#include "drivers/i2c/mcp4725.h"
 #include "drivers/i2c/fan5702.h"
 #include "drivers/i2c/sht21.h"
 #include "drivers/i2c/sht31.h"
