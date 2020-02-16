@@ -13,6 +13,10 @@
 #ifndef _DRIVERS_GPIO_HD44780_H_
 #define _DRIVERS_GPIO_HD44780_H_
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 struct hd44780_device {
 	uint8_t d4;
 	uint8_t d5;
@@ -34,5 +38,8 @@ int hd44780_write_char(struct hd44780_device *display, char ch);
 int hd44780_write_str(struct hd44780_device *display, const char *str);
 int hd44780_goto_xy(struct hd44780_device *display, int x, int y);
 
+#ifdef __cplusplus
+}
+#endif
 
 #endif /* _DRIVERS_GPIO_HD44780_H_ */

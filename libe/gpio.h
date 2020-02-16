@@ -50,6 +50,7 @@ extern "C" {
 
 /* gpio drivers */
 #include "drivers/gpio/hd44780.h"
+#include "drivers/gpio/rot_enc.h"
 
 #endif /* USE_GPIO */
 

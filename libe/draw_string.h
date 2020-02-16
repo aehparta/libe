@@ -124,7 +124,7 @@ struct font_ex {
  * @param length is the length of the string.
  * @return Returns the width of the string in pixels.
  */
-int16_t eui_str_width(const struct font *font, char *string, int length);
+int16_t draw_str_width(const struct font *font, char *string, int length);
 
 
 /**
@@ -143,7 +143,7 @@ int16_t eui_str_width(const struct font *font, char *string, int length);
  * @param y is the Y coordinate of the upper left corner of the string position on the screen.
  * @param opaque is true if the background of each character should be drawn and false if it should not (leaving the background as is).
  */
-void eui_str_draw(struct display *display, const struct font *font, char *string, int length, int16_t x, int16_t y, bool opaque);
+void draw_string(struct display *display, const struct font *font, char *string, int length, int16_t x, int16_t y, bool opaque);
 
 /**
  * @brief Gets the baseline of a string.
@@ -156,7 +156,7 @@ void eui_str_draw(struct display *display, const struct font *font, char *string
  * @param font is a pointer to the font to use.
  * @return Returns the baseline of the string, in pixels.
  */
-uint8_t eui_str_baseline(const struct font *font);
+uint8_t draw_str_baseline(const struct font *font);
 
 /**
  * @brief Draws a centered string.
@@ -175,7 +175,7 @@ uint8_t eui_str_baseline(const struct font *font);
  * @param y is the Y coordinate of the center of the string position on the screen.
  * @param opaque is \b true if the background of each character should be drawn and \b false if it should not (leaving the background as is).
  */
-// void eui_str_draw_centered(eui_context_t *context, char *string, int length, int16_t x, int16_t y, int opaque);
+// void draw_str_draw_centered(draw_context_t *context, char *string, int length, int16_t x, int16_t y, int opaque);
 
 /**
  * @brief Gets the height of a string.
@@ -190,7 +190,7 @@ uint8_t eui_str_baseline(const struct font *font);
  * @param font is a pointer to the font to use.
  * @return Returns the height of the string, in pixels.
  */
-uint8_t eui_str_char_max_height(const struct font *font);
+uint8_t draw_str_char_max_height(const struct font *font);
 
 /**
  * @brief Gets the maximum width of a character in a string.
@@ -203,7 +203,7 @@ uint8_t eui_str_char_max_height(const struct font *font);
  * @param font is a pointer to the font to use.
  * @return Returns the maximum width of a character in a string, in pixels.
  */
-uint8_t eui_str_char_max_width(const struct font *font);
+uint8_t draw_str_char_max_width(const struct font *font);
 
 
 #endif /* _LIBE_DRAW_STRING_H_ */

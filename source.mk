@@ -20,6 +20,7 @@ ifneq ($(filter $(libe_DEFINES),USE_GPIO),)
     libe_SRC += $(T_PATH)/gpio.c
     # gpio drivers
     libe_SRC += $(LIBE_PATH)/libe/drivers/gpio/hd44780.c
+    libe_SRC += $(LIBE_PATH)/libe/drivers/gpio/rot_enc.c
 endif
 
 # add logging
@@ -118,7 +119,8 @@ ifneq ($(filter $(libe_DEFINES),USE_DISPLAY),)
     ifneq ($(filter $(libe_DEFINES),USE_SDL2),)
         libe_SRC += $(LIBE_PATH)/libe/drivers/display/sdl2.c
     endif
-    ifneq ($(filter $(libe_DEFINES),USE_ALL_FONTS),)
-        libe_SRC += $(wildcard $(LIBE_PATH)/libe/fonts/*.c)
-    endif
+    libe_SRC += $(foreach font,$(FONTS),$(LIBE_PATH)/libe/fonts/$(font).c)
+    libe_SRC += $(foreach font,$(FONTS_$(TARGET)),$(LIBE_PATH)/libe/fonts/$(font).c)
+    libe_SRC += $(foreach font,$(FONTS_$(MCU)),$(LIBE_PATH)/libe/fonts/$(font).c)
+    libe_SRC += $(foreach font,$(fonts),$(LIBE_PATH)/libe/fonts/$(font).c)
 endif

@@ -35,7 +35,7 @@
 #include "draw_string.h"
 
 
-static uint16_t eui_get_number_of_leading_zeros(uint16_t x)
+static uint16_t draw_get_number_of_leading_zeros(uint16_t x)
 {
 	uint16_t count = 0;
 	uint8_t y = 0x80;
@@ -52,7 +52,7 @@ static uint16_t eui_get_number_of_leading_zeros(uint16_t x)
 }
 
 
-int16_t eui_str_width(const struct font *font, char *string, int length)
+int16_t draw_str_width(const struct font *font, char *string, int length)
 {
 	const uint16_t *offset;
 	const uint8_t *data;
@@ -129,7 +129,7 @@ int16_t eui_str_width(const struct font *font, char *string, int length)
 }
 
 
-void eui_str_draw(struct display *display, const struct font *font, char *string, int length, int16_t x, int16_t y, bool opaque)
+void draw_string(struct display *display, const struct font *font, char *string, int length, int16_t x, int16_t y, bool opaque)
 {
 	int16_t idx, x0, y0;
 	int16_t count, off, on, bit;
@@ -244,7 +244,7 @@ void eui_str_draw(struct display *display, const struct font *font, char *string
 					//
 					// Get the number of zero pixels at this position.
 					//
-					count = eui_get_number_of_leading_zeros(data[idx] << bit);
+					count = draw_get_number_of_leading_zeros(data[idx] << bit);
 
 					//
 					// If there were more than 8, then it is a "false" result
@@ -295,7 +295,7 @@ void eui_str_draw(struct display *display, const struct font *font, char *string
 					// Get the number of one pixels at this location (by
 					// inverting the data and counting the number of zeros).
 					//
-					count = eui_get_number_of_leading_zeros(~(data[idx] << bit));
+					count = draw_get_number_of_leading_zeros(~(data[idx] << bit));
 
 
 					//
@@ -583,24 +583,24 @@ void eui_str_draw(struct display *display, const struct font *font, char *string
 	}
 }
 
-uint8_t eui_str_baseline(const struct font *font)
+uint8_t draw_str_baseline(const struct font *font)
 {
 	return font->baseline;
 }
 
-// void eui_str_draw_centered(struct display *display, char *string, int length, int16_t x, int16_t y, bool opaque)
+// void draw_str_draw_centered(struct display *display, char *string, int length, int16_t x, int16_t y, bool opaque)
 // {
-// 	eui_str_draw(context, string, length,
-// 	             (x) - (eui_str_width(context->font, string, length) / 2),
+// 	draw_str_draw(context, string, length,
+// 	             (x) - (draw_str_width(context->font, string, length) / 2),
 // 	             (y) - (context->font->baseline / 2), opaque);
 // }
 
-uint8_t eui_str_char_max_height(const struct font *font)
+uint8_t draw_str_char_max_height(const struct font *font)
 {
 	return font->height;
 }
 
-uint8_t eui_str_char_max_width(const struct font *font)
+uint8_t draw_str_char_max_width(const struct font *font)
 {
 	return font->maxWidth;
 }

@@ -14,10 +14,14 @@ extern "C" {
 #include <libe/libe.h>
 
 enum {
-	DISPLAY_OPT_BUFFER = OPT_START_DISPLAY,
-	DISPLAY_OPT_W,
-	DISPLAY_OPT_H,
-	DISPLAY_OPT_SCALING,
+	DISPLAY_OPT_GET_BUFFER = OPT_START_DISPLAY,
+	DISPLAY_OPT_SET_BUFFER,
+	DISPLAY_OPT_GET_W,
+	DISPLAY_OPT_SET_W,
+	DISPLAY_OPT_GET_H,
+	DISPLAY_OPT_SET_H,
+	DISPLAY_OPT_GET_SCALING,
+	DISPLAY_OPT_SET_SCALING,
 };
 
 struct display {
@@ -47,7 +51,7 @@ struct display {
 	uint8_t driver_bits[4];
 
 	void (*close)(struct display *display);
-	int8_t (*opt)(struct display *display, uint8_t opt, void *value, uint8_t flags);
+	int8_t (*opt)(struct display *display, uint8_t opt, void *value);
 	void (*pixel)(struct display *display, int16_t x, int16_t y, uint32_t color);
 	void (*hline)(struct display *display, int16_t x, int16_t y, int16_t length, uint32_t color);
 	void (*vline)(struct display *display, int16_t x, int16_t y, int16_t length, uint32_t color);
