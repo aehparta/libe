@@ -13,6 +13,10 @@ else ifeq ($(TARGET),RPI)
     # raspberry
     TARGET_LINUX = 1
     libe_DEFINES += TARGET_LINUX
+else ifeq ($(TARGET),OPI)
+    # raspberry
+    TARGET_LINUX = 1
+    libe_DEFINES += TARGET_LINUX
 else ifeq ($(TARGET),ESP32)
     # esp32
 else ifeq ($(TARGET),AVR)

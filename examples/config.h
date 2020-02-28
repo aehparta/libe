@@ -43,12 +43,12 @@
 /* spi */
 #define CFG_SPI_CONTEXT     NULL
 #define CFG_SPI_FREQUENCY   0
-#define CFG_SPI_MISO        GPIOA2
-#define CFG_SPI_MOSI        GPIOA1
-#define CFG_SPI_SCLK        GPIOA0
+#define CFG_SPI_MISO        255
+#define CFG_SPI_MOSI        255
+#define CFG_SPI_SCLK        255
 /* nrf24l01+ */
-#define CFG_NRF_SS          GPIOA4
-#define CFG_NRF_CE          GPIOA5
+#define CFG_NRF_SS          255
+#define CFG_NRF_CE          255
 /* led */
 #ifdef MCU_18F13K22
 #define CFG_LED_GPIO0       16 /* = RC0 */
@@ -57,8 +57,8 @@
 #define CFG_LED_GPIO0       12 /* = RB4 */
 #define CFG_LED_GPIO1       13 /* = RB5 */
 #else
-#define CFG_LED_GPIO0       8 /* = RB0 */
-#define CFG_LED_GPIO1       9 /* = RB1 */
+#define CFG_LED_GPIO0       GPIOC1
+#define CFG_LED_GPIO1       GPIOC2
 #endif
 #endif
 

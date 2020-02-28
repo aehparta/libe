@@ -1,5 +1,5 @@
 /*
- * raspberry pi specific gpio.
+ * linux specific gpio.
  */
 
 #include <stdio.h>

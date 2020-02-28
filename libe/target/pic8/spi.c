@@ -9,38 +9,60 @@
 #include <stdlib.h>
 #include <libe/libe.h>
 
-static void spi_ss_change(uint8_t ss, bool state);
+#ifndef SPI_HARDCODED_SS
+#define SPI_HARDCODED_SS (device->ss)
+#endif
 
+#ifndef SPI_HARDCODED_MISO
+#define SPI_HARDCODED_MISO miso
+#endif
+#ifndef SPI_HARDCODED_MOSI
+#define SPI_HARDCODED_MOSI mosi
+#endif
+#ifndef SPI_HARDCODED_SCLK
+#define SPI_HARDCODED_SCLK sclk
+#endif
 
 int spi_master_open(struct spi_master *master, void *context, uint32_t frequency, uint8_t miso, uint8_t mosi, uint8_t sclk)
 {
-#ifdef SSP1STAT
-	SSP1STAT = 0;
-#else
-	SSPSTAT = 0;
-#endif
-	gpio_input(miso);
-	gpio_output(mosi);
-	gpio_output(sclk);
+	gpio_input(SPI_HARDCODED_MISO);
+	gpio_output(SPI_HARDCODED_MOSI);
+	gpio_output(SPI_HARDCODED_SCLK);
 
 	/* if device supports mapping of pins */
-#ifdef SSP1DATPPS
-	SSP1DATPPS = miso;
-#endif
 #ifdef SSP1CLKPPS
-	SSP1CLKPPS = sclk;
+	SSP1CLKPPS = SPI_HARDCODED_SCLK;
 #endif
-	// os_pin_pps(sclk, 0x13);
-	// os_pin_pps(mosi, 0x14);
-	RA0PPS = 0x13;
-	RA1PPS = 0x14;
-	
+#ifdef SSP1DATPPS
+	SSP1DATPPS = SPI_HARDCODED_MISO;
+#endif
+	os_pin_pps(SPI_HARDCODED_SCLK, 0x18);
+	os_pin_pps(SPI_HARDCODED_MOSI, 0x19);
+
+	/* calculate clock */
+	if (frequency < 1) {
+		/* default to 1MHz */
+		frequency = 1e6;
+	}
+	uint8_t sspadd = (F_CPU / frequency / 4) - 1;
+
+	/* enable spi */
 #ifdef SSPCON1
-	SSPCON1 = 0x20;
+	SSPSTAT = 0x40;
+	SSPCON1 = 0x2a;
+	SSPCON2 = 0;
+	SSPCON3 = 0;
+	SSP1ADD = sspadd;
 #elif defined(SSP1CON1)
-	SSP1CON1 = 0x20;
+	SSP1STAT = 0x40;
+	SSP1CON1 = 0x2a;
+	SSP1CON2 = 0;
+	SSP1CON3 = 0;
+	SSP1ADD = sspadd;
 #else
-	SSPCON = 0x20;
+	SSPSTAT = 0x40;
+	SSPCON = 0x2a;
+	SSPADD = sspadd;
 #endif
 
 	return 0;
@@ -64,33 +86,35 @@ void spi_master_close(struct spi_master *master)
 
 int spi_open(struct spi_device *device, struct spi_master *master, uint8_t ss)
 {
-	gpio_output(ss);
-	spi_ss_change(ss, 1);
 	device->ss = ss;
+	gpio_output(SPI_HARDCODED_SS);
+	gpio_high(SPI_HARDCODED_SS);
 	return 0;
 }
 
 void spi_close(struct spi_device *device)
 {
-	gpio_input(device->ss);
+	gpio_input(SPI_HARDCODED_SS);
 }
 
 int spi_transfer(struct spi_device *device, uint8_t *data, size_t size)
 {
-	spi_ss_change(device->ss, 0);
+	gpio_low(SPI_HARDCODED_SS);
 	for ( ; size > 0; size--) {
 #ifdef SSP1BUF
 		SSP1BUF = *data;
-		while (!SSP1STATbits.BF);
+		while (!PIR1bits.SSP1IF);
+		PIR1bits.SSP1IF = 0;
 		*data = SSP1BUF;
 #else
 		SSPBUF = *data;
-		while (!SSPSTATbits.BF);
+		while (!PIRbits.SSPIF);
+		PIRbits.SSPIF = 0;
 		*data = SSPBUF;
 #endif
 		data++;
 	}
-	spi_ss_change(device->ss, 1);
+	gpio_high(SPI_HARDCODED_SS);
 
 	return 0;
 }
@@ -138,16 +162,6 @@ int spi_transfer(struct spi_device *device, uint8_t *data, size_t size)
 
 
 /* internals */
-
-
-static void spi_ss_change(uint8_t ss, bool state)
-{
-	if (state) {
-		gpio_high(ss);
-	} else {
-		gpio_low(ss);
-	}
-}
 
 
 #endif

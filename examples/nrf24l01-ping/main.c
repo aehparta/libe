@@ -40,11 +40,11 @@ int p_init(int argc, char *argv[])
 	/* nrf initialization */
 	ERROR_IF_R(nrf24l01p_open(&nrf, &master, CFG_NRF_SS, CFG_NRF_CE), -1, "nrf24l01+ failed to initialize");
 	/* change channel, default is 70 */
-	nrf24l01p_set_channel(&nrf, 10);
+	// nrf24l01p_set_channel(&nrf, 10);
 	/* change speed, default is 250k */
-	nrf24l01p_set_speed(&nrf, NRF24L01P_SPEED_2M);
+	// nrf24l01p_set_speed(&nrf, NRF24L01P_SPEED_2M);
 	/* disable crc, default is 2 bytes */
-	nrf24l01p_set_crc(&nrf, 0);
+	// nrf24l01p_set_crc(&nrf, 0);
 	/* enable radio in listen mode */
 	nrf24l01p_flush_rx(&nrf);
 	nrf24l01p_set_standby(&nrf, false);
@@ -94,7 +94,12 @@ int main(int argc, char *argv[])
 				}
 			}
 			if (i == 32) {
+#ifdef TARGET_PIC8
+				/* in pic8 printing floats is _VERY_ memory expensive */
+				printf("pong packet received, response time: %u ms\r\n", (unsigned int)((os_timef() - t) * 1000.0L));
+#else
 				printf("pong packet received, response time: %lf ms\r\n", (double)((os_timef() - t) * 1000.0L));
+#endif
 				replied = 1;
 			}
 		}

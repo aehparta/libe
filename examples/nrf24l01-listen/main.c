@@ -5,6 +5,9 @@
 #include <libe/libe.h>
 #include "../config.h"
 
+#ifdef TARGET_PIC8
+#pragma config FEXTOSC = OFF
+#endif
 
 struct spi_master master;
 struct nrf24l01p_device nrf;
@@ -20,7 +23,7 @@ int p_init(int argc, char *argv[])
 	/* initialize spi master */
 #ifdef USE_FTDI
 	/* open ft232h type device and try to see if it has a nrf24l01+ connected to it through mpsse-spi */
-	ERROR_IF_R(os_ftdi_use(OS_FTDI_GPIO_0_TO_63, 0x0403, 0x6014, NULL, NULL), -1, "unable to open ftdi device for gpio 0-63");
+	ERROR_IF_R(os_ftdi_use(OS_FTDI_GPIO_0_TO_63, 0, 0, NULL, NULL), -1, "unable to open ftdi device for gpio 0-63");
 	os_ftdi_set_mpsse(CFG_SPI_SCLK);
 #endif
 	ERROR_IF_R(spi_master_open(
@@ -65,6 +68,7 @@ int main(int argc, char *argv[])
 	/* init */
 	if (p_init(argc, argv)) {
 		ERROR_MSG("initialization failed");
+		os_delay_ms(500); /* some hardware (pic8) might not print the last line feed without this */
 		p_exit(EXIT_FAILURE);
 	}
 

@@ -1,9 +1,9 @@
 /*
- * raspberry pi specific gpio.
+ * linux specific gpio.
  */
 
-#ifndef _TARGET_RPI_GPIO_H_
-#define _TARGET_RPI_GPIO_H_
+#ifndef _TARGET_LINUX_GPIO_H_
+#define _TARGET_LINUX_GPIO_H_
 
 #ifdef __cplusplus
 extern "C" {

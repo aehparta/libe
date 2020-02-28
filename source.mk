@@ -17,7 +17,13 @@ endif
 
 # add gpio
 ifneq ($(filter $(libe_DEFINES),USE_GPIO),)
-    libe_SRC += $(T_PATH)/gpio.c
+    ifeq ($(TARGET),RPI)
+        libe_SRC += $(LIBE_PATH)/libe/target/linux/gpio.c
+    else ifeq ($(TARGET),OPI)
+        libe_SRC += $(LIBE_PATH)/libe/target/linux/gpio.c
+    else
+        libe_SRC += $(T_PATH)/gpio.c
+    endif
     # gpio drivers
     libe_SRC += $(LIBE_PATH)/libe/drivers/gpio/hd44780.c
     libe_SRC += $(LIBE_PATH)/libe/drivers/gpio/rot_enc.c

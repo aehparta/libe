@@ -7,24 +7,41 @@
 #ifdef USE_NRF24L01P
 
 #include <stdlib.h>
-#ifndef TARGET_PIC8
 #include <string.h>
-#endif
 #include <libe/libe.h>
 
+#ifndef NRF24L01P_HARDCODED_CE
+#define NRF24L01P_HARDCODED_CE (nrf->ce)
+#endif
 
 int8_t nrf24l01p_open(struct nrf24l01p_device *nrf, struct spi_master *master, uint8_t ss, uint8_t ce)
 {
-	gpio_low(ce);
-	gpio_output(ce);
 	nrf->ce = ce;
+	gpio_output(NRF24L01P_HARDCODED_CE);
+	gpio_low(NRF24L01P_HARDCODED_CE);
 
 	if (spi_open(&nrf->spi, master, ss)) {
 		spi_close(&nrf->spi);
 		return -1;
 	}
 
+	// while (1) {
+	// 	nrf24l01p_write_reg(nrf, NRF24L01P_REG_CONFIG, 0x0d);
+	// 	printf("%02x %02x %02x %02x %02x %02x %02x %02x\n",
+	// 	       nrf24l01p_read_reg(nrf, 0, NULL),
+	// 	       nrf24l01p_read_reg(nrf, 1, NULL),
+	// 	       nrf24l01p_read_reg(nrf, 2, NULL),
+	// 	       nrf24l01p_read_reg(nrf, 3, NULL),
+	// 	       nrf24l01p_read_reg(nrf, 4, NULL),
+	// 	       nrf24l01p_read_reg(nrf, 5, NULL),
+	// 	       nrf24l01p_read_reg(nrf, 6, NULL),
+	// 	       nrf24l01p_read_reg(nrf, 7, NULL)
+	// 	      );
+	// 	os_delay_ms(100);
+	// }
+
 	nrf24l01p_setup(nrf);
+	os_delay_ms(100);
 	IF_R((nrf24l01p_read_reg(nrf, NRF24L01P_REG_CONFIG, NULL) & 0x0f) != 0x0d, -1);
 	nrf24l01p_set_power_down(nrf, false);
 
@@ -146,9 +163,9 @@ int8_t nrf24l01p_set_address(struct nrf24l01p_device *nrf, uint8_t pipe, uint8_t
 int8_t nrf24l01p_set_standby(struct nrf24l01p_device *nrf, bool standby)
 {
 	if (standby) {
-		gpio_low(nrf->ce);
+		gpio_low(NRF24L01P_HARDCODED_CE);
 	} else {
-		gpio_high(nrf->ce);
+		gpio_high(NRF24L01P_HARDCODED_CE);
 	}
 	return 0;
 }

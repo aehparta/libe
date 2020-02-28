@@ -8,6 +8,8 @@
 #ifdef USE_GPIO
 
 #include <libe/libe.h>
+#include <math.h>
+
 
 int8_t rot_enc_open(struct rot_enc *re, uint8_t a, uint8_t b)
 {

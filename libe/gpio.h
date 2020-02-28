@@ -32,7 +32,10 @@ extern "C" {
 #include "target/x86/gpio.h"
 #elif TARGET_RPI
 #include <signal.h>
-#include "target/rpi/gpio.h"
+#include "target/linux/gpio.h"
+#elif TARGET_OPI
+#include <signal.h>
+#include "target/linux/gpio.h"
 #endif
 
 #define gpio_input(pin) gpio_enable(pin, 0)
