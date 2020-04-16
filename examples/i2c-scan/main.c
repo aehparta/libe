@@ -10,6 +10,9 @@
 #endif
 #include "../config.h"
 
+#ifdef TARGET_PIC8
+#pragma config FEXTOSC = OFF
+#endif
 
 #ifdef TARGET_ESP32
 int app_main(int argc, char *argv[])

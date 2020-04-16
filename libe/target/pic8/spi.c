@@ -52,7 +52,7 @@ int spi_master_open(struct spi_master *master, void *context, uint32_t frequency
 	SSPCON1 = 0x2a;
 	SSPCON2 = 0;
 	SSPCON3 = 0;
-	SSP1ADD = sspadd;
+	SSPADD = sspadd;
 #elif defined(SSP1CON1)
 	SSP1STAT = 0x40;
 	SSP1CON1 = 0x2a;
