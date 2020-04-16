@@ -28,9 +28,6 @@
 #define CFG_HD44780_EN      GPIOB6
 #define CFG_HD44780_RW      GPIOB5
 #define CFG_HD44780_RS      GPIOB4
-/* led */
-#define CFG_LED_GPIO0       GPIOB0
-#define CFG_LED_GPIO1       GPIOB1
 #endif
 
 
@@ -49,24 +46,6 @@
 /* nrf24l01+ */
 #define CFG_NRF_SS          255
 #define CFG_NRF_CE          255
-/* led */
-#ifdef MCU_18F13K22
-#define CFG_LED_GPIO0       16 /* = RC0 */
-#define CFG_LED_GPIO1       17 /* = RC1 */
-#elif MCU_16F18345
-#define CFG_LED_GPIO0       12 /* = RB4 */
-#define CFG_LED_GPIO1       13 /* = RB5 */
-#else
-#define CFG_LED_GPIO0       GPIOC1
-#define CFG_LED_GPIO1       GPIOC2
-#endif
-#endif
-
-
-#ifdef TARGET_PIC16
-/* led */
-#define CFG_LED_GPIO0       8 /* = RA0 */
-#define CFG_LED_GPIO1       9 /* = RA1 */
 #endif
 
 #ifdef TARGET_PIC32
@@ -79,9 +58,6 @@
 /* nrf24l01+ */
 #define CFG_NRF_SS          0
 #define CFG_NRF_CE          1
-/* led */
-#define CFG_LED_GPIO0       12
-#define CFG_LED_GPIO1       13
 #endif
 
 
@@ -115,9 +91,6 @@
 #define CFG_HD44780_EN      20
 #define CFG_HD44780_RW      21
 #define CFG_HD44780_RS      22
-/* led */
-#define CFG_LED_GPIO0       51
-#define CFG_LED_GPIO1       52
 #endif
 
 
@@ -131,9 +104,6 @@
 /* nrf24l01+ */
 #define CFG_NRF_SS          0
 #define CFG_NRF_CE          0
-/* led */
-#define CFG_LED_GPIO0       0
-#define CFG_LED_GPIO1       1
 #endif
 
 
@@ -147,9 +117,18 @@
 /* nrf24l01+ */
 #define CFG_NRF_SS          8
 #define CFG_NRF_CE          25
-/* led */
-#define CFG_LED_GPIO0       12
-#define CFG_LED_GPIO1       13
+#endif
+
+#ifdef TARGET_OPI
+/* spi */
+#define CFG_SPI_CONTEXT     NULL
+#define CFG_SPI_FREQUENCY   0
+#define CFG_SPI_MISO        0
+#define CFG_SPI_MOSI        0
+#define CFG_SPI_SCLK        0
+/* nrf24l01+ */
+#define CFG_NRF_SS          13
+#define CFG_NRF_CE          2
 #endif
 
 
@@ -178,8 +157,5 @@
 #define CFG_HD44780_EN      GPIO_NUM_18
 #define CFG_HD44780_RW      GPIO_NUM_19
 #define CFG_HD44780_RS      GPIO_NUM_21
-/* led */
-#define CFG_LED_GPIO0       GPIO_NUM_12
-#define CFG_LED_GPIO1       GPIO_NUM_13
 #endif
 

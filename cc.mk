@@ -9,6 +9,8 @@ ifeq ($(TARGET),X86)
     # pc
 else ifeq ($(TARGET),RPI)
     # raspberry
+else ifeq ($(TARGET),OPI)
+    # orange pi
 else ifeq ($(TARGET),ESP32)
     # esp32
 else ifeq ($(TARGET),AVR)
@@ -94,6 +96,8 @@ else ifeq ($(TARGET),msp430)
 else ifeq ($(TARGET),X86)
     libe_LDFLAGS += -lftdi1 -lrt -lpthread
 else ifeq ($(TARGET),RPI)
+    libe_LDFLAGS += -lrt -lpthread
+else ifeq ($(TARGET),OPI)
     libe_LDFLAGS += -lrt -lpthread
 endif
 

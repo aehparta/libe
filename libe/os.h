@@ -35,6 +35,9 @@ extern "C" {
 #elif TARGET_RPI
 #include <signal.h>
 #include "target/rpi/os.h"
+#elif TARGET_OPI
+#include <signal.h>
+#include "target/opi/os.h"
 #endif
 
 #ifdef USE_FTDI
