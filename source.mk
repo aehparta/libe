@@ -42,6 +42,8 @@ endif
 ifneq ($(filter $(libe_DEFINES),USE_SPI),)
     ifneq ($(filter $(libe_DEFINES),USE_SPI_BITBANG),)
         libe_SRC += $(LIBE_PATH)/libe/drivers/spi/bitbang.c
+    else ifdef TARGET_LINUX
+        libe_SRC += $(LIBE_PATH)/libe/target/linux/spi.c
     else
         libe_SRC += $(T_PATH)/spi.c
     endif

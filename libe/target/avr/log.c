@@ -66,8 +66,8 @@ int log_init(void)
 	/* disable double */
 	AVR_LOG_UCSRA = 0;
 
-	/* enable receiver and transmitter */
-	AVR_LOG_UCSRB = (1 << AVR_LOG_RXEN) | (1 << AVR_LOG_TXEN);
+	/* enable transmitter */
+	AVR_LOG_UCSRB = (1 << AVR_LOG_TXEN);
 
 	/* set frame format: 8N1 */
 #ifdef URSEL

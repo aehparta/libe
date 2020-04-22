@@ -29,7 +29,9 @@
 #elif TARGET_X86
 #include "target/x86/spi.h"
 #elif TARGET_RPI
-#include "target/rpi/spi.h"
+#include "target/linux/spi.h"
+#elif TARGET_OPI
+#include "target/linux/spi.h"
 #endif
 #endif /* else USE_SPI_BITBANG */
 

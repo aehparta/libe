@@ -2,6 +2,7 @@
 # add flags
 CFLAGS += $(libe_CFLAGS)
 LDFLAGS += $(libe_LDFLAGS)
+ASFLAGS += $(libe_ASFLAGS)
 
 # include compiler stuff
 include $(LIBE_PATH)/cc.mk
@@ -32,17 +33,17 @@ endif
 	@echo $(LDC_DGRAYB) "CFLAGS: $(CFLAGS)" $(LDC_DEFAULT)
 	@echo $(LDC_DGRAYB) "LDFLAGS: $(LDFLAGS)" $(LDC_DEFAULT)
 
-build: clean $(BUILD_LIBS) $(BUILD_BINS)
+build: $(BUILD_LIBS) $(BUILD_BINS)
 
 # objects from sources
 $(BUILDDIR)/%$(OBJ_EXT): %.c
 	@echo $(LDC_CYANB) "CC $<" $(LDC_DEFAULT)
 	@mkdir -p `dirname $@`
 	@$(CC) $(CFLAGS) -MMD -c $< -o $@
-$(BUILDDIR)/%$(OBJ_EXT): %.s
+$(BUILDDIR)/%$(OBJ_EXT): %.S
 	@echo $(LDC_CYANB) "CC $<" $(LDC_DEFAULT)
 	@mkdir -p `dirname $@`
-	@$(CC) $(CFLAGS) -MMD -c $< -o $@
+	@$(CC) $(ASFLAGS) -c $< -o $@
 $(BUILDDIR)/%$(OBJ_EXT): %
 	@echo $(LDC_CYANB) "RAW $<" $(LDC_DEFAULT)
 	@mkdir -p `dirname $@`
@@ -79,7 +80,7 @@ endif
 
 # compile binaries, this must be last because of secondary expansion
 .SECONDEXPANSION:
-$(BUILD_BINS): $$(patsubst %.c,$(BUILDDIR)/%$(OBJ_EXT),$$($$@_SRC)) $$(patsubst %$(OBJ_EXT),$(BUILDDIR)/%$(OBJ_EXT),$$(extra_OBJ)) $$(patsubst %,$(BUILDDIR)/%$(OBJ_EXT),$$($$@_RAW_SRC))
+$(BUILD_BINS): $$(patsubst %.c,$(BUILDDIR)/%$(OBJ_EXT),$$($$@_SRC)) $$(patsubst %.S,$(BUILDDIR)/%$(OBJ_EXT),$$($$@_ASRC)) $$(patsubst %$(OBJ_EXT),$(BUILDDIR)/%$(OBJ_EXT),$$(extra_OBJ)) $$(patsubst %,$(BUILDDIR)/%$(OBJ_EXT),$$($$@_RAW_SRC))
 	@echo $(LDC_PURPLEB) "LINK $@$(TARGET_EXT)" $(LDC_DEFAULT)
 	@$(CC) $^ -o $@$(TARGET_EXT)$(BIN_EXT) $(LDFLAGS)
 ifneq ($(OBJDUMP),)

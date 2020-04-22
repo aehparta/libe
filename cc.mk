@@ -56,6 +56,7 @@ ifeq ($(TARGET),AVR)
     libe_CFLAGS  += -ffunction-sections -fdata-sections
     libe_LDFLAGS += -mmcu=$(shell echo $(MCU) | tr '[:upper:]' '[:lower:]')
     libe_LDFLAGS += -Wl,--gc-sections
+    libe_ASFLAGS += -mmcu=$(shell echo $(MCU) | tr '[:upper:]' '[:lower:]') -x assembler-with-cpp -Wa,-gstabs
 else ifeq ($(TARGET),PIC8)
     libe_CFLAGS  += -mcpu=$(MCU)
     libe_CFLAGS  += -fno-short-float -fno-short-double

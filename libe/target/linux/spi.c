@@ -24,8 +24,15 @@ int spi_master_open(struct spi_master *master, void *context, uint32_t frequency
 	uint8_t mode = 0;
 	uint8_t bits = 8;
 
+	/* set master fd to invalid at start */
+	master->fd = -1;
+
 	if (!context) {
+#ifdef TARGET_OPI
+		context = "/dev/spidev1.0";
+#else
 		context = "/dev/spidev0.0";
+#endif
 	}
 	fd = open(context, O_RDWR);
 	CRIT_IF_R(fd < 0, -1, "spi master open failed");
@@ -62,7 +69,9 @@ int spi_master_open(struct spi_master *master, void *context, uint32_t frequency
 
 void spi_master_close(struct spi_master *master)
 {
-	close(master->fd);
+	if (master->fd >= 0) {
+		close(master->fd);
+	}
 }
 
 int spi_open(struct spi_device *device, struct spi_master *master, uint8_t ss)
