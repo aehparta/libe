@@ -106,6 +106,9 @@ AR_FLAGS     ?= rcs
 OBJ_EXT      ?= .o
 LIB_EXT      ?= .a
 BIN_EXT      ?= .elf
+ifeq ($(DEBUG),1)
+    OPTIMIZATION ?= 0
+endif
 OPTIMIZATION ?= s
 
 # add target definition

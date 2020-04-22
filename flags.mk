@@ -45,7 +45,10 @@ endif
 ifeq ($(debug),0)
 	DEBUG = 0
 endif
-DEBUG ?= 1
+ifeq ($(debug),1)
+	DEBUG = 1
+endif
+DEBUG ?= 0
 ifeq ($(DEBUG),1)
     # debug on
     libe_DEFINES += DEBUG
