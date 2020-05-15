@@ -39,7 +39,11 @@ build: $(BUILD_LIBS) $(BUILD_BINS)
 $(BUILDDIR)/%$(OBJ_EXT): %.c
 	@echo $(LDC_CYANB) "CC $<" $(LDC_DEFAULT)
 	@mkdir -p `dirname $@`
-	@$(CC) $(CFLAGS) -MMD -c $< -o $@
+	@$(CC) $(CFLAGS) -std=c11 -Wstrict-prototypes -MMD -c $< -o $@
+$(BUILDDIR)/%$(OBJ_EXT): %.cpp
+	@echo $(LDC_CYANB) "CC $<" $(LDC_DEFAULT)
+	@mkdir -p `dirname $@`
+	@$(CPP) $(CFLAGS) -std=c++11 -MMD -c $< -o $@
 $(BUILDDIR)/%$(OBJ_EXT): %.S
 	@echo $(LDC_CYANB) "CC $<" $(LDC_DEFAULT)
 	@mkdir -p `dirname $@`
@@ -80,7 +84,7 @@ endif
 
 # compile binaries, this must be last because of secondary expansion
 .SECONDEXPANSION:
-$(BUILD_BINS): $$(patsubst %.c,$(BUILDDIR)/%$(OBJ_EXT),$$($$@_SRC)) $$(patsubst %.S,$(BUILDDIR)/%$(OBJ_EXT),$$($$@_ASRC)) $$(patsubst %$(OBJ_EXT),$(BUILDDIR)/%$(OBJ_EXT),$$(extra_OBJ)) $$(patsubst %,$(BUILDDIR)/%$(OBJ_EXT),$$($$@_RAW_SRC))
+$(BUILD_BINS): $$(patsubst %.c,$(BUILDDIR)/%$(OBJ_EXT),$$($$@_SRC)) $$(patsubst %.cpp,$(BUILDDIR)/%$(OBJ_EXT),$$($$@_CPP_SRC)) $$(patsubst %.S,$(BUILDDIR)/%$(OBJ_EXT),$$($$@_ASRC)) $$(patsubst %$(OBJ_EXT),$(BUILDDIR)/%$(OBJ_EXT),$$(extra_OBJ)) $$(patsubst %,$(BUILDDIR)/%$(OBJ_EXT),$$($$@_RAW_SRC))
 	@echo $(LDC_PURPLEB) "LINK $@$(TARGET_EXT)" $(LDC_DEFAULT)
 	@$(CC) $^ -o $@$(TARGET_EXT)$(BIN_EXT) $(LDFLAGS)
 ifneq ($(OBJDUMP),)

@@ -43,6 +43,7 @@ endif
 
 # tools
 CC          = $(CC_PREFIX)gcc
+CPP         = $(CC_PREFIX)g++
 OBJCOPY     = $(CC_PREFIX)objcopy
 OBJDUMP     = $(CC_PREFIX)objdump
 OBJSIZE     = $(CC_PREFIX)size
@@ -125,6 +126,6 @@ endif
 ifeq ($(TARGET),PIC8)
     libe_CFLAGS += -O$(OPTIMIZATION) -std=c99
 else
-    libe_CFLAGS += -D_GNU_SOURCE -O$(OPTIMIZATION) -std=c11 -g -Wall -Wstrict-prototypes
+    libe_CFLAGS += -D_GNU_SOURCE -O$(OPTIMIZATION) -g -Wall
 #     libe_CFLAGS += -Werror -Wno-unused-variable
 endif
