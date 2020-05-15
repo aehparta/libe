@@ -15,16 +15,16 @@ else ifeq ($(TARGET),ESP32)
     # esp32
 else ifeq ($(TARGET),AVR)
     # microchip avr
-    CC_PREFIX     ?= avr-
+    C_ARCH_PREFIX       ?= avr-
 else ifeq ($(TARGET),PIC8)
     # microchip pic 8-bit
-    CC_PREFIX     ?= xc8-
+    C_ARCH_PREFIX       ?= xc8-
 else ifeq ($(TARGET),pic16)
     # microchip pic 16-bit
-    CC_PREFIX     ?= xc16-
+    C_ARCH_PREFIX       ?= xc16-
 else ifeq ($(TARGET),pic32)
     # microchip pic 32-bit
-    CC_PREFIX     ?= xc32-
+    C_ARCH_PREFIX       ?= xc32-
 else ifeq ($(TARGET),msp430)
     # ti msp430
 #     ifeq ($(MSP430_BASE_DIR),)
@@ -34,7 +34,7 @@ else ifeq ($(TARGET),msp430)
 #         $(error MSP430_TOOLS_DIR is not set, install example CCS and point this to msp430 tools under it)
 #     endif
     MSP430_INC_DIR     ?= $(HOME)/ti/ccs920/ccs/ccs_base/msp430/include_gcc/
-    CC_PREFIX          ?= msp430-elf-
+    C_ARCH_PREFIX      ?= msp430-elf-
     MCU                ?= msp430f1121
     F_CPU              ?= 4000000
 else
@@ -42,22 +42,24 @@ else
 endif
 
 # tools
-CC          = $(CC_PREFIX)gcc
-CPP         = $(CC_PREFIX)g++
-OBJCOPY     = $(CC_PREFIX)objcopy
-OBJDUMP     = $(CC_PREFIX)objdump
-OBJSIZE     = $(CC_PREFIX)size
-AR          = $(CC_PREFIX)ar
-NM          = $(CC_PREFIX)nm
+CC          = $(C_ARCH_PREFIX)gcc
+CXX         = $(C_ARCH_PREFIX)g++
+OBJCOPY     = $(C_ARCH_PREFIX)objcopy
+OBJDUMP     = $(C_ARCH_PREFIX)objdump
+OBJSIZE     = $(C_ARCH_PREFIX)size
+AR          = $(C_ARCH_PREFIX)ar
+NM          = $(C_ARCH_PREFIX)nm
 REMOVE      = rm
 
 # compiler options
 ifeq ($(TARGET),AVR)
-    libe_CFLAGS  += -mmcu=$(shell echo $(MCU) | tr '[:upper:]' '[:lower:]')
-    libe_CFLAGS  += -ffunction-sections -fdata-sections
-    libe_LDFLAGS += -mmcu=$(shell echo $(MCU) | tr '[:upper:]' '[:lower:]')
-    libe_LDFLAGS += -Wl,--gc-sections
-    libe_ASFLAGS += -mmcu=$(shell echo $(MCU) | tr '[:upper:]' '[:lower:]') -x assembler-with-cpp -Wa,-gstabs
+    libe_CFLAGS     += -mmcu=$(shell echo $(MCU) | tr '[:upper:]' '[:lower:]')
+    libe_CFLAGS     += -ffunction-sections -fdata-sections
+    libe_CXXFLAGS   += -mmcu=$(shell echo $(MCU) | tr '[:upper:]' '[:lower:]')
+    libe_CXXFLAGS   += -ffunction-sections -fdata-sections
+    libe_LDFLAGS    += -mmcu=$(shell echo $(MCU) | tr '[:upper:]' '[:lower:]')
+    libe_LDFLAGS    += -Wl,--gc-sections
+    libe_ASFLAGS    += -mmcu=$(shell echo $(MCU) | tr '[:upper:]' '[:lower:]') -x assembler-with-cpp -Wa,-gstabs
 else ifeq ($(TARGET),PIC8)
     libe_CFLAGS  += -mcpu=$(MCU)
     libe_CFLAGS  += -fno-short-float -fno-short-double
@@ -113,19 +115,23 @@ endif
 OPTIMIZATION ?= s
 
 # add target definition
-libe_CFLAGS += -DTARGET=$(TARGET) -DTARGET_$(TARGET)
+libe_CFLAGS     += -DTARGET=$(TARGET) -DTARGET_$(TARGET)
+libe_CXXFLAGS   += -DTARGET=$(TARGET) -DTARGET_$(TARGET)
 # add MCU definition
 ifneq ($(MCU),)
-    libe_CFLAGS += -DMCU=$(MCU) -DMCU_$(MCU)
+    libe_CFLAGS     += -DMCU=$(MCU) -DMCU_$(MCU)
+    libe_CXXFLAGS   += -DMCU=$(MCU) -DMCU_$(MCU)
 endif
 # add MCU clock frequency
 ifneq ($(F_CPU),)
-    libe_CFLAGS += -DF_CPU=$(F_CPU)UL
+    libe_CFLAGS     += -DF_CPU=$(F_CPU)UL
+    libe_CXXFLAGS   += -DF_CPU=$(F_CPU)UL
 endif
 
 ifeq ($(TARGET),PIC8)
     libe_CFLAGS += -O$(OPTIMIZATION) -std=c99
 else
-    libe_CFLAGS += -D_GNU_SOURCE -O$(OPTIMIZATION) -g -Wall
+    libe_CFLAGS += -D_GNU_SOURCE -O$(OPTIMIZATION) -g -Wall -std=c11 -Wstrict-prototypes
+    libe_CXXFLAGS += -D_GNU_SOURCE -O$(OPTIMIZATION) -g -Wall -std=c++11
 #     libe_CFLAGS += -Werror -Wno-unused-variable
 endif

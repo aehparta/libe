@@ -54,13 +54,15 @@ ifeq ($(DEBUG),1)
     libe_DEFINES += DEBUG
 endif
 
-# add defines to cflags
+# add defines to cflags and cxxflags
 ifneq ($(libe_DEFINES),)
-	libe_CFLAGS += $(foreach define,$(libe_DEFINES),-D$(define))
+	libe_CFLAGS     += $(foreach define,$(libe_DEFINES),-D$(define))
+	libe_CXXFLAGS   += $(foreach define,$(libe_DEFINES),-D$(define))
 endif
 
 # add libe path to includes
-libe_CFLAGS += -I$(LIBE_PATH)
+libe_CFLAGS     += -I$(LIBE_PATH)
+libe_CXXFLAGS   += -I$(LIBE_PATH)
 
 # unravel cflags
 ifneq ($(CFLAGS_$(TARGET)),)
@@ -71,6 +73,17 @@ ifneq ($(CFLAGS_$(MCU)),)
 endif
 ifneq ($(cflags),)
 	CFLAGS += $(foreach flag,$(cflags),$(flag))
+endif
+
+# unravel cxxflags
+ifneq ($(CXXFLAGS_$(TARGET)),)
+	CXXFLAGS += $(foreach flag,$(CXXFLAGS_$(TARGET)),$(flag))
+endif
+ifneq ($(CXXFLAGS_$(MCU)),)
+	CXXFLAGS += $(foreach flag,$(CXXFLAGS_$(MCU)),$(flag))
+endif
+ifneq ($(cxxflags),)
+	CXXFLAGS += $(foreach flag,$(cxxflags),$(flag))
 endif
 
 # unravel ldflags

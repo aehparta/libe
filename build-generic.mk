@@ -1,6 +1,7 @@
 
 # add flags
 CFLAGS += $(libe_CFLAGS)
+CXXFLAGS += $(libe_CXXFLAGS)
 LDFLAGS += $(libe_LDFLAGS)
 ASFLAGS += $(libe_ASFLAGS)
 
@@ -31,6 +32,7 @@ ifneq ($(MCU),)
 endif
 	@echo $(LDC_DGRAYB) "USE: $(libe_USE)" $(LDC_DEFAULT)
 	@echo $(LDC_DGRAYB) "CFLAGS: $(CFLAGS)" $(LDC_DEFAULT)
+	@echo $(LDC_DGRAYB) "CXXFLAGS: $(CXXFLAGS)" $(LDC_DEFAULT)
 	@echo $(LDC_DGRAYB) "LDFLAGS: $(LDFLAGS)" $(LDC_DEFAULT)
 
 build: $(BUILD_LIBS) $(BUILD_BINS)
@@ -39,11 +41,11 @@ build: $(BUILD_LIBS) $(BUILD_BINS)
 $(BUILDDIR)/%$(OBJ_EXT): %.c
 	@echo $(LDC_CYANB) "CC $<" $(LDC_DEFAULT)
 	@mkdir -p `dirname $@`
-	@$(CC) $(CFLAGS) -std=c11 -Wstrict-prototypes -MMD -c $< -o $@
+	@$(CC) $(CFLAGS) -MMD -c $< -o $@
 $(BUILDDIR)/%$(OBJ_EXT): %.cpp
-	@echo $(LDC_CYANB) "CC $<" $(LDC_DEFAULT)
+	@echo $(LDC_CYANB) "CXX $<" $(LDC_DEFAULT)
 	@mkdir -p `dirname $@`
-	@$(CPP) $(CFLAGS) -std=c++11 -MMD -c $< -o $@
+	@$(CXX) $(CXXFLAGS) -MMD -c $< -o $@
 $(BUILDDIR)/%$(OBJ_EXT): %.S
 	@echo $(LDC_CYANB) "CC $<" $(LDC_DEFAULT)
 	@mkdir -p `dirname $@`
