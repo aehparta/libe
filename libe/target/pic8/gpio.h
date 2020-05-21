@@ -97,17 +97,17 @@ static inline uint8_t gpio_read(uint8_t pin)
 	}
 #endif
 #ifdef PORTD
-	else if ((pin & 0xf8) == 0x10) {
+	else if ((pin & 0xf8) == 0x18) {
 		return PORTD & _BV(pin & 7);
 	}
 #endif
 #ifdef PORTE
-	else if ((pin & 0xf8) == 0x10) {
+	else if ((pin & 0xf8) == 0x20) {
 		return PORTE & _BV(pin & 7);
 	}
 #endif
 #ifdef PORTF
-	else if ((pin & 0xf8) == 0x10) {
+	else if ((pin & 0xf8) == 0x28) {
 		return PORTF & _BV(pin & 7);
 	}
 #endif
