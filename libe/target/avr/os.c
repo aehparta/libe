@@ -54,7 +54,7 @@ int8_t os_init(void)
 	TCCR1B = (1 << CS11) | (1 << WGM12);
 #endif
 
-	/* system time starting point: 2000-01-01T00:01:00Z */
+	/* system time starting point: 2000-01-01T00:00:00Z */
 	set_system_time(0);
 	set_zone(0);
 	set_dst(NULL);
