@@ -40,13 +40,23 @@ endif
 
 # add spi and drivers for chips
 ifneq ($(filter $(libe_DEFINES),USE_SPI),)
-    ifneq ($(filter $(libe_DEFINES),USE_SPI_BITBANG),)
-        libe_SRC += $(LIBE_PATH)/libe/drivers/spi/bitbang.c
-    else ifdef TARGET_LINUX
-        libe_SRC += $(LIBE_PATH)/libe/target/linux/spi.c
-    else
+    # include native driver(s)
+    ifneq (,$(wildcard $(T_PATH)/spi.c))
         libe_SRC += $(T_PATH)/spi.c
     endif
+    # include linux specific drivers
+    ifdef TARGET_LINUX
+        libe_SRC += $(LIBE_PATH)/libe/target/linux/spidev.c
+        ifneq ($(filter $(libe_DEFINES),USE_FTDI),)
+            libe_SRC += $(LIBE_PATH)/libe/target/linux/spiftdi.c
+        endif
+    endif
+    # include bitbang driver
+    ifneq ($(filter $(libe_DEFINES),USE_SPI_BITBANG),)
+        libe_SRC += $(LIBE_PATH)/libe/drivers/spi/bitbang.c
+    endif
+
+    # include device drivers
     libe_SRC += \
         $(LIBE_PATH)/libe/drivers/spi/nrf24l01p.c \
         $(LIBE_PATH)/libe/drivers/spi/nrf24l01p_ble.c

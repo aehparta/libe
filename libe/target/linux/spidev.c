@@ -75,7 +75,7 @@ void spidev_master_close(struct spi_master *master)
 int spidev_open(struct spi_device *device, struct spi_master *master, uint8_t ss)
 {
 	/* base setup */
-	device->m = master;
+	device->master = master;
 	device->ss = ss;
 	return 0;
 }
@@ -93,11 +93,11 @@ int spidev_transfer(struct spi_device *device, uint8_t *data, size_t size)
 	tr.tx_buf = (unsigned long)data;
 	tr.rx_buf = (unsigned long)data;
 	tr.len = size;
-	tr.speed_hz = device->m->frequency;
+	tr.speed_hz = device->master->frequency;
 	tr.bits_per_word = 8;
 	tr.cs_change = 0;
 
-	err = ioctl(device->m->fd, SPI_IOC_MESSAGE(1), &tr);
+	err = ioctl(device->master->fd, SPI_IOC_MESSAGE(1), &tr);
 	if (err < 1) {
 		ERROR_MSG("can't send spi message");
 		return -1;

@@ -7,6 +7,8 @@
 #ifndef _LIBE_SPI_BITBANG_H_
 #define _LIBE_SPI_BITBANG_H_
 
+#include <libe/libe.h>
+
 #ifdef __cplusplus
 extern "C" {
 #endif

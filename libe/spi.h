@@ -6,14 +6,14 @@
 
 #ifndef _LIBE_SPI_H_
 #define _LIBE_SPI_H_
-#ifdef USE_SPI
 
 
 #include <stdint.h>
-#include "os.h"
-#ifdef USE_SPI_BITBANG
-#include "drivers/spi/bitbang.h"
-#else
+
+/* pre-define master and device for following includes, these cannot be fully declared here yet */
+struct spi_master;
+struct spi_device;
+
 #ifdef TARGET_AVR
 #include "target/avr/spi.h"
 #elif TARGET_PIC8
@@ -26,49 +26,95 @@
 #include "target/msp430/spi.h"
 #elif TARGET_ESP32
 #include "target/esp32/spi.h"
-#elif TARGET_X86
-#include "target/x86/spi.h"
-#elif TARGET_RPI
-#include "target/linux/spi.h"
-#elif TARGET_OPI
-#include "target/linux/spi.h"
+#elif TARGET_LINUX
+#include "target/linux/spidev.h"
+#ifdef USE_FTDI
+#include "target/linux/spiftdi.h"
+#endif /* USE_FTDI */
+#endif /* TARGET_LINUX */
+
+#ifdef USE_SPI_BITBANG
+#include "drivers/spi/bitbang.h"
 #endif
-#endif /* else USE_SPI_BITBANG */
+
 
 #ifdef __cplusplus
 extern "C" {
 #endif
 
 
-#ifdef USE_SPI_BITBANG_DYNAMIC
-#define SPI_BITBANG_SCLK (master->sclk)
-#define SPI_BITBANG_MOSI (master->mosi)
-#define SPI_BITBANG_MISO (master->miso)
-#endif
-
 struct spi_master {
 	/* drivers that use pins dynamically */
-#if defined(USE_SPI_BITBANG_DYNAMIC)
+#ifdef SPI_MASTER_NEED_PINS
 	uint8_t sclk;
 	uint8_t mosi;
 	uint8_t miso;
 #endif
 	/* linux specific */
-#if defined(USE_LINUX)
+#ifdef SPI_MASTER_NEED_FD
 	int fd;
 #endif
 	/* drivers that need to save frequency to be used with transfer */
-#if defined(USE_SPI_BITBANG_DYNAMIC) || defined(USE_LINUX)
+#ifdef SPI_MASTER_NEED_FREQUENCY
 	uint32_t frequency;
 #endif
 };
 
 struct spi_device {
+#ifdef SPI_DEVICE_NEED_MASTER
 	struct spi_master *master;
+#endif
+#ifdef SPI_DEVICE_NEED_SS
 	uint8_t ss;
+#endif
+#ifdef SPI_DEVICE_NEED_BITS
 	uint8_t driver_bits[4];
+#endif
 };
 
+
+/* use default spi driver if given */
+#if !defined(spi_master_open) && defined(SPI_DRIVER)
+#define SPI_DRIVER_MACRO1(driver, func) driver ## func
+#define SPI_DRIVER_MACRO2(driver, func) SPI_DRIVER_MACRO1(driver, func)
+#define spi_master_open SPI_DRIVER_MACRO2(SPI_DRIVER, _master_open)
+#define spi_master_close SPI_DRIVER_MACRO2(SPI_DRIVER, _master_close)
+#define spi_open SPI_DRIVER_MACRO2(SPI_DRIVER, _open)
+#define spi_close SPI_DRIVER_MACRO2(SPI_DRIVER, _close)
+#define spi_transfer SPI_DRIVER_MACRO2(SPI_DRIVER, _transfer)
+#endif
+/* define default spi driver: use ftdi? */
+#if !defined(spi_master_open) && defined(USE_FTDI)
+#define spi_master_open spiftdi_master_open
+#define spi_master_close spiftdi_master_close
+#define spi_open spiftdi_open
+#define spi_close spiftdi_close
+#define spi_transfer spiftdi_transfer
+#endif
+/* define default spi driver: use spidev? */
+#if !defined(spi_master_open) && defined(TARGET_LINUX)
+#define spi_master_open spidev_master_open
+#define spi_master_close spidev_master_close
+#define spi_open spidev_open
+#define spi_close spidev_close
+#define spi_transfer spidev_transfer
+#endif
+/* define default spi driver: use integrated? */
+#if !defined(spi_master_open) && defined(SPI_HAS_INTEGRATED)
+#define spi_master_open spii_master_open
+#define spi_master_close spii_master_close
+#define spi_open spii_open
+#define spi_close spii_close
+#define spi_transfer spii_transfer
+#endif
+/* define default spi driver: use bitbang? */
+#if !defined(spi_master_open) && defined(USE_SPI_BITBANG)
+#define spi_master_open spibb_master_open
+#define spi_master_close spibb_master_close
+#define spi_open spibb_open
+#define spi_close spibb_close
+#define spi_transfer spibb_transfer
+#endif
 
 // int spi_master_open(struct spi_master *master, void *context, uint32_t frequency, uint8_t miso, uint8_t mosi, uint8_t sclk);
 // void spi_master_close(struct spi_master *master);
@@ -84,5 +130,4 @@ struct spi_device {
 }
 #endif
 
-#endif /* USE_SPI */
 #endif /* _LIBE_SPI_H_ */

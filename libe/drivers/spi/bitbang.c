@@ -4,8 +4,6 @@
  * Authors: Antti Partanen <aehparta@iki.fi>
  */
 
-#ifdef USE_SPI_BITBANG
-
 #include <libe/libe.h>
 
 #ifdef USE_SPI_BITBANG_DYNAMIC
@@ -51,6 +49,7 @@ int spibb_open(struct spi_device *device, struct spi_master *master, uint8_t ss)
 {
 	gpio_output(ss);
 	gpio_high(ss);
+	device->master = master;
 	device->ss = ss;
 	return 0;
 }
@@ -62,7 +61,9 @@ void spibb_close(struct spi_device *device)
 
 int spibb_transfer(struct spi_device *device, uint8_t *data, size_t size)
 {
+#ifdef USE_SPI_BITBANG_DYNAMIC
 	struct spi_master *master = device->master;
+#endif
 
 	gpio_low(device->ss);
 	os_delay_us(1);
@@ -84,5 +85,3 @@ int spibb_transfer(struct spi_device *device, uint8_t *data, size_t size)
 
 	return 0;
 }
-
-#endif
