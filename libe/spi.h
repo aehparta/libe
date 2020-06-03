@@ -39,12 +39,43 @@
 extern "C" {
 #endif
 
-int spi_master_open(struct spi_master *master, void *context, uint32_t frequency, uint8_t miso, uint8_t mosi, uint8_t sclk);
-void spi_master_close(struct spi_master *master);
 
-int spi_open(struct spi_device *device, struct spi_master *master, uint8_t ss);
-void spi_close(struct spi_device *device);
-int spi_transfer(struct spi_device *device, uint8_t *data, size_t size);
+#ifdef USE_SPI_BITBANG_DYNAMIC
+#define SPI_BITBANG_SCLK (master->sclk)
+#define SPI_BITBANG_MOSI (master->mosi)
+#define SPI_BITBANG_MISO (master->miso)
+#endif
+
+struct spi_master {
+	/* drivers that use pins dynamically */
+#if defined(USE_SPI_BITBANG_DYNAMIC)
+	uint8_t sclk;
+	uint8_t mosi;
+	uint8_t miso;
+#endif
+	/* linux specific */
+#if defined(USE_LINUX)
+	int fd;
+#endif
+	/* drivers that need to save frequency to be used with transfer */
+#if defined(USE_SPI_BITBANG_DYNAMIC) || defined(USE_LINUX)
+	uint32_t frequency;
+#endif
+};
+
+struct spi_device {
+	struct spi_master *master;
+	uint8_t ss;
+	uint8_t driver_bits[4];
+};
+
+
+// int spi_master_open(struct spi_master *master, void *context, uint32_t frequency, uint8_t miso, uint8_t mosi, uint8_t sclk);
+// void spi_master_close(struct spi_master *master);
+
+// int spi_open(struct spi_device *device, struct spi_master *master, uint8_t ss);
+// void spi_close(struct spi_device *device);
+// int spi_transfer(struct spi_device *device, uint8_t *data, size_t size);
 
 #include <libe/drivers/spi/nrf24l01p.h>
 #include <libe/drivers/spi/nrf24l01p_ble.h>

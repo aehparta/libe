@@ -11,7 +11,7 @@
 #include <libe/libe.h>
 
 
-int spi_master_open(struct spi_master *master, void *context, uint32_t frequency, uint8_t miso, uint8_t mosi, uint8_t sclk)
+int spii_master_open(struct spi_master *master, void *context, uint32_t frequency, uint8_t miso, uint8_t mosi, uint8_t sclk)
 {
 	/* set MOSI, SCK and SS as output and MISO as input */
 	gpio_output(10);
@@ -26,7 +26,7 @@ int spi_master_open(struct spi_master *master, void *context, uint32_t frequency
 	return 0;
 }
 
-void spi_master_close(struct spi_master *master)
+void spii_master_close(struct spi_master *master)
 {
 	SPCR = 0;
 	gpio_input(10);
@@ -35,7 +35,7 @@ void spi_master_close(struct spi_master *master)
 	gpio_input(13);
 }
 
-int spi_open(struct spi_device *device, struct spi_master *master, uint8_t ss)
+int spii_open(struct spi_device *device, struct spi_master *master, uint8_t ss)
 {
 	device->ss = ss;
 	gpio_output(ss);
@@ -44,12 +44,12 @@ int spi_open(struct spi_device *device, struct spi_master *master, uint8_t ss)
 	return 0;
 }
 
-void spi_close(struct spi_device *device)
+void spii_close(struct spi_device *device)
 {
 	gpio_input(device->ss);
 }
 
-int spi_transfer(struct spi_device *device, uint8_t *data, size_t size)
+int spii_transfer(struct spi_device *device, uint8_t *data, size_t size)
 {
 	gpio_low(device->ss);
 	for ( ; size > 0; size--) {

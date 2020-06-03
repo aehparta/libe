@@ -12,12 +12,10 @@
 #include <fcntl.h>
 #include <unistd.h>
 #include <linux/spi/spidev.h>
-#include <libe/spi.h>
-#include <libe/log.h>
-#include <libe/os.h>
+#include <libe/libe.h>
 
 
-int spi_master_open(struct spi_master *master, void *context, uint32_t frequency, uint8_t miso, uint8_t mosi, uint8_t sclk)
+int spidev_master_open(struct spi_master *master, void *context, uint32_t frequency, uint8_t miso, uint8_t mosi, uint8_t sclk)
 {
 	int err;
 	int fd;
@@ -39,7 +37,7 @@ int spi_master_open(struct spi_master *master, void *context, uint32_t frequency
 
 	/* default to 10 MHz */
 	if (frequency < 1) {
-		frequency = SPI_DEFAULT_FREQUENCY;
+		frequency = SPIDEV_DEFAULT_FREQUENCY;
 	}
 
 	/* spi mode */
@@ -67,14 +65,14 @@ int spi_master_open(struct spi_master *master, void *context, uint32_t frequency
 	return 0;
 }
 
-void spi_master_close(struct spi_master *master)
+void spidev_master_close(struct spi_master *master)
 {
 	if (master->fd >= 0) {
 		close(master->fd);
 	}
 }
 
-int spi_open(struct spi_device *device, struct spi_master *master, uint8_t ss)
+int spidev_open(struct spi_device *device, struct spi_master *master, uint8_t ss)
 {
 	/* base setup */
 	device->m = master;
@@ -82,11 +80,11 @@ int spi_open(struct spi_device *device, struct spi_master *master, uint8_t ss)
 	return 0;
 }
 
-void spi_close(struct spi_device *device)
+void spidev_close(struct spi_device *device)
 {
 }
 
-int spi_transfer(struct spi_device *device, uint8_t *data, size_t size)
+int spidev_transfer(struct spi_device *device, uint8_t *data, size_t size)
 {
 	int err;
 	struct spi_ioc_transfer tr;

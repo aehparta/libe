@@ -4,8 +4,8 @@
  * Authors: Antti Partanen <aehparta@iki.fi>
  */
 
-#ifndef _TARGET_RPI_SPI_H_
-#define _TARGET_RPI_SPI_H_
+#ifndef _TARGET_LINUX_SPIDEV_H_
+#define _TARGET_LINUX_SPIDEV_H_
 
 #include <stdint.h>
 
@@ -13,21 +13,18 @@
 extern "C" {
 #endif
 
-#define SPI_DEFAULT_FREQUENCY 10e6
+#define SPIDEV_DEFAULT_FREQUENCY 10e6
 
-/* ftdi spi master context */
-struct spi_master {
-	int fd;
-	uint32_t frequency;
-};
-/* ftdi spi device context */
-struct spi_device {
-	struct spi_master *m;
-	uint8_t ss;
-};
+int spidev_master_open(struct spi_master *master, void *context, uint32_t frequency, uint8_t miso, uint8_t mosi, uint8_t sclk);
+void spidev_master_close(struct spi_master *master);
+
+int spidev_open(struct spi_device *device, struct spi_master *master, uint8_t ss);
+void spidev_close(struct spi_device *device);
+int spidev_transfer(struct spi_device *device, uint8_t *data, size_t size);
+
 
 #ifdef __cplusplus
 }
 #endif
 
-#endif /* _TARGET_RPI_SPI_H_ */
+#endif /* _TARGET_LINUX_SPIDEV_H_ */

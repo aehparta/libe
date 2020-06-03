@@ -25,7 +25,7 @@
 #endif
 
 
-int spi_master_open(struct spi_master *master, void *context, uint32_t frequency, uint8_t miso, uint8_t mosi, uint8_t sclk)
+int spibb_master_open(struct spi_master *master, void *context, uint32_t frequency, uint8_t miso, uint8_t mosi, uint8_t sclk)
 {
 #ifdef USE_SPI_BITBANG_DYNAMIC
 	master->sclk = sclk;
@@ -40,14 +40,14 @@ int spi_master_open(struct spi_master *master, void *context, uint32_t frequency
 	return 0;
 }
 
-void spi_master_close(struct spi_master *master)
+void spibb_master_close(struct spi_master *master)
 {
 	gpio_input(SPI_BITBANG_SCLK);
 	gpio_input(SPI_BITBANG_MOSI);
 	gpio_input(SPI_BITBANG_MISO);
 }
 
-int spi_open(struct spi_device *device, struct spi_master *master, uint8_t ss)
+int spibb_open(struct spi_device *device, struct spi_master *master, uint8_t ss)
 {
 	gpio_output(ss);
 	gpio_high(ss);
@@ -55,12 +55,12 @@ int spi_open(struct spi_device *device, struct spi_master *master, uint8_t ss)
 	return 0;
 }
 
-void spi_close(struct spi_device *device)
+void spibb_close(struct spi_device *device)
 {
 	gpio_input(device->ss);
 }
 
-int spi_transfer(struct spi_device *device, uint8_t *data, size_t size)
+int spibb_transfer(struct spi_device *device, uint8_t *data, size_t size)
 {
 	struct spi_master *master = device->master;
 
