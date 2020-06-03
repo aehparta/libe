@@ -4,8 +4,6 @@
  * Authors: Antti Partanen <aehparta@iki.fi>
  */
 
-#ifdef USE_SPI
-
 #include <stdlib.h>
 #include <string.h>
 #include <libe/libe.h>
@@ -14,10 +12,10 @@
 int spii_master_open(struct spi_master *master, void *context, uint32_t frequency, uint8_t miso, uint8_t mosi, uint8_t sclk)
 {
 	/* set MOSI, SCK and SS as output and MISO as input */
-	gpio_output(10);
-	gpio_output(11);
-	gpio_input(12);
-	gpio_output(13);
+	gpio_output(PORTB2); /* SS */
+	gpio_output(PORTB3); /* MOSI */
+	gpio_input(PORTB4); /* MISO */
+	gpio_output(PORTB5); /* SCLK */
 	/* enable spi */
 	SPCR = (1 << SPE) | (1 << MSTR) | (0 << SPR1) | (1 << SPR0) | (0 << DORD);
 
@@ -29,10 +27,10 @@ int spii_master_open(struct spi_master *master, void *context, uint32_t frequenc
 void spii_master_close(struct spi_master *master)
 {
 	SPCR = 0;
-	gpio_input(10);
-	gpio_input(11);
-	gpio_input(12);
-	gpio_input(13);
+	gpio_input(PORTB2);
+	gpio_input(PORTB3);
+	gpio_input(PORTB4);
+	gpio_input(PORTB5);
 }
 
 int spii_open(struct spi_device *device, struct spi_master *master, uint8_t ss)
@@ -40,7 +38,6 @@ int spii_open(struct spi_device *device, struct spi_master *master, uint8_t ss)
 	device->ss = ss;
 	gpio_output(ss);
 	gpio_high(ss);
-	/* do not return zero even if the pin is zero :P */
 	return 0;
 }
 
@@ -62,5 +59,3 @@ int spii_transfer(struct spi_device *device, uint8_t *data, size_t size)
 
 	return 0;
 }
-
-#endif

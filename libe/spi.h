@@ -58,6 +58,10 @@ struct spi_master {
 #ifdef SPI_MASTER_NEED_FREQUENCY
 	uint32_t frequency;
 #endif
+	/* xc8 compiler for 8-bit PICs will crash if struct is empty */
+#ifdef TARGET_PIC8
+	uint8_t placeholder;
+#endif
 };
 
 struct spi_device {
@@ -73,7 +77,25 @@ struct spi_device {
 };
 
 
-/* use default spi driver if given */
+#if !defined(spi_master_open) && !defined(SPI_DRIVER)
+
+/* define default spi driver: use ftdi? */
+#if defined(USE_FTDI)
+#define SPI_DRIVER spiftdi
+/* define default spi driver: use spidev? */
+#elif defined(TARGET_LINUX)
+#define SPI_DRIVER spidev
+/* define default spi driver: use integrated? */
+#elif !defined(spi_master_open) && defined(SPI_HAS_INTEGRATED)
+#define SPI_DRIVER spii
+/* define default spi driver: use bitbang? */
+#elif !defined(spi_master_open) && defined(USE_SPI_BITBANG)
+#define SPI_DRIVER spibb
+#endif
+
+#endif
+
+/* default spi driver if given */
 #if !defined(spi_master_open) && defined(SPI_DRIVER)
 #define SPI_DRIVER_MACRO1(driver, func) driver ## func
 #define SPI_DRIVER_MACRO2(driver, func) SPI_DRIVER_MACRO1(driver, func)
@@ -82,38 +104,6 @@ struct spi_device {
 #define spi_open SPI_DRIVER_MACRO2(SPI_DRIVER, _open)
 #define spi_close SPI_DRIVER_MACRO2(SPI_DRIVER, _close)
 #define spi_transfer SPI_DRIVER_MACRO2(SPI_DRIVER, _transfer)
-#endif
-/* define default spi driver: use ftdi? */
-#if !defined(spi_master_open) && defined(USE_FTDI)
-#define spi_master_open spiftdi_master_open
-#define spi_master_close spiftdi_master_close
-#define spi_open spiftdi_open
-#define spi_close spiftdi_close
-#define spi_transfer spiftdi_transfer
-#endif
-/* define default spi driver: use spidev? */
-#if !defined(spi_master_open) && defined(TARGET_LINUX)
-#define spi_master_open spidev_master_open
-#define spi_master_close spidev_master_close
-#define spi_open spidev_open
-#define spi_close spidev_close
-#define spi_transfer spidev_transfer
-#endif
-/* define default spi driver: use integrated? */
-#if !defined(spi_master_open) && defined(SPI_HAS_INTEGRATED)
-#define spi_master_open spii_master_open
-#define spi_master_close spii_master_close
-#define spi_open spii_open
-#define spi_close spii_close
-#define spi_transfer spii_transfer
-#endif
-/* define default spi driver: use bitbang? */
-#if !defined(spi_master_open) && defined(USE_SPI_BITBANG)
-#define spi_master_open spibb_master_open
-#define spi_master_close spibb_master_close
-#define spi_open spibb_open
-#define spi_close spibb_close
-#define spi_transfer spibb_transfer
 #endif
 
 // int spi_master_open(struct spi_master *master, void *context, uint32_t frequency, uint8_t miso, uint8_t mosi, uint8_t sclk);

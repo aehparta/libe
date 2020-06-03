@@ -4,8 +4,6 @@
  * Authors: Antti Partanen <aehparta@iki.fi>
  */
 
-#ifdef USE_SPI
-
 #include <stdlib.h>
 #include <libe/libe.h>
 
@@ -23,7 +21,7 @@
 #define SPI_HARDCODED_SCLK sclk
 #endif
 
-int spi_master_open(struct spi_master *master, void *context, uint32_t frequency, uint8_t miso, uint8_t mosi, uint8_t sclk)
+int spii_master_open(struct spi_master *master, void *context, uint32_t frequency, uint8_t miso, uint8_t mosi, uint8_t sclk)
 {
 	gpio_input(SPI_HARDCODED_MISO);
 	gpio_output(SPI_HARDCODED_MOSI);
@@ -68,7 +66,7 @@ int spi_master_open(struct spi_master *master, void *context, uint32_t frequency
 	return 0;
 }
 
-void spi_master_close(struct spi_master *master)
+void spii_master_close(struct spi_master *master)
 {
 #ifdef SSPCON1
 	SSPCON1 = 0;
@@ -84,7 +82,7 @@ void spi_master_close(struct spi_master *master)
 #endif
 }
 
-int spi_open(struct spi_device *device, struct spi_master *master, uint8_t ss)
+int spii_open(struct spi_device *device, struct spi_master *master, uint8_t ss)
 {
 	device->ss = ss;
 	gpio_output(SPI_HARDCODED_SS);
@@ -92,12 +90,12 @@ int spi_open(struct spi_device *device, struct spi_master *master, uint8_t ss)
 	return 0;
 }
 
-void spi_close(struct spi_device *device)
+void spii_close(struct spi_device *device)
 {
 	gpio_input(SPI_HARDCODED_SS);
 }
 
-int spi_transfer(struct spi_device *device, uint8_t *data, size_t size)
+int spii_transfer(struct spi_device *device, uint8_t *data, size_t size)
 {
 	gpio_low(SPI_HARDCODED_SS);
 	for ( ; size > 0; size--) {
@@ -118,50 +116,3 @@ int spi_transfer(struct spi_device *device, uint8_t *data, size_t size)
 
 	return 0;
 }
-
-
-// void initialise_SPI(void);
-// void spi_w(unsigned char data);
-// void init_io(void)
-// {
-// 	TRISA = 0x01;
-// 	TRISB = 0x01;   // bit 0 = output, 1 = input
-// 	TRISC = 0b10010111;
-// 	TRISD = 0x00;
-// 	TRISE = 0x00;
-// }
-// //SPI write command function
-// void spi_w(unsigned char data)
-// {
-// 	unsigned char x;
-// 	PORTC, RC6 = 0;
-// 	while (!SSPIF);  //wait for transmission complete
-// 	x = SSPBUF; //dummy read
-// 	SSPBUF = data;
-// 	while (!SSPIF);  //wait for transmission complete
-// 	x = SSPBUF;
-// 	PORTC, RC6 = 1;
-// }
-// void initialise_SPI(void)
-// {
-// 	SSPEN = 0;
-// 	SSPSTAT = 0b01000000;
-// 	SSPCON = 0b00100010;
-// 	SSPEN = 1;
-// }
-// void main()
-// {
-// 	unsigned char data = 0x05;
-// 	init_io();
-// 	initialise_SPI();
-// 	while (1) {
-// 		spi_w(data);
-// 		PORTD = data;
-// 	}
-// }
-
-
-/* internals */
-
-
-#endif
