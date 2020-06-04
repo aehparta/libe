@@ -115,7 +115,22 @@ endif
 
 # add software aes
 ifneq ($(filter $(libe_DEFINES),USE_AES),)
-    libe_SRC += $(LIBE_PATH)/libe/aes.c
+    libe_SRC += $(LIBE_PATH)/libe/crypt/aes.c
+endif
+
+# add software rc5
+ifneq ($(filter $(libe_DEFINES),USE_RC5),)
+    libe_SRC += $(LIBE_PATH)/libe/crypt/rc5.c
+endif
+
+# add software xtea
+ifneq ($(filter $(libe_DEFINES),USE_XTEA),)
+    libe_SRC += $(LIBE_PATH)/libe/crypt/xtea.c
+endif
+
+# add software xxtea
+ifneq ($(filter $(libe_DEFINES),USE_XXTEA),)
+    libe_SRC += $(LIBE_PATH)/libe/crypt/xxtea.c
 endif
 
 # add broadcast

@@ -17,7 +17,6 @@ extern "C" {
 #include "log.h"
 #include "wifi.h"
 #include "nvm.h"
-#include "aes.h"
 #include "error.h"
 /* gpio */
 #include "gpio.h"
@@ -31,6 +30,11 @@ extern "C" {
 #include "display.h"
 /* simple button helper macros for gpio attached buttons */
 #include "button.h"
+/* encryption */
+#include "crypt/aes.h"
+#include "crypt/rc5.h"
+#include "crypt/xtea.h" /* NOTE: this implementation has not been properly tested */
+#include "crypt/xxtea.h" /* NOTE: this implementation has not been properly tested */
 
 #ifdef __cplusplus
 }

@@ -207,12 +207,12 @@ do { \
 /* dumping memory macros that are defined only in specific situations */
 #if defined(DEBUG) || defined(TARGET_LINUX) || defined(TARGET_ESP32)
 /** hex dumping. */
-#define HEX_DUMP(data, size) \
+#define HEX_DUMP(data, size, pad) \
     do { \
-        int __i; \
+        int __i, __j; \
         for (__i = 0; __i < size; __i++) { \
             if (__i > 0) { \
-                LOG_PRINTF(" "); \
+                for (__j = 0; __j < pad; __j++) { LOG_PRINTF(" "); } \
             } \
             LOG_PRINTF("%02x", ((uint8_t *)data)[__i]); \
         } \
