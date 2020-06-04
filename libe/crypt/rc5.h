@@ -16,8 +16,13 @@
 extern "C" {
 #endif
 
+#ifndef RC5_KEY_LEN
 #define RC5_KEY_LEN         16
+#endif
+#ifndef RC5_ROUNDS
 #define RC5_ROUNDS          12
+#endif
+
 #define RC5_WORD            uint32_t
 #define RC5_TABLE_SIZE      (2 * (RC5_ROUNDS + 1))
 
@@ -26,7 +31,7 @@ typedef struct {
 } rc5_context_t;
 
 /*
- * This implementation is RC5-32-12-16.
+ * This implementation is RC5-32-12-16 as default.
  * Block size is 8 bytes.
  */
 

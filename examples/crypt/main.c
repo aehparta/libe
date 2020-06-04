@@ -37,7 +37,7 @@ int aes128_do(uint8_t key[16])
 		printf("  Encrypted HEX: ");
 		HEX_DUMP(p, size, 0);
 		printf("          ASCII: ");
-		ASCII_DUMP(p, size, 2);
+		ASCII_DUMP(p, size, 0);
 
 		for (size_t j = 0; j < size; j += 16) {
 			aes_128_decrypt(&ctx, p + j);
@@ -76,7 +76,7 @@ int aes128_do(uint8_t key[16])
 		printf("  Encrypted HEX: ");
 		HEX_DUMP(p, size, 0);
 		printf("          ASCII: ");
-		ASCII_DUMP(p, size, 2);
+		ASCII_DUMP(p, size, 0);
 
 		for (size_t j = 0; j < size; j += 16) {
 			aes_128_decrypt(&ctx, p + j);
@@ -112,7 +112,7 @@ int aes128_do(uint8_t key[16])
 		printf("  Encrypted HEX: ");
 		HEX_DUMP(p, size, 0);
 		printf("          ASCII: ");
-		ASCII_DUMP(p, size, 2);
+		ASCII_DUMP(p, size, 0);
 
 		for (size_t j = 0; j < size; j += 16) {
 			AES_decrypt(p + j, p + j, &akey);
@@ -162,7 +162,7 @@ int aes256_do(uint8_t key[32])
 		printf("  Encrypted HEX: ");
 		HEX_DUMP(p, size, 0);
 		printf("          ASCII: ");
-		ASCII_DUMP(p, size, 2);
+		ASCII_DUMP(p, size, 0);
 
 		for (size_t j = 0; j < size; j += 16) {
 			aes_256_decrypt(&ctx, p + j);
@@ -201,7 +201,7 @@ int aes256_do(uint8_t key[32])
 		printf("  Encrypted HEX: ");
 		HEX_DUMP(p, size, 0);
 		printf("          ASCII: ");
-		ASCII_DUMP(p, size, 2);
+		ASCII_DUMP(p, size, 0);
 
 		for (size_t j = 0; j < size; j += 16) {
 			aes_256_decrypt(&ctx, p + j);
@@ -237,7 +237,7 @@ int aes256_do(uint8_t key[32])
 		printf("  Encrypted HEX: ");
 		HEX_DUMP(p, size, 0);
 		printf("          ASCII: ");
-		ASCII_DUMP(p, size, 2);
+		ASCII_DUMP(p, size, 0);
 
 		for (size_t j = 0; j < size; j += 16) {
 			AES_decrypt(p + j, p + j, &akey);
@@ -337,7 +337,7 @@ int xtea_do(uint8_t key[16])
 		printf("  Encrypted HEX: ");
 		HEX_DUMP(p, size, 0);
 		printf("          ASCII: ");
-		ASCII_DUMP(p, size, 2);
+		ASCII_DUMP(p, size, 0);
 
 		for (size_t j = 0; j < size; j += 8) {
 			xtea_decrypt(p + j, key);
@@ -383,7 +383,7 @@ int xxtea_do(uint8_t key[16])
 		printf("  Encrypted HEX: ");
 		HEX_DUMP(p, size, 0);
 		printf("          ASCII: ");
-		ASCII_DUMP(p, size, 2);
+		ASCII_DUMP(p, size, 0);
 
 		xxtea_decrypt(p, size, key);
 
@@ -425,11 +425,11 @@ int main(int argc, char *argv[])
 
 	/* different encryption algorithms */
 	int err = 0;
-	// err += aes128_do(key);
-	// err += aes256_do(key);
+	err += aes128_do(key);
+	err += aes256_do(key);
 	err += rc5_do(key);
-	// err += xtea_do(key);
-	// err += xxtea_do(key);
+	err += xtea_do(key);
+	err += xxtea_do(key);
 
 	return err;
 }
