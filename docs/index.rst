@@ -10,3 +10,4 @@ Welcome to libe's documentation!
    i2c/index
    spi/index
    sensors
+   crypt/index

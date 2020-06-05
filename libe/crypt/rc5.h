@@ -38,7 +38,6 @@ typedef struct {
 void rc5_init(rc5_context_t *rc5, void *key);
 void rc5_encrypt(rc5_context_t *rc5, void *block);
 void rc5_decrypt(rc5_context_t *rc5, void *block);
-// void rc5_decrypt(void *block, void *key);
 
 #ifdef __cplusplus
 }
