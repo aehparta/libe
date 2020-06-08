@@ -4,15 +4,13 @@
  * Authors: Antti Partanen <aehparta@iki.fi>
  */
 
-#ifdef USE_SPI
-
 #include <stdlib.h>
 #include <string.h>
 #include <esp_heap_caps.h>
 #include <libe/libe.h>
 
 
-int spi_master_open(struct spi_master *master, void *context, uint32_t frequency, uint8_t miso, uint8_t mosi, uint8_t sclk)
+int spii_master_open(struct spi_master *master, void *context, uint32_t frequency, uint8_t miso, uint8_t mosi, uint8_t sclk)
 {
 	spi_bus_config_t buscfg;
 
@@ -35,12 +33,12 @@ int spi_master_open(struct spi_master *master, void *context, uint32_t frequency
 	return 0;
 }
 
-void spi_master_close(struct spi_master *master)
+void spii_master_close(struct spi_master *master)
 {
 	spi_bus_free(master->host);
 }
 
-int spi_open(struct spi_device *device, struct spi_master *master, uint8_t ss)
+int spii_open(struct spi_device *device, struct spi_master *master, uint8_t ss)
 {
 	spi_device_interface_config_t devcfg;
 
@@ -57,12 +55,12 @@ int spi_open(struct spi_device *device, struct spi_master *master, uint8_t ss)
 	return 0;
 }
 
-void spi_close(struct spi_device *device)
+void spii_close(struct spi_device *device)
 {
 	spi_bus_remove_device(device->device);
 }
 
-int spi_transfer(struct spi_device *device, uint8_t *data, size_t size)
+int spii_transfer(struct spi_device *device, uint8_t *data, size_t size)
 {
 	struct spi_transaction_t tr;
 
@@ -81,5 +79,3 @@ int spi_transfer(struct spi_device *device, uint8_t *data, size_t size)
 
 	return 0;
 }
-
-#endif

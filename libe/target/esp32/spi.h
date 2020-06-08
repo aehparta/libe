@@ -14,17 +14,16 @@
 extern "C" {
 #endif
 
+#define SPI_MASTER_NEED_FREQUENCY
+
 #define SPI_DEFAULT_FREQUENCY 10e6
 
-/* esp32 spi master context */
-struct spi_master {
-	spi_host_device_t host;
-	uint32_t frequency;
-};
-/* esp32 spi device context */
-struct spi_device {
-	spi_device_handle_t device;
-};
+int spii_master_open(struct spi_master *master, void *context, uint32_t frequency, uint8_t miso, uint8_t mosi, uint8_t sclk);
+void spii_master_close(struct spi_master *master);
+
+int spii_open(struct spi_device *device, struct spi_master *master, uint8_t ss);
+void spii_close(struct spi_device *device);
+int spii_transfer(struct spi_device *device, uint8_t *data, size_t size);
 
 #ifdef __cplusplus
 }

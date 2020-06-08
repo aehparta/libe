@@ -58,6 +58,10 @@ struct spi_master {
 #ifdef SPI_MASTER_NEED_FREQUENCY
 	uint32_t frequency;
 #endif
+	/* esp32 specific */
+#ifdef TARGET_ESP32
+	spi_host_device_t host;
+#endif
 	/* xc8 compiler for 8-bit PICs will crash if struct is empty */
 #ifdef TARGET_PIC8
 	uint8_t placeholder;
@@ -71,6 +75,11 @@ struct spi_device {
 #ifdef SPI_DEVICE_NEED_SS
 	uint8_t ss;
 #endif
+	/* esp32 specific */
+#ifdef TARGET_ESP32
+	spi_device_handle_t device;
+#endif
+	/* generic driver bits */
 #ifdef SPI_DEVICE_NEED_BITS
 	uint8_t driver_bits[4];
 #endif

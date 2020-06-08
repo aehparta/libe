@@ -5,5 +5,3 @@
  *  Antti Partanen <aehparta@iki.fi>
  */
 
-#include <libe/libe.h>
-

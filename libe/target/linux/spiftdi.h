@@ -17,7 +17,7 @@ extern "C" {
 #define SPI_DEVICE_NEED_MASTER
 #define SPI_DEVICE_NEED_SS
 
-#define SPIFTDI_DEFAULT_FREQUENCY 1e6
+#define SPIFTDI_DEFAULT_FREQUENCY 10e6
 
 int spiftdi_master_open(struct spi_master *master, void *context, uint32_t frequency, uint8_t miso, uint8_t mosi, uint8_t sclk);
 void spiftdi_master_close(struct spi_master *master);
