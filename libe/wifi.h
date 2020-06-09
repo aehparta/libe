@@ -20,7 +20,7 @@ extern "C" {
 int wifi_init(void);
 void wifi_quit(void);
 bool wifi_connected(void);
-int wifi_smartconfig_start(void);
+int wifi_smartconfig(bool force);
 
 #ifdef __cplusplus
 }

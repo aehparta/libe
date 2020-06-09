@@ -5,7 +5,7 @@
 #include <libe/libe.h>
 #include <esp_log.h>
 
-#define WIFI_CONFIG_BUTTON_GPIO 0
+#define WIFI_CONFIG_BUTTON_GPIO 13
 
 #ifdef TARGET_ESP32
 int app_main(int argc, char *argv[])
@@ -27,11 +27,12 @@ int main(int argc, char *argv[])
 
 	while (1) {
 		os_wdt_reset();
-		// os_delay_ms(500);
 		button_pressed(WIFI_CONFIG_BUTTON_GPIO, 1000) {
+			button_repeat(WIFI_CONFIG_BUTTON_GPIO, 0);
 			INFO_MSG("wifi configuration button pressed");
-			button_repeat(WIFI_CONFIG_BUTTON_GPIO, 2000);
+			wifi_smartconfig(true);
 		}
+		os_delay_ms(10);
 	}
 
 	wifi_quit();

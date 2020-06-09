@@ -5,6 +5,8 @@
 #ifndef _TARGET_ESP32_OS_H_
 #define _TARGET_ESP32_OS_H_
 
+#include <esp_int_wdt.h>
+
 int8_t os_init(void);
 void os_quit(void);
 #define os_wdt_reset()
