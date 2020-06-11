@@ -31,6 +31,12 @@ void nvm_quit(void)
 	nvs_close(esp32_nvm_handle);
 }
 
+void nvm_erase(void)
+{
+	nvs_flash_erase();
+	nvs_flash_init();
+}
+
 uint8_t nvm_read_byte(void *address, uint8_t default_value)
 {
 	uint8_t value;

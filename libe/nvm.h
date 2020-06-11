@@ -18,6 +18,8 @@ extern "C" {
 int nvm_init(void *context, size_t size);
 void nvm_quit(void);
 
+void nvm_erase(void);
+
 uint8_t nvm_read_byte(void *address, uint8_t default_value);
 void nvm_write_byte(void *address, uint8_t value);
 uint16_t nvm_read_word(void *address, uint16_t default_value);

@@ -23,6 +23,11 @@ void os_quit(void)
 
 }
 
+void os_restart(void)
+{
+	esp_restart();
+}
+
 time_t os_timei(void)
 {
 	return (time_t)os_timef();

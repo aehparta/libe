@@ -9,6 +9,7 @@
 
 int8_t os_init(void);
 void os_quit(void);
+void os_restart(void);
 #define os_wdt_reset()
 
 #define os_delay_ms(x)      os_sleepf((os_time_t)x / 1000.0)
