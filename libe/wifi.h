@@ -19,8 +19,10 @@ extern "C" {
 
 int wifi_init(void);
 void wifi_quit(void);
+
+int wifi_connect(char *ssid, char *password);
+void wifi_disconnect(void);
 bool wifi_connected(void);
-int wifi_smartconfig(bool force);
 
 #ifdef __cplusplus
 }

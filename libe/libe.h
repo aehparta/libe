@@ -35,6 +35,9 @@ extern "C" {
 #include "crypt/rc5.h"
 #include "crypt/xtea.h" /* NOTE: this implementation has not been properly tested */
 #include "crypt/xxtea.h" /* NOTE: this implementation has not been properly tested */
+/* pwm */
+#include "pwm.h"
+
 
 #ifdef __cplusplus
 }

@@ -22,10 +22,6 @@
 
 /* FreeRTOS event group to signal when we are connected & ready to make a request */
 static EventGroupHandle_t wifi_event_group;
-
-/* The event group allows multiple bits for each event,
-   but we only care about one event - are we connected
-   to the AP with an IP? */
 static const int WIFI_CONNECTED_BIT = BIT0;
 static const int WIFI_SMARTCONFIG_BIT = BIT1;
 static const int WAIT_CONNECTED_BIT = BIT2;
@@ -41,10 +37,10 @@ static void wifi_smartconfig_task(void * parm)
 	while (1) {
 		uxBits = xEventGroupWaitBits(wifi_event_group, WAIT_CONNECTED_BIT | WAIT_SMARTCONFIG_DONE_BIT, true, false, portMAX_DELAY);
 		if (uxBits & WAIT_CONNECTED_BIT) {
-			INFO_MSG("connected to access point");
+			DEBUG_MSG("connected to access point");
 		}
 		if (uxBits & WAIT_SMARTCONFIG_DONE_BIT) {
-			INFO_MSG("smartconfig over");
+			DEBUG_MSG("smartconfig over");
 			esp_smartconfig_stop();
 			xEventGroupClearBits(wifi_event_group, WIFI_SMARTCONFIG_BIT);
 			vTaskDelete(NULL);
@@ -55,19 +51,21 @@ static void wifi_smartconfig_task(void * parm)
 static void wifi_event_handler(void* arg, esp_event_base_t event_base, int32_t event_id, void* event_data)
 {
 	if (event_base == WIFI_EVENT && event_id == WIFI_EVENT_STA_START) {
-		INFO_MSG("start automatic connect");
+		DEBUG_MSG("start automatic connect");
 		esp_wifi_connect();
 	} else if (event_base == WIFI_EVENT && event_id == WIFI_EVENT_STA_DISCONNECTED) {
 		if (!(xEventGroupGetBits(wifi_event_group) & WIFI_SMARTCONFIG_BIT)) {
 			esp_wifi_connect();
 		}
 		xEventGroupClearBits(wifi_event_group, WIFI_CONNECTED_BIT | WAIT_CONNECTED_BIT);
+		DEBUG_MSG("wifi disconnected");
 	} else if (event_base == IP_EVENT && event_id == IP_EVENT_STA_GOT_IP) {
 		xEventGroupSetBits(wifi_event_group, WIFI_CONNECTED_BIT | WAIT_CONNECTED_BIT);
+		DEBUG_MSG("wifi got ip");
 	} else if (event_base == SC_EVENT && event_id == SC_EVENT_SCAN_DONE) {
-		INFO_MSG("scan done");
+		DEBUG_MSG("scan done");
 	} else if (event_base == SC_EVENT && event_id == SC_EVENT_FOUND_CHANNEL) {
-		INFO_MSG("found channel");
+		DEBUG_MSG("found channel");
 	} else if (event_base == SC_EVENT && event_id == SC_EVENT_GOT_SSID_PSWD) {
 		smartconfig_event_got_ssid_pswd_t *evt = (smartconfig_event_got_ssid_pswd_t *)event_data;
 
@@ -82,7 +80,7 @@ static void wifi_event_handler(void* arg, esp_event_base_t event_base, int32_t e
 			memcpy(wifi_config.sta.bssid, evt->bssid, sizeof(wifi_config.sta.bssid));
 		}
 
-		INFO_MSG("ssid: %s, password: %s", evt->ssid, evt->password);
+		DEBUG_MSG("ssid: %s, password: %s", evt->ssid, evt->password);
 
 		ESP_ERROR_CHECK(esp_wifi_disconnect());
 		ESP_ERROR_CHECK(esp_wifi_set_config(ESP_IF_WIFI_STA, &wifi_config));
@@ -108,7 +106,6 @@ int wifi_init(void)
 	esp_event_handler_register(SC_EVENT, ESP_EVENT_ANY_ID, &wifi_event_handler, NULL);
 
 	ERROR_IF_R(esp_wifi_set_mode(WIFI_MODE_STA), -1, "esp_wifi_set_mode() failed");
-	ERROR_IF_R(esp_wifi_start(), -1, "esp_wifi_start() failed");
 
 	return 0;
 }
@@ -118,6 +115,36 @@ void wifi_quit(void)
 	esp_wifi_disconnect();
 	esp_wifi_stop();
 	esp_wifi_deinit();
+}
+
+int wifi_connect(char *ssid, char *password)
+{
+	if (wifi_connected()) {
+		WARN_MSG("wifi already connected");
+		return -1;
+	}
+
+	ERROR_IF_R(esp_wifi_start(), -1, "esp_wifi_start() failed");
+	if (ssid && password) {
+		wifi_config_t wifi_config;
+		memset(&wifi_config, 0, sizeof(wifi_config_t));
+
+		strncpy((char *)wifi_config.sta.ssid, ssid, sizeof(wifi_config.sta.ssid) - 1);
+		strncpy((char *)wifi_config.sta.password, password, sizeof(wifi_config.sta.password) - 1);
+
+		DEBUG_MSG("ssid: %s, password: %s", ssid, password);
+
+		ESP_ERROR_CHECK(esp_wifi_set_config(ESP_IF_WIFI_STA, &wifi_config));
+		ESP_ERROR_CHECK(esp_wifi_connect());
+	}
+
+	return 0;
+}
+
+void wifi_disconnect(void)
+{
+	esp_wifi_disconnect();
+	esp_wifi_stop();
 }
 
 bool wifi_connected(void)
@@ -141,6 +168,11 @@ int wifi_smartconfig(bool force)
 
 	WARN_MSG("wifi already connected, will not start smartconfig without force = true");
 	return -1;
+}
+
+bool wifi_smartconfig_in_progress(void)
+{
+	return xEventGroupGetBits(wifi_event_group) & WIFI_SMARTCONFIG_BIT ? true : false;
 }
 
 #endif
