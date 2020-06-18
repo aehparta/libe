@@ -11,7 +11,7 @@
 #include <libe/libe.h>
 
 
-int spiftdi_master_open(struct spi_master *master, void *context, uint32_t frequency, uint8_t miso, uint8_t mosi, uint8_t sclk)
+int8_t spiftdi_master_open(struct spi_master *master, void *context, uint32_t frequency, uint8_t miso, uint8_t mosi, uint8_t sclk)
 {
 	uint16_t divisor;
 
@@ -49,6 +49,11 @@ int spiftdi_master_open(struct spi_master *master, void *context, uint32_t frequ
 	};
 	ERROR_IF_R(ftdi_write_data(os_ftdi_get_context(sclk), cmd, sizeof(cmd)) != sizeof(cmd), -1, "mpsse clock setup failed: %s", ftdi_get_error_string(os_ftdi_get_context(sclk)));
 
+	/* device functions */
+	master->open = spiftdi_open;
+	master->close = spiftdi_close;
+	master->transfer = spiftdi_transfer;
+
 	return 0;
 }
 
@@ -56,7 +61,7 @@ void spiftdi_master_close(struct spi_master *master)
 {
 }
 
-int spiftdi_open(struct spi_device *device, struct spi_master *master, uint8_t ss)
+int8_t spiftdi_open(struct spi_device *device, struct spi_master *master, uint8_t ss)
 {
 	ERROR_IF_R(os_ftdi_has_pin(ss), -1, "pin %d is not available", ss);
 	gpio_high(ss);
@@ -70,7 +75,7 @@ void spiftdi_close(struct spi_device *device)
 {
 }
 
-int spiftdi_transfer(struct spi_device *device, uint8_t *data, size_t size)
+int8_t spiftdi_transfer(struct spi_device *device, uint8_t *data, size_t size)
 {
 	struct ftdi_context *ftdi = os_ftdi_get_context(device->master->sclk);
 	int err;

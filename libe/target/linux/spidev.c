@@ -15,7 +15,7 @@
 #include <libe/libe.h>
 
 
-int spidev_master_open(struct spi_master *master, void *context, uint32_t frequency, uint8_t miso, uint8_t mosi, uint8_t sclk)
+int8_t spidev_master_open(struct spi_master *master, void *context, uint32_t frequency, uint8_t miso, uint8_t mosi, uint8_t sclk)
 {
 	int err;
 	int fd;
@@ -62,6 +62,11 @@ int spidev_master_open(struct spi_master *master, void *context, uint32_t freque
 	master->fd = fd;
 	master->frequency = frequency;
 
+	/* device functions */
+	master->open = spidev_open;
+	master->close = spidev_close;
+	master->transfer = spidev_transfer;
+
 	return 0;
 }
 
@@ -72,7 +77,7 @@ void spidev_master_close(struct spi_master *master)
 	}
 }
 
-int spidev_open(struct spi_device *device, struct spi_master *master, uint8_t ss)
+int8_t spidev_open(struct spi_device *device, struct spi_master *master, uint8_t ss)
 {
 	/* base setup */
 	device->master = master;
@@ -84,7 +89,7 @@ void spidev_close(struct spi_device *device)
 {
 }
 
-int spidev_transfer(struct spi_device *device, uint8_t *data, size_t size)
+int8_t spidev_transfer(struct spi_device *device, uint8_t *data, size_t size)
 {
 	int err;
 	struct spi_ioc_transfer tr;

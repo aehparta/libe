@@ -25,8 +25,12 @@ ifneq ($(filter $(libe_DEFINES),USE_GPIO),)
         libe_SRC += $(T_PATH)/gpio.c
     endif
     # gpio drivers
-    libe_SRC += $(LIBE_PATH)/libe/drivers/gpio/hd44780.c
-    libe_SRC += $(LIBE_PATH)/libe/drivers/gpio/rot_enc.c
+    ifneq ($(filter $(libe_DEFINES),USE_HD44780),)
+        libe_SRC += $(LIBE_PATH)/libe/drivers/gpio/hd44780.c
+    endif
+    ifneq ($(filter $(libe_DEFINES),USE_ROT_ENC),)
+        libe_SRC += $(LIBE_PATH)/libe/drivers/gpio/rot_enc.c
+    endif
 endif
 
 # add logging
@@ -57,9 +61,12 @@ ifneq ($(filter $(libe_DEFINES),USE_SPI),)
     endif
 
     # include device drivers
-    libe_SRC += \
-        $(LIBE_PATH)/libe/drivers/spi/nrf24l01p.c \
-        $(LIBE_PATH)/libe/drivers/spi/nrf24l01p_ble.c
+    ifneq ($(filter $(libe_DEFINES),USE_DRIVER_NRF24L01P),)
+        libe_SRC += $(LIBE_PATH)/libe/drivers/spi/nrf24l01p.c $(LIBE_PATH)/libe/drivers/spi/nrf24l01p_ble.c
+    endif
+    ifneq ($(filter $(libe_DEFINES),USE_DRIVER_MCP356X),)
+        libe_SRC += $(LIBE_PATH)/libe/drivers/spi/mcp356x.c
+    endif
     ifneq ($(filter $(libe_DEFINES),USE_WIZNET),)
         ifeq ($(wildcard ioLibrary_Driver),)
             $(info Fetching WIZNET ioLibrary_Driver sources)

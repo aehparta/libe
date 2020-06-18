@@ -5,8 +5,6 @@
  *  Antti Partanen <aehparta@iki.fi>
  */
 
-#ifdef USE_LOG
-
 #include <stdarg.h>
 #include <libe/libe.h>
 
@@ -106,5 +104,3 @@ void log_msg(int level, const char *file, int line, const char *func, const char
 	LOG_PRINTF(msg);
 	LOG_PRINTF("\r\n");
 }
-
-#endif

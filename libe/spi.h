@@ -7,8 +7,11 @@
 #ifndef _LIBE_SPI_H_
 #define _LIBE_SPI_H_
 
-
 #include <stdint.h>
+
+#ifdef __cplusplus
+extern "C" {
+#endif
 
 /* pre-define master and device for following includes, these cannot be fully declared here yet */
 struct spi_master;
@@ -37,13 +40,21 @@ struct spi_device;
 #include "drivers/spi/bitbang.h"
 #endif
 
-
-#ifdef __cplusplus
-extern "C" {
+/* drivers */
+#ifdef USE_DRIVER_NRF24L01P
+#include <libe/drivers/spi/nrf24l01p.h>
+#include <libe/drivers/spi/nrf24l01p_ble.h>
+#endif
+#ifdef USE_DRIVER_MCP356X
+#include <libe/drivers/spi/mcp356x.h>
 #endif
 
 
 struct spi_master {
+	int8_t (*open)(struct spi_device *device, struct spi_master *master, uint8_t ss);
+	void (*close)(struct spi_device *device);
+	int8_t (*transfer)(struct spi_device *device, uint8_t *data, size_t size);
+
 	/* drivers that use pins dynamically */
 #ifdef SPI_MASTER_NEED_PINS
 	uint8_t sclk;
@@ -80,8 +91,12 @@ struct spi_device {
 	spi_device_handle_t device;
 #endif
 	/* generic driver bits */
-#ifdef SPI_DEVICE_NEED_BITS
-	uint8_t driver_bits[4];
+#ifdef SPI_DEVICE_NEED_BYTES
+	uint8_t driver_bits[SPI_DEVICE_NEED_BYTES];
+#endif
+	/* options callback */
+#ifdef SPI_DEVICE_NEED_OPT_CB
+	int8_t (*opt)(struct spi_device *device, uint8_t opt, void *value);
 #endif
 };
 
@@ -122,8 +137,6 @@ struct spi_device {
 // void spi_close(struct spi_device *device);
 // int spi_transfer(struct spi_device *device, uint8_t *data, size_t size);
 
-#include <libe/drivers/spi/nrf24l01p.h>
-#include <libe/drivers/spi/nrf24l01p_ble.h>
 
 #ifdef __cplusplus
 }

@@ -19,12 +19,12 @@ extern "C" {
 
 #define SPIFTDI_DEFAULT_FREQUENCY 10e6
 
-int spiftdi_master_open(struct spi_master *master, void *context, uint32_t frequency, uint8_t miso, uint8_t mosi, uint8_t sclk);
+int8_t spiftdi_master_open(struct spi_master *master, void *context, uint32_t frequency, uint8_t miso, uint8_t mosi, uint8_t sclk);
 void spiftdi_master_close(struct spi_master *master);
 
-int spiftdi_open(struct spi_device *device, struct spi_master *master, uint8_t ss);
+int8_t spiftdi_open(struct spi_device *device, struct spi_master *master, uint8_t ss);
 void spiftdi_close(struct spi_device *device);
-int spiftdi_transfer(struct spi_device *device, uint8_t *data, size_t size);
+int8_t spiftdi_transfer(struct spi_device *device, uint8_t *data, size_t size);
 
 #ifdef __cplusplus
 }

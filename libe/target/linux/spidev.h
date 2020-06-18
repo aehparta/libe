@@ -20,12 +20,12 @@ extern "C" {
 
 #define SPIDEV_DEFAULT_FREQUENCY 10e6
 
-int spidev_master_open(struct spi_master *master, void *context, uint32_t frequency, uint8_t miso, uint8_t mosi, uint8_t sclk);
+int8_t spidev_master_open(struct spi_master *master, void *context, uint32_t frequency, uint8_t miso, uint8_t mosi, uint8_t sclk);
 void spidev_master_close(struct spi_master *master);
 
-int spidev_open(struct spi_device *device, struct spi_master *master, uint8_t ss);
+int8_t spidev_open(struct spi_device *device, struct spi_master *master, uint8_t ss);
 void spidev_close(struct spi_device *device);
-int spidev_transfer(struct spi_device *device, uint8_t *data, size_t size);
+int8_t spidev_transfer(struct spi_device *device, uint8_t *data, size_t size);
 
 #ifdef __cplusplus
 }
