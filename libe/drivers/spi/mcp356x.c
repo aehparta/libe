@@ -8,7 +8,6 @@
 
 
 #define DRVBITS_ADDR    0
-#define DRVBITS_CHANNEL 1
 
 /* internals */
 static int8_t mcp356x_opt(struct spi_device *device, uint8_t opt, void *value);
@@ -23,8 +22,6 @@ int8_t mcp356x_open(struct spi_device *device, struct spi_master *master, uint8_
 
 	/* default "address" */
 	device->driver_bits[DRVBITS_ADDR] = MCP356X_DEFAULT_ADDR;
-	/* default channel setting */
-	device->driver_bits[DRVBITS_CHANNEL] = 0xff;
 	/* opt callback */
 	device->opt = mcp356x_opt;
 
@@ -36,32 +33,24 @@ void mcp356x_close(struct spi_device *device)
 	spi_close(device);
 }
 
-int32_t mcp356x_rd(struct spi_device *device, uint8_t channel)
+int32_t mcp356x_rd(struct spi_device *device)
 {
 	uint8_t data[4];
-
-	/* if channel has changed */
-	if (device->driver_bits[DRVBITS_CHANNEL] != channel) {
-		data[0] = device->driver_bits[DRVBITS_ADDR] | MCP356X_ADDR_MUX | MCP356X_INC_WRITE;
-		data[1] = channel;
-		spi_transfer(device, data, 2);
-		device->driver_bits[DRVBITS_CHANNEL] = channel;
-	}
-
-	/* start conversion and wait for it to finish */
-	/* TODO: check mode! */
-	data[0] = device->driver_bits[DRVBITS_ADDR] | MCP356X_CMD_CONV_START;
-	spi_transfer(device, data, 1);
-	do {
-		data[0] = device->driver_bits[DRVBITS_ADDR];
-		spi_transfer(device, data, 1);
-	} while (data[0] & 0x04);
 
 	/* read */
 	data[0] = device->driver_bits[DRVBITS_ADDR] | MCP356X_ADDR_ADCDATA | MCP356X_STATIC_READ;
 	spi_transfer(device, data, 4);
 
 	return (data[1] << 24) | (data[2] << 16) | (data[3] << 8);
+}
+
+int8_t mcp356x_ch(struct spi_device *device, int8_t channel)
+{
+	uint8_t data[2];
+	data[0] = device->driver_bits[DRVBITS_ADDR] | MCP356X_ADDR_MUX | MCP356X_INC_WRITE;
+	data[1] = channel;
+	spi_transfer(device, data, 2);
+	return channel;
 }
 
 uint8_t mcp356x_fast_command(struct spi_device *device, uint8_t command)
@@ -106,6 +95,9 @@ static int8_t mcp356x_opt(struct spi_device *device, uint8_t opt, void *value)
 		return 0;
 	case MCP356X_OPT_GAIN:
 		mcp356x_modify_reg8(device, MCP356X_ADDR_CONFIG2, *v8 << 3, 0x38);
+		return 0;
+	case MCP356X_OPT_AZ_MUX:
+		mcp356x_modify_reg8(device, MCP356X_ADDR_CONFIG2, *v8 << 2, 0x04);
 		return 0;
 	/* CONFIG3 */
 	case MCP356X_OPT_CONV_MODE:

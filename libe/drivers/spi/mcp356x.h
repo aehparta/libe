@@ -18,9 +18,9 @@ extern "C" {
 #define SPI_DEVICE_NEED_OPT_CB
 #endif
 
-#if !defined(SPI_DEVICE_NEED_BYTES) || SPI_DEVICE_NEED_BYTES < 2
+#if !defined(SPI_DEVICE_NEED_BYTES) || SPI_DEVICE_NEED_BYTES < 1
 #undef SPI_DEVICE_NEED_BYTES
-#define SPI_DEVICE_NEED_BYTES 2
+#define SPI_DEVICE_NEED_BYTES 1
 #endif
 
 
@@ -59,7 +59,7 @@ extern "C" {
 #define MCP356X_OPT_OSR             (OPT_START_DEVICE + 8)
 #define MCP356X_OPT_BOOST           (OPT_START_DEVICE + 9)
 #define MCP356X_OPT_GAIN            (OPT_START_DEVICE + 10)
-// #define MCP356X_OPT_AZ_MUX          (OPT_START_DEVICE + 11)
+#define MCP356X_OPT_AZ_MUX          (OPT_START_DEVICE + 11)
 #define MCP356X_OPT_CONV_MODE       (OPT_START_DEVICE + 12)
 // #define MCP356X_OPT_DATA_FORMAT     (OPT_START_DEVICE + 13)
 // #define MCP356X_OPT_CRC_FORMAT      (OPT_START_DEVICE + 14)
@@ -99,7 +99,8 @@ extern "C" {
 
 int8_t mcp356x_open(struct spi_device *device, struct spi_master *master, uint8_t ss);
 void mcp356x_close(struct spi_device *device);
-int32_t mcp356x_rd(struct spi_device *device, uint8_t channel);
+int32_t mcp356x_rd(struct spi_device *device);
+int8_t mcp356x_ch(struct spi_device *device, int8_t channel);
 
 uint8_t mcp356x_fast_command(struct spi_device *device, uint8_t command);
 

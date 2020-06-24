@@ -2,11 +2,8 @@
  * Display driver: SSD1306
  */
 
-#ifdef USE_DISPLAY
-
 #include <libe/libe.h>
 
-#ifdef USE_I2C
 
 const static uint8_t PROGMEM ssd1306_init_commands[] = {
 	SSD1306_DISPLAYOFF, // display off
@@ -106,7 +103,3 @@ void ssd1306_update(struct display *display)
 		i2c_write(&display->i2c, p, l);
 	}
 }
-
-#endif /* USE_I2C */
-
-#endif /* USE_DISPLAY */

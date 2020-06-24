@@ -47,8 +47,8 @@
 #define VREF                        3.3
 #define OFFSET                      885
 #else
-#define VREF                        2.492
-#define OFFSET                      1241
+#define VREF                        2.555
+#define OFFSET                      1010
 #endif
 
 
@@ -61,9 +61,16 @@ int main(void)
 	os_init();
 	log_init();
 
-	/* open ft232h type device and try to see if it has a nrf24l01+ connected to it through mpsse-spi */
+	/* open ftdi in mpsse mode for spi */
+#ifdef USE_FTDI
 	ERROR_IF_R(os_ftdi_use(OS_FTDI_GPIO_0_TO_63, 0, 0, NULL, NULL), -1, "unable to open ftdi device for gpio 0-63");
 	os_ftdi_set_mpsse(0);
+#endif
+
+	/* irq gpio */
+	gpio_input(19);
+
+	/* open ft232h type device and try to see if it has a nrf24l01+ connected to it through mpsse-spi */
 	ERROR_IF_R(spi_master_open(
 	               &master, /* must give pre-allocated spi master as pointer */
 	               NULL, /* context depends on platform */
@@ -76,6 +83,7 @@ int main(void)
 
 	/* reset */
 	mcp356x_fast_command(&device, MCP356X_CMD_RESET);
+	os_sleepf(0.3);
 
 	/* read configuration */
 	memset(data, 0, sizeof(data));
@@ -84,11 +92,18 @@ int main(void)
 	HEX_DUMP(data, 7, 1);
 
 	/* configure */
-	optwr_u8(&device, MCP356X_OPT_CLK_SEL, 0x3);
-	optwr_u8(&device, MCP356X_OPT_ADC_MODE, 0x2);
-	optwr_u8(&device, MCP356X_OPT_OSR, MCP356X_OSR_256);
+	optwr_u8(&device, MCP356X_OPT_CLK_SEL, 0x0);
+	// optwr_u8(&device, MCP356X_OPT_CLK_SEL, 0x0);
+	optwr_u8(&device, MCP356X_OPT_ADC_MODE, 0x3);
+	optwr_u8(&device, MCP356X_OPT_PRE, 0x3);
+
+	/* OSR */
+	optwr_u8(&device, MCP356X_OPT_OSR, MCP356X_OSR_16384);
+	// optwr_u8(&device, MCP356X_OPT_OSR, MCP356X_OSR_1024);
+
+	optwr_u8(&device, MCP356X_OPT_BOOST, 0x3);
 	optwr_u8(&device, MCP356X_OPT_GAIN, MCP356X_GAIN_X16);
-	optwr_u8(&device, MCP356X_OPT_CONV_MODE, 0x2);
+	optwr_u8(&device, MCP356X_OPT_CONV_MODE, 0x3);
 	optwr_u8(&device, MCP356X_OPT_IRQ_MODE, 0x1);
 
 	// data[0] = MCP356X_DEFAULT_ADDR | MCP356X_INC_WRITE | MCP356X_ADDR_CONFIG0; /* incremental write starting from register address 1 (CONFIG0) */
@@ -109,14 +124,21 @@ int main(void)
 	os_sleepf(0.3);
 
 	/* first read */
+	mcp356x_ch(&device, MCP356X_CH_01);
 	for (int i = 0; i < 10; i++) {
-		mcp356x_rd(&device, MCP356X_CH_01);
+		while (gpio_read(19));
+		mcp356x_rd(&device);
 	}
+	os_sleepf(1.0);
 
 	/* read */
 	int32_t min = -1e6, max = -1e6;
+	double sum = 0;
+	int count = 0;
 	while (1) {
-		int32_t x = mcp356x_rd(&device, MCP356X_CH_01);
+		while (gpio_read(19));
+
+		int32_t x = mcp356x_rd(&device);
 
 		x /= 256;
 		x += OFFSET;
@@ -124,10 +146,15 @@ int main(void)
 		max = max <= -1e6 ? x : max;
 		min = x < min ? x : min;
 		max = x > max ? x : max;
-		printf("%+12.3lf %+12d %+12d %+12d %d\n", (double)x / (double)0x7fffff * VREF / 16.0 * 1000000.0, x, min, max, max - min);
-		// HEX_DUMP(data, 1 + 3, 1);
 
-		// os_sleepf(0.3);
+		sum += (double)x / (double)0x7fffff * VREF / 16.0 * 1000000.0;
+		count++;
+		if (count >= 10) {
+			sum /= count;
+			printf("%+12.1lf %+12d %+12d %+12d %d\n", sum, x, min, max, max - min);
+			sum = 0;
+			count = 0;
+		}
 	}
 
 	/* free */
