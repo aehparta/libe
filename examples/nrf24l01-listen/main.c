@@ -106,7 +106,7 @@ int main(int argc, char *argv[])
 			LOG_COLOR(LDC_DGRAYB);
 			ASCII_DUMP(data, sizeof(data), 0);
 			LOG_COLOR(LDC_YELLOWB);
-			HEX_DUMP(data, sizeof(data));
+			HEX_DUMP(data, sizeof(data), 1);
 			LOG_COLOR(LDC_DEFAULT);
 		}
 

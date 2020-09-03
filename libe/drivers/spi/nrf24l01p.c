@@ -4,8 +4,6 @@
  * Authors: Antti Partanen <aehparta@iki.fi>
  */
 
-#ifdef USE_NRF24L01P
-
 #include <stdlib.h>
 #include <string.h>
 #include <libe/libe.h>
@@ -248,5 +246,3 @@ int8_t nrf24l01p_send(struct nrf24l01p_device *nrf, void *data)
 	nrf24l01p_set_standby(nrf, false);
 	return 32;
 }
-
-#endif

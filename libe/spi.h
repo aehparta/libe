@@ -40,15 +40,6 @@ struct spi_device;
 #include "drivers/spi/bitbang.h"
 #endif
 
-/* drivers */
-#ifdef USE_DRIVER_NRF24L01P
-#include <libe/drivers/spi/nrf24l01p.h>
-#include <libe/drivers/spi/nrf24l01p_ble.h>
-#endif
-#ifdef USE_DRIVER_MCP356X
-#include <libe/drivers/spi/mcp356x.h>
-#endif
-
 
 struct spi_master {
 	int8_t (*open)(struct spi_device *device, struct spi_master *master, uint8_t ss);
@@ -136,6 +127,16 @@ struct spi_device {
 // int spi_open(struct spi_device *device, struct spi_master *master, uint8_t ss);
 // void spi_close(struct spi_device *device);
 // int spi_transfer(struct spi_device *device, uint8_t *data, size_t size);
+
+
+/* drivers */
+#ifdef USE_DRIVER_NRF24L01P
+#include <libe/drivers/spi/nrf24l01p.h>
+#include <libe/drivers/spi/nrf24l01p_ble.h>
+#endif
+#ifdef USE_DRIVER_MCP356X
+#include <libe/drivers/spi/mcp356x.h>
+#endif
 
 
 #ifdef __cplusplus

@@ -62,7 +62,10 @@ ifneq ($(filter $(libe_DEFINES),USE_SPI),)
 
     # include device drivers
     ifneq ($(filter $(libe_DEFINES),USE_DRIVER_NRF24L01P),)
-        libe_SRC += $(LIBE_PATH)/libe/drivers/spi/nrf24l01p.c $(LIBE_PATH)/libe/drivers/spi/nrf24l01p_ble.c
+        libe_SRC += $(LIBE_PATH)/libe/drivers/spi/nrf24l01p.c
+        ifneq ($(filter $(libe_DEFINES),USE_DRIVER_NRF24L01P_BLE),)
+            libe_SRC += $(LIBE_PATH)/libe/drivers/spi/nrf24l01p_ble.c
+        endif
     endif
     ifneq ($(filter $(libe_DEFINES),USE_DRIVER_MCP356X),)
         libe_SRC += $(LIBE_PATH)/libe/drivers/spi/mcp356x.c
@@ -142,7 +145,7 @@ endif
 
 # add broadcast
 ifneq ($(filter $(libe_DEFINES),USE_BROADCAST),)
-    libe_SRC += $(LIBE_PATH)/libe/broadcast.c
+    libe_SRC += $(LIBE_PATH)/libe/drivers/misc/broadcast.c
 endif
 
 # add ftdi
