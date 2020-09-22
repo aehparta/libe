@@ -5,8 +5,6 @@
  *  Antti Partanen <aehparta@iki.fi>
  */
 
-#ifdef USE_BROADCAST
-
 #include <stdio.h>
 #include <string.h>
 #include <netinet/in.h>
@@ -99,6 +97,3 @@ int broadcast_send(void *data, int size)
 
 	return size;
 }
-
-
-#endif

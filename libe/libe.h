@@ -35,8 +35,14 @@ extern "C" {
 #include "crypt/rc5.h"
 #include "crypt/xtea.h" /* NOTE: this implementation has not been properly tested */
 #include "crypt/xxtea.h" /* NOTE: this implementation has not been properly tested */
+#include "crypt/crc.h"
 /* pwm */
 #include "pwm.h"
+
+/* other extras */
+#ifdef USE_BROADCAST
+#include "drivers/misc/broadcast.h"
+#endif
 
 
 #ifdef __cplusplus

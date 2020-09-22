@@ -143,6 +143,11 @@ ifneq ($(filter $(libe_DEFINES),USE_XXTEA),)
     libe_SRC += $(LIBE_PATH)/libe/crypt/xxtea.c
 endif
 
+# add software crc
+ifneq ($(filter $(libe_DEFINES),USE_CRC),)
+    libe_SRC += $(LIBE_PATH)/libe/crypt/crc.c
+endif
+
 # add broadcast
 ifneq ($(filter $(libe_DEFINES),USE_BROADCAST),)
     libe_SRC += $(LIBE_PATH)/libe/drivers/misc/broadcast.c
