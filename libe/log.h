@@ -232,7 +232,7 @@ do { \
         LOG_PRINTF("\r\n"); \
     } while (0);
 #else
-#define HEX_DUMP(data, size)
+#define HEX_DUMP(data, size, pad)
 #define ASCII_DUMP(data, size, pad)
 #endif /* defined(DEBUG) || defined(TARGET_LINUX) || defined(TARGET_ESP32) */
 

@@ -11,7 +11,7 @@
 struct pwm;
 
 #ifdef TARGET_AVR
-#include "target/avr/pwm.h"
+// #include "target/avr/pwm.h"
 #elif TARGET_ESP32
 #include "target/esp32/pwm.h"
 #endif

@@ -11,6 +11,14 @@ include $(LIBE_PATH)/cc.mk
 # build directory
 BUILDDIR ?= .build.$(shell echo $(TARGET) | tr '[:upper:]' '[:lower:]')
 
+# all targets listed
+TARGETS_ALL = AVR PIC8 ESP32 X86
+
+# cleanup
+CLEAN_TARGETS_ALL = $(addsuffix .clean,$(TARGETS_ALL))
+# pic8 specific
+CLEAN_CUSTOM_FILES += __eeprom.d __eeprom.p1 compiler_support.d compiler_support.p1 startup.lst startup.rlf startup.s startup.o
+
 # add color definitions
 include $(LIBE_PATH)/colors.mk
 
@@ -55,9 +63,12 @@ $(BUILDDIR)/%$(OBJ_EXT): %
 	@mkdir -p `dirname $@`
 	@$(OBJCOPY) -I binary -I binary -O elf64-x86-64 -B i386 $< $@
 
-clean:
+clean: $(CLEAN_TARGETS_ALL)
+	@$(REMOVE) -f $(CLEAN_CUSTOM_FILES)
 	@$(REMOVE) -rf .build.*
-	@$(REMOVE) -f *.d *.p1 *.lst *.o *.rlf *.s *.a *.lpp *.hex *.eep *.obj *.cof *.elf *.map *.obj *.a90 *.sym *.lnk *.lss *.bin *.elf
+
+$(CLEAN_TARGETS_ALL):
+	@$(REMOVE) -f $(PROGRAM_BIN)-$(basename $(@)).*
 
 hex:
 ifneq ($(OBJCOPY),)
