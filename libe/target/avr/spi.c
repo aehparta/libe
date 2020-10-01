@@ -12,10 +12,10 @@
 int spii_master_open(struct spi_master *master, void *context, uint32_t frequency, uint8_t miso, uint8_t mosi, uint8_t sclk)
 {
 	/* set MOSI, SCK and SS as output and MISO as input */
-	gpio_output(PORTB2); /* SS */
-	gpio_output(PORTB3); /* MOSI */
-	gpio_input(PORTB4); /* MISO */
-	gpio_output(PORTB5); /* SCLK */
+	gpio_output(GPIOB2); /* SS */
+	gpio_output(GPIOB3); /* MOSI */
+	gpio_input(GPIOB4); /* MISO */
+	gpio_output(GPIOB5); /* SCLK */
 	/* enable spi */
 	SPCR = (1 << SPE) | (1 << MSTR) | (0 << SPR1) | (1 << SPR0) | (0 << DORD);
 
@@ -27,10 +27,10 @@ int spii_master_open(struct spi_master *master, void *context, uint32_t frequenc
 void spii_master_close(struct spi_master *master)
 {
 	SPCR = 0;
-	gpio_input(PORTB2);
-	gpio_input(PORTB3);
-	gpio_input(PORTB4);
-	gpio_input(PORTB5);
+	gpio_input(GPIOB2);
+	gpio_input(GPIOB3);
+	gpio_input(GPIOB4);
+	gpio_input(GPIOB5);
 }
 
 int spii_open(struct spi_device *device, struct spi_master *master, uint8_t ss)

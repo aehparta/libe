@@ -74,11 +74,12 @@ int main(void)
 		/* same delay again */
 		os_delay_ms(500);
 
-		/* if the next line is un-commented, variable pin is not seen as "static" anymore
+		/* if the next lines are un-commented, variable pin is not seen as "static" anymore
 		 * and optimizer in example AVR platform will make calls to
 		 * gpio_*(pin) here much slower. this can be seen from dissambly.
 		 */
 		// pin++;
+		// gpio_output(pin);
 	}
 
 	return 0;

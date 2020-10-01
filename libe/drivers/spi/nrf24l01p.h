@@ -103,6 +103,13 @@ int8_t nrf24l01p_set_crc(struct nrf24l01p_device *nrf, uint8_t crc);
 int8_t nrf24l01p_recv(struct nrf24l01p_device *nrf, void *data);
 int8_t nrf24l01p_send(struct nrf24l01p_device *nrf, void *data);
 
+/**
+ * Write transmit buffer only.
+ *
+ * @return      bytes send on ok, -1 on errors
+ */
+int8_t nrf24l01p_tx_wr(struct nrf24l01p_device *nrf, void *data);
+
 
 #ifdef __cplusplus
 }

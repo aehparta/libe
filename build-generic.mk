@@ -17,7 +17,7 @@ TARGETS_ALL = AVR PIC8 ESP32 X86
 # cleanup
 CLEAN_TARGETS_ALL = $(addsuffix .clean,$(TARGETS_ALL))
 # pic8 specific
-CLEAN_CUSTOM_FILES += __eeprom.d __eeprom.p1 compiler_support.d compiler_support.p1 startup.lst startup.rlf startup.s startup.o
+CLEAN_CUSTOM_FILES += __eeprom.d __eeprom.p1 compiler_support.d compiler_support.p1 startup.lst startup.rlf startup.s startup.o doprnt.d doprnt.p1
 
 # add color definitions
 include $(LIBE_PATH)/colors.mk

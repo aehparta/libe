@@ -23,25 +23,13 @@ int8_t nrf24l01p_open(struct nrf24l01p_device *nrf, struct spi_master *master, u
 		return -1;
 	}
 
-	// while (1) {
-	// 	nrf24l01p_write_reg(nrf, NRF24L01P_REG_CONFIG, 0x0d);
-	// 	printf("%02x %02x %02x %02x %02x %02x %02x %02x\n",
-	// 	       nrf24l01p_read_reg(nrf, 0, NULL),
-	// 	       nrf24l01p_read_reg(nrf, 1, NULL),
-	// 	       nrf24l01p_read_reg(nrf, 2, NULL),
-	// 	       nrf24l01p_read_reg(nrf, 3, NULL),
-	// 	       nrf24l01p_read_reg(nrf, 4, NULL),
-	// 	       nrf24l01p_read_reg(nrf, 5, NULL),
-	// 	       nrf24l01p_read_reg(nrf, 6, NULL),
-	// 	       nrf24l01p_read_reg(nrf, 7, NULL)
-	// 	      );
-	// 	os_delay_ms(100);
-	// }
-
 	nrf24l01p_setup(nrf);
 	os_delay_ms(100);
 	IF_R((nrf24l01p_read_reg(nrf, NRF24L01P_REG_CONFIG, NULL) & 0x0f) != 0x0d, -1);
 	nrf24l01p_set_power_down(nrf, false);
+	nrf24l01p_set_standby(nrf, false);
+	nrf24l01p_flush_rx(nrf);
+	nrf24l01p_flush_tx(nrf);
 
 	return 0;
 }
@@ -227,12 +215,7 @@ int8_t nrf24l01p_recv(struct nrf24l01p_device *nrf, void *data)
 int8_t nrf24l01p_send(struct nrf24l01p_device *nrf, void *data)
 {
 	/* write data to tx buffer first */
-	uint8_t cmd[33] = {
-		/* tx buffer write command */
-		0xa0,
-	};
-	memcpy(cmd + 1, data, 32);
-	IF_R(spi_transfer(&nrf->spi, cmd, sizeof(cmd)), -1);
+	IF_R(nrf24l01p_tx_wr(nrf, data) < 0, -1);
 	/* switch to transmit mode */
 	nrf24l01p_set_standby(nrf, true);
 	nrf24l01p_mode_tx(nrf);
@@ -244,5 +227,17 @@ int8_t nrf24l01p_send(struct nrf24l01p_device *nrf, void *data)
 	nrf24l01p_flush_tx(nrf);
 	nrf24l01p_mode_rx(nrf);
 	nrf24l01p_set_standby(nrf, false);
+	return 32;
+}
+
+int8_t nrf24l01p_tx_wr(struct nrf24l01p_device *nrf, void *data)
+{
+	/* write data to tx buffer first */
+	uint8_t cmd[33] = {
+		/* tx buffer write command */
+		0xa0,
+	};
+	memcpy(cmd + 1, data, 32);
+	IF_R(spi_transfer(&nrf->spi, cmd, sizeof(cmd)), -1);
 	return 32;
 }

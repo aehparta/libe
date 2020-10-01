@@ -42,6 +42,14 @@ int8_t os_init(void)
 	DDRF = 0x00;
 #endif
 
+#ifdef USE_AVR_CLOCK_DIV_DISABLE
+#ifdef FUSE_CKDIV8
+	/* change clock from default 1MHZ (CKDIV8) to 8MHZ (no CKDIV8) */
+	CLKPR = 0x80; /* enable clock divisor change */
+	CLKPR = 0x00; /* change clock divisor to one */
+#endif
+#endif
+
 #ifdef USE_AVR_CLOCK_TIMER1_100HZ
 	/* 100 Hz timer */
 	TIMSK1 = (1 << OCIE1A); /* compare match A interrupt enable */
