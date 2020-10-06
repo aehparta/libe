@@ -12,6 +12,7 @@
 #define NRF24L01P_HARDCODED_CE (nrf->ce)
 #endif
 
+
 int8_t nrf24l01p_open(struct nrf24l01p_device *nrf, struct spi_master *master, uint8_t ss, uint8_t ce)
 {
 	nrf->ce = ce;
@@ -23,55 +24,7 @@ int8_t nrf24l01p_open(struct nrf24l01p_device *nrf, struct spi_master *master, u
 		return -1;
 	}
 
-	nrf24l01p_setup(nrf);
-	os_delay_ms(100);
-	IF_R((nrf24l01p_read_reg(nrf, NRF24L01P_REG_CONFIG, NULL) & 0x0f) != 0x0d, -1);
-	nrf24l01p_set_power_down(nrf, false);
-	nrf24l01p_set_standby(nrf, false);
-	nrf24l01p_flush_rx(nrf);
-	nrf24l01p_flush_tx(nrf);
-
-	return 0;
-}
-
-void nrf24l01p_close(struct nrf24l01p_device *nrf)
-{
-	nrf24l01p_set_standby(nrf, true);
-	nrf24l01p_set_power_down(nrf, true);
-	spi_close(&nrf->spi);
-}
-
-int8_t nrf24l01p_simple_cmd(struct nrf24l01p_device *nrf, uint8_t command)
-{
-	uint8_t cmd[] = { command };
-	IF_R(spi_transfer(&nrf->spi, cmd, sizeof(cmd)), -1);
-	return cmd[0];
-}
-
-int8_t nrf24l01p_read_status(struct nrf24l01p_device *nrf)
-{
-	return nrf24l01p_simple_cmd(nrf, 0xff);
-}
-
-int8_t nrf24l01p_read_reg(struct nrf24l01p_device *nrf, uint8_t reg, uint8_t *status)
-{
-	uint8_t cmd[] = { reg & 0x1f, 0x00 };
-	IF_R(spi_transfer(&nrf->spi, cmd, sizeof(cmd)), -1);
-	if (status) {
-		*status = cmd[0];
-	}
-	return cmd[1];
-}
-
-int8_t nrf24l01p_write_reg(struct nrf24l01p_device *nrf, uint8_t reg, uint8_t data)
-{
-	uint8_t cmd[] = { (reg & 0x1f) | 0x20, data };
-	IF_R(spi_transfer(&nrf->spi, cmd, sizeof(cmd)), -1);
-	return cmd[0];
-}
-
-void nrf24l01p_setup(struct nrf24l01p_device *nrf)
-{
+	/* base setup */
 	nrf24l01p_set_standby(nrf, true);
 	/* default config: enable crc (2 bytes), power down, rx mode */
 	nrf24l01p_write_reg(nrf, NRF24L01P_REG_CONFIG, 0x0d);
@@ -100,53 +53,101 @@ void nrf24l01p_setup(struct nrf24l01p_device *nrf)
 	/* reset these */
 	nrf24l01p_write_reg(nrf, NRF24L01P_REG_DYNPD, 0);
 	nrf24l01p_write_reg(nrf, NRF24L01P_REG_FEATURE, 0);
+
+	/* wait a bit */
+	// os_delay_ms(100);
+
+	/* check status */
+	IF_R((nrf24l01p_read_reg(nrf, NRF24L01P_REG_CONFIG, NULL) & 0x0f) != 0x0d, -1);
+	nrf24l01p_set_power_down(nrf, false);
+	nrf24l01p_set_standby(nrf, false);
+	nrf24l01p_flush_rx(nrf);
+	nrf24l01p_flush_tx(nrf);
+
+	return 0;
 }
 
-int8_t nrf24l01p_mode_tx(struct nrf24l01p_device *nrf)
+void nrf24l01p_close(struct nrf24l01p_device *nrf)
+{
+	nrf24l01p_set_standby(nrf, true);
+	nrf24l01p_set_power_down(nrf, true);
+	spi_close(&nrf->spi);
+}
+
+uint8_t nrf24l01p_simple_cmd(struct nrf24l01p_device *nrf, uint8_t command)
+{
+	uint8_t cmd[] = { command };
+	IF_R(spi_transfer(&nrf->spi, cmd, sizeof(cmd)), 0xff);
+	return cmd[0];
+}
+
+int8_t nrf24l01p_read_status(struct nrf24l01p_device *nrf)
+{
+	return (int8_t)nrf24l01p_simple_cmd(nrf, 0xff);
+}
+
+uint8_t nrf24l01p_read_reg(struct nrf24l01p_device *nrf, uint8_t reg, uint8_t *status)
+{
+	uint8_t cmd[] = { reg & 0x1f, 0x00 };
+	IF_R(spi_transfer(&nrf->spi, cmd, sizeof(cmd)), 0xff);
+	if (status) {
+		*status = cmd[0];
+	}
+	return cmd[1];
+}
+
+uint8_t nrf24l01p_write_reg(struct nrf24l01p_device *nrf, uint8_t reg, uint8_t data)
+{
+	uint8_t cmd[] = { (reg & 0x1f) | 0x20, data };
+	IF_R(spi_transfer(&nrf->spi, cmd, sizeof(cmd)), 0xff);
+	return cmd[0];
+}
+
+uint8_t nrf24l01p_mode_tx(struct nrf24l01p_device *nrf)
 {
 	uint8_t r = nrf24l01p_read_reg(nrf, NRF24L01P_REG_CONFIG, NULL) & 0xfe;
 	return nrf24l01p_write_reg(nrf, NRF24L01P_REG_CONFIG, r);
 }
 
-int8_t nrf24l01p_mode_rx(struct nrf24l01p_device *nrf)
+uint8_t nrf24l01p_mode_rx(struct nrf24l01p_device *nrf)
 {
 	uint8_t r = nrf24l01p_read_reg(nrf, NRF24L01P_REG_CONFIG, NULL) | 0x01;
 	return nrf24l01p_write_reg(nrf, NRF24L01P_REG_CONFIG, r);
 }
 
-int8_t nrf24l01p_flush_tx(struct nrf24l01p_device *nrf)
+uint8_t nrf24l01p_flush_tx(struct nrf24l01p_device *nrf)
 {
-	int8_t err = nrf24l01p_simple_cmd(nrf, 0xe1);
+	uint8_t err = nrf24l01p_simple_cmd(nrf, 0xe1);
 	nrf24l01p_write_reg(nrf, NRF24L01P_REG_STATUS, 0x30);
 	return err;
 }
 
-int8_t nrf24l01p_flush_rx(struct nrf24l01p_device *nrf)
+uint8_t nrf24l01p_flush_rx(struct nrf24l01p_device *nrf)
 {
-	int8_t err = nrf24l01p_simple_cmd(nrf, 0xe2);
+	uint8_t err = nrf24l01p_simple_cmd(nrf, 0xe2);
 	nrf24l01p_write_reg(nrf, NRF24L01P_REG_STATUS, 0x40);
 	return err;
 }
 
-int8_t nrf24l01p_set_address(struct nrf24l01p_device *nrf, uint8_t pipe, uint8_t a0, uint8_t a1, uint8_t a2, uint8_t a3, uint8_t a4)
+uint8_t nrf24l01p_set_address(struct nrf24l01p_device *nrf, uint8_t pipe, uint8_t a0, uint8_t a1, uint8_t a2, uint8_t a3, uint8_t a4)
 {
 	if (pipe < NRF24L01P_REG_RX_ADDR_P0 && pipe > NRF24L01P_REG_TX_ADDR) {
-		return -1;
+		return 0xff;
 	} else if (pipe >= NRF24L01P_REG_RX_ADDR_P2 && pipe <= NRF24L01P_REG_RX_ADDR_P5) {
 		/* single byte secondary pipes */
 		uint8_t cmd[] = { pipe | 0x20, a0 };
-		IF_R(spi_transfer(&nrf->spi, cmd, sizeof(cmd)), -1);
+		IF_R(spi_transfer(&nrf->spi, cmd, sizeof(cmd)), 0xff);
 		return cmd[0];
 	} else {
 		/* full 5 byte primary channels (0, 1 and transmit) */
 		uint8_t cmd[] = { pipe | 0x20, a0, a1, a2, a3, a4 };
-		IF_R(spi_transfer(&nrf->spi, cmd, sizeof(cmd)), -1);
+		IF_R(spi_transfer(&nrf->spi, cmd, sizeof(cmd)), 0xff);
 		return cmd[0];
 	}
-	return -1;
+	return 0xff;
 }
 
-int8_t nrf24l01p_set_standby(struct nrf24l01p_device *nrf, bool standby)
+uint8_t nrf24l01p_set_standby(struct nrf24l01p_device *nrf, bool standby)
 {
 	if (standby) {
 		gpio_low(NRF24L01P_HARDCODED_CE);
@@ -156,24 +157,24 @@ int8_t nrf24l01p_set_standby(struct nrf24l01p_device *nrf, bool standby)
 	return 0;
 }
 
-int8_t nrf24l01p_set_power_down(struct nrf24l01p_device *nrf, bool pd)
+uint8_t nrf24l01p_set_power_down(struct nrf24l01p_device *nrf, bool pd)
 {
 	uint8_t r = (nrf24l01p_read_reg(nrf, NRF24L01P_REG_CONFIG, NULL) & 0xfd) | (pd ? 0x00 : 0x02);
 	return nrf24l01p_write_reg(nrf, NRF24L01P_REG_CONFIG, r);
 }
 
-int8_t nrf24l01p_set_tx_power(struct nrf24l01p_device *nrf, uint8_t power)
+uint8_t nrf24l01p_set_tx_power(struct nrf24l01p_device *nrf, uint8_t power)
 {
 	uint8_t r = nrf24l01p_read_reg(nrf, NRF24L01P_REG_RF_SETUP, NULL) & ~0x6;
-	return nrf24l01p_write_reg(nrf, NRF24L01P_REG_RF_SETUP, r | ((power & 0x3) << 1));
+	return nrf24l01p_write_reg(nrf, NRF24L01P_REG_RF_SETUP, r | (uint8_t)((power & 0x3) << 1));
 }
 
-int8_t nrf24l01p_set_channel(struct nrf24l01p_device *nrf, uint8_t channel)
+uint8_t nrf24l01p_set_channel(struct nrf24l01p_device *nrf, uint8_t channel)
 {
 	return nrf24l01p_write_reg(nrf, NRF24L01P_REG_RF_CH, channel);
 }
 
-int8_t nrf24l01p_set_speed(struct nrf24l01p_device *nrf, uint8_t speed)
+uint8_t nrf24l01p_set_speed(struct nrf24l01p_device *nrf, uint8_t speed)
 {
 	uint8_t r = nrf24l01p_read_reg(nrf, NRF24L01P_REG_RF_SETUP, NULL) & ~0x28;
 	if (speed == NRF24L01P_SPEED_250k) {
@@ -184,7 +185,7 @@ int8_t nrf24l01p_set_speed(struct nrf24l01p_device *nrf, uint8_t speed)
 	return nrf24l01p_write_reg(nrf, NRF24L01P_REG_RF_SETUP, r);
 }
 
-int8_t nrf24l01p_set_crc(struct nrf24l01p_device *nrf, uint8_t crc)
+uint8_t nrf24l01p_set_crc(struct nrf24l01p_device *nrf, uint8_t crc)
 {
 	uint8_t r = (nrf24l01p_read_reg(nrf, NRF24L01P_REG_CONFIG, NULL) & 0xfd) | (crc ? 0x08 : 0x00) | (crc == 2 ? 0x04 : 0x00);
 	return nrf24l01p_write_reg(nrf, NRF24L01P_REG_CONFIG, r);
@@ -241,3 +242,4 @@ int8_t nrf24l01p_tx_wr(struct nrf24l01p_device *nrf, void *data)
 	IF_R(spi_transfer(&nrf->spi, cmd, sizeof(cmd)), -1);
 	return 32;
 }
+

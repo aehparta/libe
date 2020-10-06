@@ -63,16 +63,15 @@ struct nrf24l01p_device {
 
 int8_t nrf24l01p_open(struct nrf24l01p_device *nrf, struct spi_master *master, uint8_t ss, uint8_t ce);
 void nrf24l01p_close(struct nrf24l01p_device *nrf);
-int8_t nrf24l01p_simple_cmd(struct nrf24l01p_device *nrf, uint8_t command);
+uint8_t nrf24l01p_simple_cmd(struct nrf24l01p_device *nrf, uint8_t command);
 int8_t nrf24l01p_read_status(struct nrf24l01p_device *nrf);
-int8_t nrf24l01p_read_reg(struct nrf24l01p_device *nrf, uint8_t reg, uint8_t *status);
-int8_t nrf24l01p_write_reg(struct nrf24l01p_device *nrf, uint8_t reg, uint8_t data);
+uint8_t nrf24l01p_read_reg(struct nrf24l01p_device *nrf, uint8_t reg, uint8_t *status);
+uint8_t nrf24l01p_write_reg(struct nrf24l01p_device *nrf, uint8_t reg, uint8_t data);
 
-void nrf24l01p_setup(struct nrf24l01p_device *nrf);
-int8_t nrf24l01p_mode_tx(struct nrf24l01p_device *nrf);
-int8_t nrf24l01p_mode_rx(struct nrf24l01p_device *nrf);
-int8_t nrf24l01p_flush_tx(struct nrf24l01p_device *nrf);
-int8_t nrf24l01p_flush_rx(struct nrf24l01p_device *nrf);
+uint8_t nrf24l01p_mode_tx(struct nrf24l01p_device *nrf);
+uint8_t nrf24l01p_mode_rx(struct nrf24l01p_device *nrf);
+uint8_t nrf24l01p_flush_tx(struct nrf24l01p_device *nrf);
+uint8_t nrf24l01p_flush_rx(struct nrf24l01p_device *nrf);
 
 /**
  * Set pipe address.
@@ -85,20 +84,20 @@ int8_t nrf24l01p_flush_rx(struct nrf24l01p_device *nrf);
  * @param  a2   address byte 2
  * @param  a3   address byte 3
  * @param  a4   address byte 4 (MSB)
- * @return      nrf chip status register when ok, -1 if error
+ * @return      nrf chip status register when ok, 0xff if error
  */
-int8_t nrf24l01p_set_address(struct nrf24l01p_device *nrf, uint8_t pipe, uint8_t a0, uint8_t a1, uint8_t a2, uint8_t a3, uint8_t a4);
+uint8_t nrf24l01p_set_address(struct nrf24l01p_device *nrf, uint8_t pipe, uint8_t a0, uint8_t a1, uint8_t a2, uint8_t a3, uint8_t a4);
 
-int8_t nrf24l01p_set_standby(struct nrf24l01p_device *nrf, bool standby);
-int8_t nrf24l01p_set_power_down(struct nrf24l01p_device *nrf, bool pd);
+uint8_t nrf24l01p_set_standby(struct nrf24l01p_device *nrf, bool standby);
+uint8_t nrf24l01p_set_power_down(struct nrf24l01p_device *nrf, bool pd);
 
-int8_t nrf24l01p_set_tx_power(struct nrf24l01p_device *nrf, uint8_t power);
-int8_t nrf24l01p_set_channel(struct nrf24l01p_device *nrf, uint8_t channel);
-int8_t nrf24l01p_set_speed(struct nrf24l01p_device *nrf, uint8_t speed);
+uint8_t nrf24l01p_set_tx_power(struct nrf24l01p_device *nrf, uint8_t power);
+uint8_t nrf24l01p_set_channel(struct nrf24l01p_device *nrf, uint8_t channel);
+uint8_t nrf24l01p_set_speed(struct nrf24l01p_device *nrf, uint8_t speed);
 
-int8_t nrf24l01p_set_speed(struct nrf24l01p_device *nrf, uint8_t speed);
+uint8_t nrf24l01p_set_speed(struct nrf24l01p_device *nrf, uint8_t speed);
 
-int8_t nrf24l01p_set_crc(struct nrf24l01p_device *nrf, uint8_t crc);
+uint8_t nrf24l01p_set_crc(struct nrf24l01p_device *nrf, uint8_t crc);
 
 int8_t nrf24l01p_recv(struct nrf24l01p_device *nrf, void *data);
 int8_t nrf24l01p_send(struct nrf24l01p_device *nrf, void *data);

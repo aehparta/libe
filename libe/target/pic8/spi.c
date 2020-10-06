@@ -20,6 +20,10 @@
 #ifndef SPI_HARDCODED_SCLK
 #define SPI_HARDCODED_SCLK sclk
 #endif
+#ifndef SPI_HARDCODED_FREQUENCY
+#define SPI_HARDCODED_FREQUENCY frequency
+#define SPI_HARDCODED_FREQUENCY_NOT_IN_USE
+#endif
 
 int spii_master_open(struct spi_master *master, void *context, uint32_t frequency, uint8_t miso, uint8_t mosi, uint8_t sclk)
 {
@@ -37,12 +41,14 @@ int spii_master_open(struct spi_master *master, void *context, uint32_t frequenc
 	os_pin_pps(SPI_HARDCODED_SCLK, 0x18);
 	os_pin_pps(SPI_HARDCODED_MOSI, 0x19);
 
+#ifdef SPI_HARDCODED_FREQUENCY_NOT_IN_USE
 	/* calculate clock */
 	if (frequency < 1) {
 		/* default to 1MHz */
 		frequency = 1e6;
 	}
-	uint8_t sspadd = (F_CPU / frequency / 4) - 1;
+#endif
+	uint8_t sspadd = (uint8_t)((F_CPU / SPI_HARDCODED_FREQUENCY / 4) - 1);
 
 	/* enable spi */
 #ifdef SSPCON1
