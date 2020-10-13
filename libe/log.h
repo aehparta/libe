@@ -114,7 +114,6 @@ void log_set_callback(void (*callback)(int level, const char *file, int line, co
 #define LDC_BPURPLE "\033[45m"
 #define LDC_BCYAN "\033[46m"
 #define LDC_BWHITE "\033[47m"
-#define LOG_COLOR(color) LOG_PRINTF(color)
 #else
 #define LDC_DEFAULT
 #define LDC_DGRAYB
@@ -142,7 +141,6 @@ void log_set_callback(void (*callback)(int level, const char *file, int line, co
 #define LDC_BCYAN
 #define LDC_BWHITE
 #ifndef TARGET_ESP32
-#define LOG_COLOR(color)
 #endif
 #endif /* defined(USE_LOG_COLORS) && defined(USE_LOG) */
 
