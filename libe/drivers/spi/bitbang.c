@@ -4,6 +4,8 @@
  * Authors: Antti Partanen <aehparta@iki.fi>
  */
 
+#ifdef USE_SPI_BITBANG /* because esp32 */
+
 #include <libe/libe.h>
 
 #ifdef USE_SPI_BITBANG_DYNAMIC
@@ -85,3 +87,5 @@ int spibb_transfer(struct spi_device *device, uint8_t *data, size_t size)
 
 	return 0;
 }
+
+#endif

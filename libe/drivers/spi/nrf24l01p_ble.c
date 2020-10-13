@@ -7,6 +7,8 @@
  * Authors: Antti Partanen <aehparta@iki.fi>
  */
 
+#ifdef USE_DRIVER_NRF24L01P_BLE /* because esp32 */
+
 #include <stdlib.h>
 #include <libe/libe.h>
 
@@ -187,3 +189,5 @@ static void btLeWhiten(uint8_t* data, uint8_t size, uint8_t whitenCoeff)
 		data++;
 	}
 }
+
+#endif

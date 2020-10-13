@@ -4,6 +4,8 @@
  * Authors: Antti Partanen <aehparta@iki.fi>
  */
 
+#ifdef USE_DRIVER_NRF24L01P /* because esp32 */
+
 #include <stdlib.h>
 #include <string.h>
 #include <libe/libe.h>
@@ -243,3 +245,4 @@ int8_t nrf24l01p_tx_wr(struct nrf24l01p_device *nrf, void *data)
 	return 32;
 }
 
+#endif

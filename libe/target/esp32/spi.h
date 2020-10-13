@@ -14,6 +14,7 @@
 extern "C" {
 #endif
 
+#define SPI_HAS_INTEGRATED
 #define SPI_MASTER_NEED_FREQUENCY
 
 #define SPI_DEFAULT_FREQUENCY 10e6

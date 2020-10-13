@@ -4,6 +4,8 @@
  * Authors: Antti Partanen <aehparta@iki.fi>
  */
 
+#ifdef USE_DRIVER_MCP356X /* because esp32 */
+
 #include <libe/libe.h>
 
 
@@ -127,3 +129,5 @@ static void mcp356x_modify_reg8(struct spi_device *device, uint8_t addr, uint8_t
 	data[1] = (data[1] & ~mask) | (value & mask);
 	spi_transfer(device, data, 2);
 }
+
+#endif
