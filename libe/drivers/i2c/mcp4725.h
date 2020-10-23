@@ -43,7 +43,7 @@ int tool_i2c_mcp4725_exec(struct i2c_master *master, uint8_t address, char *comm
 #pragma push_macro("tool_i2c_chips")
 #undef tool_i2c_chips
 #define tool_i2c_chips _Pragma("pop_macro(\"tool_i2c_chips\")") tool_i2c_chips \
-	{ "mcp4725", "Microchip MCP4725 12-bit ADC", tool_i2c_mcp4725_help, tool_i2c_mcp4725_exec },
+	{ "mcp4725", "Microchip MCP4725 12-bit DAC", tool_i2c_mcp4725_help, tool_i2c_mcp4725_exec },
 #endif
 
 #ifdef __cplusplus
