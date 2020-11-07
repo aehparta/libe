@@ -107,8 +107,13 @@ int spii_transfer(struct spi_device *device, uint8_t *data, size_t size)
 	for ( ; size > 0; size--) {
 #ifdef SSP1BUF
 		SSP1BUF = *data;
+#ifdef PIR8
+		while (!PIR3bits.SSP1IF);
+		PIR3bits.SSP1IF = 0;
+#else
 		while (!PIR1bits.SSP1IF);
 		PIR1bits.SSP1IF = 0;
+#endif
 		*data = SSP1BUF;
 #else
 		SSPBUF = *data;
