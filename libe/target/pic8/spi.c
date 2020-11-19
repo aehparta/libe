@@ -38,8 +38,15 @@ int spii_master_open(struct spi_master *master, void *context, uint32_t frequenc
 #ifdef SSP1DATPPS
 	SSP1DATPPS = SPI_HARDCODED_MISO;
 #endif
+
+	/* TODO: cleaner way here.. atleast pic16lf18446 has different mapping than pic16lf18345 */
+#ifdef PIR8
+	os_pin_pps(SPI_HARDCODED_SCLK, 0x13);
+	os_pin_pps(SPI_HARDCODED_MOSI, 0x14);
+#else
 	os_pin_pps(SPI_HARDCODED_SCLK, 0x18);
 	os_pin_pps(SPI_HARDCODED_MOSI, 0x19);
+#endif
 
 #ifdef SPI_HARDCODED_FREQUENCY_NOT_IN_USE
 	/* calculate clock */
