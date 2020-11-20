@@ -18,6 +18,8 @@ extern "C" {
 /* MCP4725 I2C address, 0x60/0x61 are default, others can be requested from manufacturer */
 #define MCP4725_ADDR_A0         0x60
 #define MCP4725_ADDR_A1         0x61
+#define MCP4725_ADDR_A2         0x62
+#define MCP4725_ADDR_A3         0x63
 
 #ifndef MCP4725_ADDR
 #define MCP4725_ADDR            0x60
