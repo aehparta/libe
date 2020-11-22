@@ -217,17 +217,14 @@ int8_t nrf24l01p_recv(struct nrf24l01p_device *nrf, void *data)
 
 int8_t nrf24l01p_send(struct nrf24l01p_device *nrf, void *data)
 {
-	/* write data to tx buffer first */
-	IF_R(nrf24l01p_tx_wr(nrf, data) < 0, -1);
 	/* switch to transmit mode */
 	nrf24l01p_set_standby(nrf, true);
 	nrf24l01p_mode_tx(nrf);
 	nrf24l01p_set_standby(nrf, false);
-	/* wait data to be transmitted */
-	while (!(nrf24l01p_read_status(nrf) & 0x20));
+	/* write data to tx buffer first */
+	IF_R(nrf24l01p_tx_wr(nrf, data) < 0, -1);
 	/* switch back to listen mode */
 	nrf24l01p_set_standby(nrf, true);
-	nrf24l01p_flush_tx(nrf);
 	nrf24l01p_mode_rx(nrf);
 	nrf24l01p_set_standby(nrf, false);
 	return 32;
@@ -236,12 +233,23 @@ int8_t nrf24l01p_send(struct nrf24l01p_device *nrf, void *data)
 int8_t nrf24l01p_tx_wr(struct nrf24l01p_device *nrf, void *data)
 {
 	/* write data to tx buffer first */
-	uint8_t cmd[33] = {
-		/* tx buffer write command */
-		0xa0,
-	};
-	memcpy(cmd + 1, data, 32);
+	uint8_t cmd[35];
+	/* wait for empty tx fifo */
+	do {
+		cmd[0] = 0xff;
+		spi_transfer(&nrf->spi, cmd, 1);
+	} while (cmd[0] & 0x01);
+	/* transfer data */
+	cmd[0] = 0x07; /* write status */
+	cmd[1] = 0x20; /* clear tx interrupt flag */
+	cmd[2] = 0xa0; /* write tx buffer */
+	memcpy(cmd + 2, data, 32);
 	IF_R(spi_transfer(&nrf->spi, cmd, sizeof(cmd)), -1);
+	/* wait for send */
+	do {
+		cmd[0] = 0xff;
+		spi_transfer(&nrf->spi, cmd, 1);
+	} while (!(cmd[0] & 0x20));
 	return 32;
 }
 

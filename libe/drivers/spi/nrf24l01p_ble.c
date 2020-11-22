@@ -82,15 +82,13 @@ void nrf24l01p_ble_hop(struct nrf24l01p_ble_device *nrf)
 
 int nrf24l01p_ble_advertise(struct nrf24l01p_ble_device *nrf, void *data, uint8_t size)
 {
-	uint8_t l = 0;
+	uint8_t l = 1;
 	uint8_t cmd[33];
 
 	/* max size is 18 bytes */
 	IF_R(size > 18, -1);
 	memset(cmd + 18, 0, 33 - 18);
 
-	/* tx buffer write command */
-	cmd[l++] = 0xa0;
 	/* we use 0x40 to say it is a non-connectable undirected advertisement and address we're sending is random (not assigned) */
 	cmd[l++] = 0x40;
 	/* length including mac (and flags), excluding crc */
@@ -133,15 +131,21 @@ int nrf24l01p_ble_advertise(struct nrf24l01p_ble_device *nrf, void *data, uint8_
 		cmd[i] = BYTE_SWAP_BITS(cmd[i]);
 	}
 
-	/* write data to tx buffer */
-	IF_R(spi_transfer(&nrf->nrf.spi, cmd, sizeof(cmd)), -1);
+	/* wait for empty tx fifo */
+	do {
+		cmd[0] = 0xff;
+		spi_transfer(&nrf->nrf.spi, cmd, 1);
+	} while (cmd[0] & 0x01);
+
 	/* enable radio */
 	nrf24l01p_set_standby(&nrf->nrf, false);
-	/* wait data to be transmitted */
-	while (!(nrf24l01p_read_status(&nrf->nrf) & 0x20));
+
+	/* write data to tx buffer */
+	cmd[0] = 0xa0;
+	IF_R(spi_transfer(&nrf->nrf.spi, cmd, sizeof(cmd)), -1);
+
 	/* disable radio */
 	nrf24l01p_set_standby(&nrf->nrf, true);
-	nrf24l01p_flush_tx(&nrf->nrf);
 
 	return size;
 }
