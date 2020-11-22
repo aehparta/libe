@@ -96,10 +96,10 @@ int main(int argc, char *argv[])
 		*((uint32_t *)&buf[l++]) = counter++;
 
 		/* advertise */
-		nrf24l01p_ble_advertise(&nrf, buf, l);
-
-		/* next ble advertise channel */
-		nrf24l01p_ble_hop(&nrf);
+		for (int i = 0; i < 3; i++) {
+			nrf24l01p_ble_advertise(&nrf, buf, l);
+			nrf24l01p_ble_hop(&nrf);
+		}
 
 		/* lets not waste all cpu */
 		os_sleepf(1.0);

@@ -41,10 +41,6 @@ struct spi_device;
 #endif
 
 /* drivers */
-#ifdef USE_DRIVER_NRF24L01P
-#include <libe/drivers/spi/nrf24l01p.h>
-#include <libe/drivers/spi/nrf24l01p_ble.h>
-#endif
 #ifdef USE_DRIVER_MCP356X
 #include <libe/drivers/spi/mcp356x.h>
 #endif
@@ -137,7 +133,11 @@ struct spi_device {
 // void spi_close(struct spi_device *device);
 // int spi_transfer(struct spi_device *device, uint8_t *data, size_t size);
 
-
+/* drivers */
+#ifdef USE_DRIVER_NRF24L01P
+#include <libe/drivers/spi/nrf24l01p.h>
+#include <libe/drivers/spi/nrf24l01p_ble.h>
+#endif
 
 #ifdef __cplusplus
 }
