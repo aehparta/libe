@@ -10,7 +10,7 @@
 
 struct spi_master master;
 struct nrf24l01p_ble_device nrf;
-uint8_t mac[6] = { 'L', 'I', 'B', 'E', 'B', 'T' };
+uint8_t mac[6] = { 'L', 'I', 'B', 'E', 0x00, 0x00 };
 
 
 int p_init(int argc, char *argv[])
@@ -73,28 +73,36 @@ int main(int argc, char *argv[])
 		os_wdt_reset();
 
 		/* length of data including type */
-		buf[l++] = 5;
-		/* data type, examples:
-		 * 8: short name
-		 * 255: custom
-		 */
-		buf[l++] = 0x08;
-		/* data itself */
-		buf[l++] = 'l';
-		buf[l++] = 'i';
-		buf[l++] = 'b';
-		buf[l++] = 'e';
+		// buf[l++] = 5;
+		// buf[l++] = 0x08; /* short name */
+		// buf[l++] = 'l';
+		// buf[l++] = 'i';
+		// buf[l++] = 'b';
+		// buf[l++] = 'e';
 
 		/* length of data including type */
-		buf[l++] = 5;
-		/* data type, examples:
-		 * 8: short name
-		 * 255: custom
-		 */
-		buf[l++] = 0xff;
+		// buf[l++] = 5;
+		// buf[l++] = 0xff; /* custom counter */
 		/* data itself, 32 bit unsigned integer in this case */
-		*((uint32_t *)&buf[l]) = counter++;
-		l += 4;
+		// *((uint32_t *)&buf[l]) = counter++;
+		// l += 4;
+
+		/* battery level (uuid: 0x180f) */
+		// buf[l++] = 4;
+		// buf[l++] = 0x16;
+		// buf[l++] = 0x0f;
+		// buf[l++] = 0x18;
+		// buf[l++] = 17;
+
+		/* temperature (uuid: 0x1809) */
+		buf[l++] = 7;
+		buf[l++] = 0x16;
+		buf[l++] = 0x09;
+		buf[l++] = 0x18;
+		buf[l++] = 0;
+		buf[l++] = 0;
+		buf[l++] = 0;
+		buf[l++] = 0;
 
 		/* advertise */
 		DEBUG_MSG("advertise");
