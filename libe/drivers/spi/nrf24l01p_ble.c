@@ -89,8 +89,8 @@ int nrf24l01p_ble_advertise(struct nrf24l01p_ble_device *nrf, void *data, uint8_
 	IF_R(size > 18, -1);
 	memset(cmd + 18, 0, 33 - 18);
 
-	/* we use 0x40 to say it is a non-connectable undirected advertisement and address we're sending is random (not assigned) */
-	cmd[l++] = 0x40;
+	/* we use 0x42 to say it is a non-connectable undirected advertisement and address we're sending is random (not assigned) */
+	cmd[l++] = 0x42;
 	/* length including mac (and flags), excluding crc */
 	cmd[l++] = 6 + 3 + size;
 	/* mac */

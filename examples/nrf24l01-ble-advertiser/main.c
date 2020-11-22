@@ -86,14 +86,15 @@ int main(int argc, char *argv[])
 		buf[l++] = 'e';
 
 		/* length of data including type */
-		// buf[l++] = 5;
+		buf[l++] = 5;
 		/* data type, examples:
 		 * 8: short name
 		 * 255: custom
 		 */
-		// buf[l++] = 0xff;
+		buf[l++] = 0xff;
 		/* data itself, 32 bit unsigned integer in this case */
-		// *((uint32_t *)&buf[l++]) = counter++;
+		*((uint32_t *)&buf[l]) = counter++;
+		l += 4;
 
 		/* advertise */
 		DEBUG_MSG("advertise");
