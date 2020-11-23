@@ -3,7 +3,7 @@
  *
  * Thanks to Dmitry Grinberg's work:
  * http://dmitry.gr/index.php?r=05.Projects&proj=15&proj=11.%20Bluetooth%20LE%20fakery
- * 
+ *
  * Authors: Antti Partanen <aehparta@iki.fi>
  */
 
@@ -20,8 +20,8 @@ static void btLeWhiten(uint8_t* data, uint8_t size, uint8_t whitenCoeff);
 int nrf24l01p_ble_open(struct nrf24l01p_ble_device *nrf, struct spi_master *master, int ss, int ce, uint8_t mac[6])
 {
 	IF_R(nrf24l01p_open(&nrf->nrf, master, ss, ce), -1);
-	/* disable crc and always stay in transmit mode */
-	nrf24l01p_write_reg(&nrf->nrf, NRF24L01P_REG_CONFIG, 0x02);
+	/* disable crc and always stay in transmit mode, mask interrupts except tx */
+	nrf24l01p_write_reg(&nrf->nrf, NRF24L01P_REG_CONFIG, 0x52);
 	/* address width: 4 bytes */
 	nrf24l01p_write_reg(&nrf->nrf, NRF24L01P_REG_SETUP_AW, 0x02);
 	/* 1 Mbps */
@@ -34,6 +34,10 @@ int nrf24l01p_ble_open(struct nrf24l01p_ble_device *nrf, struct spi_master *mast
 	nrf24l01p_set_address(&nrf->nrf, NRF24L01P_REG_TX_ADDR, BYTE_SWAP_BITS(0x8e), BYTE_SWAP_BITS(0x89), BYTE_SWAP_BITS(0xbe), BYTE_SWAP_BITS(0xd6), 0x00);
 	/* default channel */
 	nrf24l01p_ble_set_channel(nrf, 0);
+
+	/* power down */
+	nrf24l01p_set_standby(&nrf->nrf, true);
+	nrf24l01p_set_power_down(&nrf->nrf, true);
 
 	/* save mac */
 	memcpy(&nrf->mac, mac, 6);
@@ -132,20 +136,34 @@ int nrf24l01p_ble_advertise(struct nrf24l01p_ble_device *nrf, void *data, uint8_
 	}
 
 	/* wait for empty tx fifo */
-	do {
-		cmd[0] = 0xff;
-		spi_transfer(&nrf->nrf.spi, cmd, 1);
-	} while (cmd[0] & 0x01);
+	// do {
+	// 	cmd[0] = 0xff;
+	// 	spi_transfer(&nrf->nrf.spi, cmd, 1);
+	// } while (cmd[0] & 0x01);
 
 	/* enable radio */
+	nrf24l01p_set_power_down(&nrf->nrf, false);
 	nrf24l01p_set_standby(&nrf->nrf, false);
 
 	/* write data to tx buffer */
 	cmd[0] = 0xa0;
 	IF_R(spi_transfer(&nrf->nrf.spi, cmd, sizeof(cmd)), -1);
 
-	/* disable radio */
+	/* wait for send */
+#ifdef NRF24L01P_HARDCODED_IRQ
+	while (gpio_read(NRF24L01P_HARDCODED_IRQ));
+#else
+	do {
+		cmd[0] = 0xff;
+		spi_transfer(&nrf->nrf.spi, cmd, 1);
+	} while (!(cmd[0] & 0x20));
+#endif
+	/* clear interrupt */
+	nrf24l01p_write_reg(&nrf->nrf, NRF24L01P_REG_STATUS, 0x20);
+
+	/* power down */
 	nrf24l01p_set_standby(&nrf->nrf, true);
+	nrf24l01p_set_power_down(&nrf->nrf, true);
 
 	return size;
 }
