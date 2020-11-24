@@ -19,7 +19,7 @@ int8_t mcp4725_open(struct i2c_device *dev, struct i2c_master *master, uint8_t a
 	return 0;
 }
 
-int8_t mcp4724_wr(struct i2c_device *dev, uint8_t channel, int32_t v)
+int8_t mcp4725_wr(struct i2c_device *dev, uint8_t channel, int32_t v)
 {
 	dev->driver_bits[0] &= ~0x20;
 	dev->driver_bits[1] = v >> 4;
@@ -27,7 +27,7 @@ int8_t mcp4724_wr(struct i2c_device *dev, uint8_t channel, int32_t v)
 	return i2c_write(dev, dev->driver_bits, 3);
 }
 
-int8_t mcp4724_wr_ee(struct i2c_device *dev)
+int8_t mcp4725_wr_ee(struct i2c_device *dev)
 {
 	dev->driver_bits[0] |= 0x20;
 	return i2c_write(dev, dev->driver_bits, 3);
@@ -126,10 +126,10 @@ int tool_i2c_mcp4725_exec(struct i2c_master *master, uint8_t address, char *comm
 
 	/* if do write */
 	if (strcmp(command, "wr") == 0) {
-		mcp4724_wr(&dev, 0, value);
+		mcp4725_wr(&dev, 0, value);
 	} else if (strcmp(command, "ee") == 0) {
-		mcp4724_wr(&dev, 0, value);
-		mcp4724_wr_ee(&dev);
+		mcp4725_wr(&dev, 0, value);
+		mcp4725_wr_ee(&dev);
 	} else {
 		/* do read */
 		int32_t v = mcp4725_rd(&dev, 0);
