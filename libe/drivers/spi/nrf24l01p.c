@@ -21,6 +21,10 @@ int8_t nrf24l01p_open(struct nrf24l01p_device *nrf, struct spi_master *master, u
 	gpio_output(NRF24L01P_HARDCODED_CE);
 	gpio_low(NRF24L01P_HARDCODED_CE);
 
+#ifdef NRF24L01P_HARDCODED_IRQ
+	gpio_input(NRF24L01P_HARDCODED_IRQ);
+#endif
+
 	if (spi_open(&nrf->spi, master, ss)) {
 		spi_close(&nrf->spi);
 		return -1;
@@ -28,8 +32,8 @@ int8_t nrf24l01p_open(struct nrf24l01p_device *nrf, struct spi_master *master, u
 
 	/* base setup */
 	nrf24l01p_set_standby(nrf, true);
-	/* default config: enable crc (2 bytes), power down, rx mode */
-	nrf24l01p_write_reg(nrf, NRF24L01P_REG_CONFIG, 0x0d);
+	/* default config: enable crc (2 bytes), power down, rx mode, mask interrupts except tx */
+	nrf24l01p_write_reg(nrf, NRF24L01P_REG_CONFIG, 0x5d);
 	/* disable autoack */
 	nrf24l01p_write_reg(nrf, NRF24L01P_REG_EN_AA, 0x00);
 	/* data pipes: 0 and 1 */
@@ -217,17 +221,14 @@ int8_t nrf24l01p_recv(struct nrf24l01p_device *nrf, void *data)
 
 int8_t nrf24l01p_send(struct nrf24l01p_device *nrf, void *data)
 {
-	/* write data to tx buffer first */
-	IF_R(nrf24l01p_tx_wr(nrf, data) < 0, -1);
 	/* switch to transmit mode */
 	nrf24l01p_set_standby(nrf, true);
 	nrf24l01p_mode_tx(nrf);
 	nrf24l01p_set_standby(nrf, false);
-	/* wait data to be transmitted */
-	while (!(nrf24l01p_read_status(nrf) & 0x20));
+	/* write data to tx buffer first */
+	IF_R(nrf24l01p_tx_wr(nrf, data) < 0, -1);
 	/* switch back to listen mode */
 	nrf24l01p_set_standby(nrf, true);
-	nrf24l01p_flush_tx(nrf);
 	nrf24l01p_mode_rx(nrf);
 	nrf24l01p_set_standby(nrf, false);
 	return 32;
@@ -235,13 +236,31 @@ int8_t nrf24l01p_send(struct nrf24l01p_device *nrf, void *data)
 
 int8_t nrf24l01p_tx_wr(struct nrf24l01p_device *nrf, void *data)
 {
-	/* write data to tx buffer first */
-	uint8_t cmd[33] = {
-		/* tx buffer write command */
-		0xa0,
-	};
+	uint8_t cmd[33];
+
+	/* wait for empty tx fifo */
+	// do {
+	// 	cmd[0] = 0xff;
+	// 	spi_transfer(&nrf->spi, cmd, 1);
+	// } while (cmd[0] & 0x01);
+
+	/* transfer data */
+	cmd[0] = 0xa0; /* write tx buffer */
 	memcpy(cmd + 1, data, 32);
 	IF_R(spi_transfer(&nrf->spi, cmd, sizeof(cmd)), -1);
+
+	/* wait for send */
+#ifdef NRF24L01P_HARDCODED_IRQ
+	while (gpio_read(NRF24L01P_HARDCODED_IRQ));
+#else
+	do {
+		cmd[0] = 0xff;
+		spi_transfer(&nrf->spi, cmd, 1);
+	} while (!(cmd[0] & 0x20));
+#endif
+	/* clear interrupt */
+	nrf24l01p_write_reg(nrf, NRF24L01P_REG_STATUS, 0x20);
+
 	return 32;
 }
 

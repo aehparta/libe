@@ -3,7 +3,7 @@
  *
  * Thanks to Dmitry Grinberg's work:
  * http://dmitry.gr/index.php?r=05.Projects&proj=15&proj=11.%20Bluetooth%20LE%20fakery
- * 
+ *
  * Authors: Antti Partanen <aehparta@iki.fi>
  */
 
@@ -20,8 +20,8 @@ static void btLeWhiten(uint8_t* data, uint8_t size, uint8_t whitenCoeff);
 int nrf24l01p_ble_open(struct nrf24l01p_ble_device *nrf, struct spi_master *master, int ss, int ce, uint8_t mac[6])
 {
 	IF_R(nrf24l01p_open(&nrf->nrf, master, ss, ce), -1);
-	/* disable crc and always stay in transmit mode */
-	nrf24l01p_write_reg(&nrf->nrf, NRF24L01P_REG_CONFIG, 0x02);
+	/* disable crc and always stay in transmit mode, mask interrupts except tx */
+	nrf24l01p_write_reg(&nrf->nrf, NRF24L01P_REG_CONFIG, 0x52);
 	/* address width: 4 bytes */
 	nrf24l01p_write_reg(&nrf->nrf, NRF24L01P_REG_SETUP_AW, 0x02);
 	/* 1 Mbps */
@@ -34,6 +34,10 @@ int nrf24l01p_ble_open(struct nrf24l01p_ble_device *nrf, struct spi_master *mast
 	nrf24l01p_set_address(&nrf->nrf, NRF24L01P_REG_TX_ADDR, BYTE_SWAP_BITS(0x8e), BYTE_SWAP_BITS(0x89), BYTE_SWAP_BITS(0xbe), BYTE_SWAP_BITS(0xd6), 0x00);
 	/* default channel */
 	nrf24l01p_ble_set_channel(nrf, 0);
+
+	/* power down */
+	nrf24l01p_set_standby(&nrf->nrf, true);
+	nrf24l01p_set_power_down(&nrf->nrf, true);
 
 	/* save mac */
 	memcpy(&nrf->mac, mac, 6);
@@ -82,17 +86,15 @@ void nrf24l01p_ble_hop(struct nrf24l01p_ble_device *nrf)
 
 int nrf24l01p_ble_advertise(struct nrf24l01p_ble_device *nrf, void *data, uint8_t size)
 {
-	uint8_t l = 0;
+	uint8_t l = 1;
 	uint8_t cmd[33];
 
 	/* max size is 18 bytes */
 	IF_R(size > 18, -1);
-	memset(cmd + 18, 0, 33 - 18);
+	memset(cmd + 14, 0, 33 - 14);
 
-	/* tx buffer write command */
-	cmd[l++] = 0xa0;
-	/* we use 0x40 to say it is a non-connectable undirected advertisement and address we're sending is random (not assigned) */
-	cmd[l++] = 0x40;
+	/* we use 0x42 to say it is a non-connectable undirected advertisement and address we're sending is random (not assigned) */
+	cmd[l++] = 0x42;
 	/* length including mac (and flags), excluding crc */
 	cmd[l++] = 6 + 3 + size;
 	/* mac */
@@ -133,15 +135,35 @@ int nrf24l01p_ble_advertise(struct nrf24l01p_ble_device *nrf, void *data, uint8_
 		cmd[i] = BYTE_SWAP_BITS(cmd[i]);
 	}
 
-	/* write data to tx buffer */
-	IF_R(spi_transfer(&nrf->nrf.spi, cmd, sizeof(cmd)), -1);
+	/* wait for empty tx fifo */
+	// do {
+	// 	cmd[0] = 0xff;
+	// 	spi_transfer(&nrf->nrf.spi, cmd, 1);
+	// } while (cmd[0] & 0x01);
+
 	/* enable radio */
+	nrf24l01p_set_power_down(&nrf->nrf, false);
 	nrf24l01p_set_standby(&nrf->nrf, false);
-	/* wait data to be transmitted */
-	while (!(nrf24l01p_read_status(&nrf->nrf) & 0x20));
-	/* disable radio */
+
+	/* write data to tx buffer */
+	cmd[0] = 0xa0;
+	IF_R(spi_transfer(&nrf->nrf.spi, cmd, sizeof(cmd)), -1);
+
+	/* wait for send */
+#ifdef NRF24L01P_HARDCODED_IRQ
+	while (gpio_read(NRF24L01P_HARDCODED_IRQ));
+#else
+	do {
+		cmd[0] = 0xff;
+		spi_transfer(&nrf->nrf.spi, cmd, 1);
+	} while (!(cmd[0] & 0x20));
+#endif
+	/* clear interrupt */
+	nrf24l01p_write_reg(&nrf->nrf, NRF24L01P_REG_STATUS, 0x20);
+
+	/* power down */
 	nrf24l01p_set_standby(&nrf->nrf, true);
-	nrf24l01p_flush_tx(&nrf->nrf);
+	nrf24l01p_set_power_down(&nrf->nrf, true);
 
 	return size;
 }

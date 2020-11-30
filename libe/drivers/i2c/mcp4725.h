@@ -29,8 +29,8 @@ extern "C" {
 int8_t mcp4725_open(struct i2c_device *dev, struct i2c_master *master, uint8_t address);
 #define mcp4725_close(dev) i2c_close(dev)
 
-int8_t mcp4724_wr(struct i2c_device *dev, uint8_t channel, int32_t v);
-int8_t mcp4724_wr_ee(struct i2c_device *dev);
+int8_t mcp4725_wr(struct i2c_device *dev, uint8_t channel, int32_t v);
+int8_t mcp4725_wr_ee(struct i2c_device *dev);
 
 int32_t mcp4725_rd(struct i2c_device *dev, uint8_t channel);
 
