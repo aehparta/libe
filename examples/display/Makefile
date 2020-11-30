@@ -14,8 +14,8 @@ include $(LIBE_PATH)/init.mk
 # our own sources etc
 BUILD_BINS = display
 PROGRAM_BIN = display
+FONTS += fontfixed6x8 fontcm30
 display_SRC = main.c $(libe_SRC)
-display_SRC += $(LIBE_PATH)/libe/fonts/fontfixed6x8.c $(LIBE_PATH)/libe/fonts/fontcm30.c
 
 # build
 include $(LIBE_PATH)/build.mk
