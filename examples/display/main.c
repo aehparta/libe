@@ -37,7 +37,7 @@ int main(int argc, char *argv[])
 #endif
 	ERROR_IF_R(i2c_master_open(&i2c, context, CFG_I2C_FREQUENCY, CFG_I2C_SCL, CFG_I2C_SDA), 1, "unable to open i2c device");
 	ERROR_IF_R(ssd1306_i2c_open(&display, &i2c, 0, 0, 0), 1, "unable to open ssd1306 display");
-	opt_set(&display, DISPLAY_OPT_BUFFER, buffer);
+	optctl(&display, DISPLAY_OPT_SET_BUFFER, buffer);
 #endif
 #if defined(USE_DRIVER_SDL2)
 	ERROR_IF_R(display_sdl2_open(&display, NULL, 0, 0, 0), 1, "unable to open sdl2 display");
