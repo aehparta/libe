@@ -44,7 +44,7 @@ struct display {
 
 	uint8_t *buffer;
 
-#ifdef USE_SDL2
+#ifdef USE_DRIVER_SDL2
 	uint8_t scaling;
 #endif
 

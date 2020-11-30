@@ -2,7 +2,7 @@
  * Display driver: SDL2
  */
 
-#if defined(USE_DISPLAY) && defined(USE_SDL2)
+#if defined(USE_DISPLAY) && defined(USE_DRIVER_SDL2)
 
 #include <SDL2/SDL.h>
 #include <libe/libe.h>
@@ -48,17 +48,17 @@ void display_sdl2_close(struct display *display)
 	SDL_Quit();
 }
 
-int8_t display_sdl2_opt(struct display *display, int8_t opt, void *value)
+int8_t display_sdl2_opt(struct display *display, uint8_t opt, void *value)
 {
-	switch (opt->opt) {
+	switch (opt) {
 	case DISPLAY_OPT_GET_W:
-		opt->i16 = display->w;
+		(*((int16_t *)value)) = display->w;
 		return 0;
 	case DISPLAY_OPT_GET_H:
-		opt->i16 = display->h;
+		(*((int16_t *)value)) = display->h;
 		return 0;
 	case DISPLAY_OPT_SET_SCALING:
-		display->scaling = opt->f32 > 0 ? opt->f32 : 1;
+		display->scaling = (*((float *)value)) > 0 ? (*((float *)value)) : 1;
 		SDL_SetWindowSize((SDL_Window *)display->context, display->w * display->scaling, display->h * display->scaling);
 		SDL_DestroyRenderer((SDL_Renderer *)display->buffer);
 		display->buffer = (uint8_t *)SDL_CreateRenderer((SDL_Window *)display->context, -1, 0);

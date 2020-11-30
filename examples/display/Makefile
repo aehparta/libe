@@ -4,10 +4,9 @@ TARGET = X86
 
 # enable log and display
 USE += LOG DISPLAY
-# USE_X86 += SDL2
-USE_AVR += I2C
-
-USE_ESP32 += I2C
+USE_X86 += DRIVER_SDL2
+USE_AVR += I2C DRIVER_SSD1306
+USE_ESP32 += I2C DRIVER_SSD1306
 
 # init
 include $(LIBE_PATH)/init.mk

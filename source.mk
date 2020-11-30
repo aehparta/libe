@@ -160,15 +160,16 @@ endif
 
 # add display drivers and draw functions
 ifneq ($(filter $(libe_DEFINES),USE_DISPLAY),)
-    libe_SRC += \
-        $(LIBE_PATH)/libe/draw.c \
-        $(LIBE_PATH)/libe/draw_string.c \
-        $(LIBE_PATH)/libe/drivers/display/ssd1306.c
-    ifneq ($(filter $(libe_DEFINES),USE_SDL2),)
-        libe_SRC += $(LIBE_PATH)/libe/drivers/display/sdl2.c
-    endif
+    libe_SRC += $(LIBE_PATH)/libe/draw.c $(LIBE_PATH)/libe/draw_string.c
     libe_SRC += $(foreach font,$(FONTS),$(LIBE_PATH)/libe/fonts/$(font).c)
     libe_SRC += $(foreach font,$(FONTS_$(TARGET)),$(LIBE_PATH)/libe/fonts/$(font).c)
     libe_SRC += $(foreach font,$(FONTS_$(MCU)),$(LIBE_PATH)/libe/fonts/$(font).c)
     libe_SRC += $(foreach font,$(fonts),$(LIBE_PATH)/libe/fonts/$(font).c)
+    # display drivers
+    ifneq ($(filter $(libe_DEFINES),USE_DRIVER_SSD1306),)
+        libe_SRC += $(LIBE_PATH)/libe/drivers/display/ssd1306.c
+    endif
+    ifneq ($(filter $(libe_DEFINES),USE_DRIVER_SDL2),)
+        libe_SRC += $(LIBE_PATH)/libe/drivers/display/sdl2.c
+    endif
 endif

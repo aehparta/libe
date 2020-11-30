@@ -98,6 +98,6 @@ ifneq ($(ldflags),)
 endif
 
 # add libraries
-ifneq ($(filter $(libe_DEFINES),USE_SDL2),)
+ifneq ($(filter $(libe_DEFINES),USE_DRIVER_SDL2),)
 	LDFLAGS += -lSDL2
 endif
