@@ -106,6 +106,10 @@ ifneq ($(filter $(libe_DEFINES),USE_I2C),)
     else
         libe_SRC += $(T_PATH)/i2c.c
     endif
+    # include device drivers
+    ifneq ($(filter $(libe_DEFINES),USE_DRIVER_I2C_AK1595),)
+        libe_SRC += $(LIBE_PATH)/libe/drivers/i2c/ak1595.c
+    endif
 endif
 
 # add internal adc drivers
