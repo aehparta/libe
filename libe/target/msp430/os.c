@@ -7,7 +7,7 @@
 #include <libe/libe.h>
 
 
-int os_init(void)
+int8_t os_init(void)
 {
 	/* disable watchdog */
 	WDTCTL = WDTPW + WDTHOLD;

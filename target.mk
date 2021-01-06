@@ -29,7 +29,7 @@ else ifeq ($(TARGET),pic16)
     # microchip pic 16-bit
 else ifeq ($(TARGET),pic32)
     # microchip pic 32-bit
-else ifeq ($(TARGET),msp430)
+else ifeq ($(TARGET),MSP430)
     # ti msp430
 else
     $(error unsupported target or target not set, either set default target in Makefile using TARGET=<TARGET> or give target=<target> to make)

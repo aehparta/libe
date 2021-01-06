@@ -13,15 +13,6 @@
 extern "C" {
 #endif
 
-/* ftdi spi master context */
-struct spi_master {
-};
-
-/* ftdi spi device context */
-struct spi_device {
-	uint8_t ss;
-};
-
 #ifdef __cplusplus
 }
 #endif
