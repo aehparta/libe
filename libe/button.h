@@ -2,8 +2,8 @@
  * Simple button helper macros for gpio attached buttons.
  */
 
-#ifndef _BUTTON_H_
-#define _BUTTON_H_
+#ifndef _LIBE_BUTTON_H_
+#define _LIBE_BUTTON_H_
 #ifdef USE_GPIO
 
 #ifdef __cplusplus
@@ -25,4 +25,4 @@ extern "C" {
 #endif
 
 #endif
-#endif /* _BUTTON_H_ */
+#endif /* _LIBE_BUTTON_H_ */
