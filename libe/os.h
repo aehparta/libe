@@ -14,7 +14,13 @@ extern "C" {
 
 #include <stdbool.h>
 #include <stdint.h>
+#ifndef TARGET_MSP430
 #include <time.h>
+#else
+#ifdef MSP430_USING_TI_GCC
+#include <time.h>
+#endif
+#endif
 
 #ifdef TARGET_AVR
 #include "target/avr/os.h"
@@ -29,6 +35,8 @@ extern "C" {
 #define time_t uint32_t
 #elif TARGET_ESP32
 #include "target/esp32/os.h"
+#elif TARGET_ESP32
+#include "target/msp430/os.h"
 #elif TARGET_X86
 #include <signal.h>
 #include "target/x86/os.h"

@@ -68,7 +68,9 @@ clean: $(CLEAN_TARGETS_ALL)
 	@$(REMOVE) -rf .build.*
 
 $(CLEAN_TARGETS_ALL):
+ifneq ($(PROGRAM_BIN),)
 	@$(REMOVE) -f $(PROGRAM_BIN)-$(basename $(@)).*
+endif
 
 hex:
 ifneq ($(OBJCOPY),)

@@ -25,18 +25,14 @@ else ifeq ($(TARGET),pic16)
 else ifeq ($(TARGET),pic32)
     # microchip pic 32-bit
     C_ARCH_PREFIX       ?= xc32-
-else ifeq ($(TARGET),msp430)
+else ifeq ($(TARGET),MSP430)
     # ti msp430
-#     ifeq ($(MSP430_BASE_DIR),)
-#         $(error MSP430_BASE_DIR is not set, install example CCS and point this to msp430 base under it)
-#     endif
-#     ifeq ($(MSP430_TOOLS_DIR),)
-#         $(error MSP430_TOOLS_DIR is not set, install example CCS and point this to msp430 tools under it)
-#     endif
-    MSP430_INC_DIR     ?= $(HOME)/ti/ccs920/ccs/ccs_base/msp430/include_gcc/
-    C_ARCH_PREFIX      ?= msp430-elf-
-    MCU                ?= msp430f1121
-    F_CPU              ?= 4000000
+    MSP430_GCC_PATH     ?= /opt/ti/msp430-gcc
+    ifeq ($(MSP430_GCC_PATH),)
+        C_ARCH_PREFIX   ?= msp430-
+    else
+        C_ARCH_PREFIX   ?= $(MSP430_GCC_PATH)/bin/msp430-elf-
+    endif
 else
     $(error libe: unsupported target or target not set)
 endif
@@ -79,24 +75,23 @@ else ifeq ($(TARGET),pic16)
     libe_LDFLAGS += -Wl,--gc-sections
     OBJCOPY  = 
     BIN2HEX  = xc16-bin2hex
-    OPTIMIZATION ?= 2
 else ifeq ($(TARGET),pic32)
     libe_CFLAGS  += -mprocessor=$(MCU)
     libe_CFLAGS  += -ffunction-sections -fdata-sections -no-legacy-libc
     libe_LDFLAGS += -mprocessor=$(MCU)
     libe_LDFLAGS += -Wl,--gc-sections -no-legacy-libc
     libe_LDFLAGS += -Wl,--defsym=_min_heap_size=0,--gc-sections,--no-code-in-dinit,--no-dinit-in-serial-mem,-Map=$(TARGET).map,--cref
-    OPTIMIZATION ?= 2
-else ifeq ($(TARGET),msp430)
-    libe_CFLAGS  += -mmcu=$(MCU)
-    libe_CFLAGS  += -I$(MSP430_INC_DIR)
+else ifeq ($(TARGET),MSP430)
+    libe_CFLAGS  += -mmcu=$(shell echo $(MCU) | tr '[:upper:]' '[:lower:]')
     libe_CFLAGS  += -ffunction-sections -fdata-sections
-    #libe_CFLAGS  += -mlarge -mcode-region=either -mdata-region=either
-    libe_LDFLAGS += -mmcu=$(MCU)
-    libe_LDFLAGS += -L$(MSP430_INC_DIR)
-    libe_LDFLAGS += -T$(MCU).ld
-    libe_LDFLAGS += -Wl,--gc-sections -mhwmult=none
-    #libe_LDFLAGS += -mlarge -mcode-region=either -mdata-region=either
+    libe_LDFLAGS += -mmcu=$(shell echo $(MCU) | tr '[:upper:]' '[:lower:]')
+    libe_LDFLAGS += -Wl,--gc-sections
+    ifneq ($(MSP430_GCC_PATH),)
+        libe_CFLAGS  += -I$(MSP430_GCC_PATH)/include -DMSP430_USING_TI_GCC
+        libe_LDFLAGS += -L$(MSP430_GCC_PATH)/include
+    endif
+    STDC ?= c99
+    STDCXX ?= c++99
 else ifeq ($(TARGET),X86)
     libe_LDFLAGS += -lftdi1 -lrt -lpthread
 else ifeq ($(TARGET),RPI)
@@ -110,9 +105,11 @@ OBJ_EXT      ?= .o
 LIB_EXT      ?= .a
 BIN_EXT      ?= .elf
 ifeq ($(DEBUG),1)
-    OPTIMIZATION ?= 0
+    OPTIMIZATION = 0
 endif
 OPTIMIZATION ?= s
+STDC ?= c11
+STDCXX ?= c++11
 
 # add target definition
 libe_CFLAGS     += -DTARGET=$(TARGET) -DTARGET_$(TARGET)
@@ -131,7 +128,7 @@ endif
 ifeq ($(TARGET),PIC8)
     libe_CFLAGS += -O$(OPTIMIZATION) -std=c99
 else
-    libe_CFLAGS += -D_GNU_SOURCE -O$(OPTIMIZATION) -g -Wall -std=c11 -Wstrict-prototypes
-    libe_CXXFLAGS += -D_GNU_SOURCE -O$(OPTIMIZATION) -g -Wall -std=c++11
+    libe_CFLAGS += -D_GNU_SOURCE -O$(OPTIMIZATION) -g -Wall -std=$(STDC) -Wstrict-prototypes
+    libe_CXXFLAGS += -D_GNU_SOURCE -O$(OPTIMIZATION) -g -Wall -std=$(STDCXX)
 #     libe_CFLAGS += -Werror -Wno-unused-variable
 endif
