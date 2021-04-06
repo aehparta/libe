@@ -2,7 +2,11 @@
 # programming support using avrdude
 
 # avrdude base settings
-AVRDUDE ?= avrdude
+ifeq ($(AVRDUDE_SUDO),1)
+    AVRDUDE ?= sudo avrdude
+else
+    AVRDUDE ?= avrdude
+endif
 AVRDUDE_PROGRAMMER ?= avrisp2
 ifneq ($(programmer),)
     AVRDUDE_PROGRAMMER = $(programmer)
