@@ -4,11 +4,8 @@
 
 #include <stdio.h>
 #include <string.h>
-#include <mcrypt.h>
 #include <openssl/aes.h>
-#include <openssl/evp.h>
 #include <libe/libe.h>
-
 
 int aes128_do(uint8_t key[16])
 {
@@ -20,7 +17,7 @@ int aes128_do(uint8_t key[16])
 	printf(LDC_BLUEB "  Using key: %.16s\n", key);
 
 	/* aes block size must be multiples of 16 bytes */
-	uint8_t data[2][33] = { "abcdefgh12345678\0", "abcdefgh12345678dataDATAmoreMORE\0" };
+	uint8_t data[2][33] = {"abcdefgh12345678\0", "abcdefgh12345678dataDATAmoreMORE\0"};
 
 	/* using our lib */
 	for (int i = 0; i < 2; i++) {
@@ -145,7 +142,7 @@ int aes256_do(uint8_t key[32])
 	printf(LDC_BLUEB "  Using key: %.32s\n", key);
 
 	/* aes block size must be multiples of 16 bytes */
-	uint8_t data[2][33] = { "abcdefgh12345678\0", "abcdefgh12345678dataDATAmoreMORE\0" };
+	uint8_t data[2][33] = {"abcdefgh12345678\0", "abcdefgh12345678dataDATAmoreMORE\0"};
 
 	/* using our lib */
 	for (int i = 0; i < 2; i++) {
@@ -268,7 +265,7 @@ int rc5_do(uint8_t key[16])
 	printf(LDC_BLUEB "  Using key: %.16s\n", key);
 
 	/* rc5 block size used by libe is 8 bytes */
-	uint8_t data[2][17] = { "dataDATA\0", "dataDATAmoreMORE\0" };
+	uint8_t data[2][17] = {"dataDATA\0", "dataDATAmoreMORE\0"};
 
 	/* setup rc5 context */
 	rc5_context_t rc5;
@@ -320,7 +317,7 @@ int xtea_do(uint8_t key[16])
 	printf(LDC_BLUEB "  Using key: %.16s\n", key);
 
 	/* xtea block size must be multiples of 8 bytes */
-	uint8_t data[2][17] = { "dataDATA\0", "dataDATAmoreMORE\0" };
+	uint8_t data[2][17] = {"dataDATA\0", "dataDATAmoreMORE\0"};
 
 	/* using our lib */
 	for (int i = 0; i < 2; i++) {
@@ -331,7 +328,7 @@ int xtea_do(uint8_t key[16])
 		printf(LDC_CYANB "  Original data: %s (size: %lu)\n", data[i], size);
 
 		for (size_t j = 0; j < size; j += 8) {
-			xtea_encrypt(p + j,  key);
+			xtea_encrypt(p + j, key);
 		}
 
 		printf("  Encrypted HEX: ");
@@ -368,7 +365,7 @@ int xxtea_do(uint8_t key[16])
 	printf(LDC_BLUEB "  Using key: %.16s\n", key);
 
 	/* xxtea block size must be multiples of 4 bytes and at least 8 bytes */
-	uint8_t data[3][17] = { "dataDATA\0",  "dataDATA1234\0", "dataDATAmoreMORE\0" };
+	uint8_t data[3][17] = {"dataDATA\0", "dataDATA1234\0", "dataDATAmoreMORE\0"};
 
 	/* using our lib */
 	for (int i = 0; i < 3; i++) {
@@ -412,6 +409,7 @@ int main(int argc, char *argv[])
 		memset(key, 0, sizeof(key));
 		strncpy((char *)key, argv[1], sizeof(key));
 	} else {
+		srand(time(NULL));
 		for (int i = 0; i < sizeof(key); i++) {
 			do {
 				key[i] = (uint8_t)rand();

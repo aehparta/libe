@@ -10,7 +10,7 @@ include $(LIBE_PATH)/init.mk
 # our own sources etc
 BUILD_BINS = crypt
 crypt_SRC = main.c $(libe_SRC)
-LDFLAGS += -lmcrypt -lssl -lcrypto
+LDFLAGS += -lcrypto
 
 # build
 include $(LIBE_PATH)/build.mk
