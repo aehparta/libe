@@ -8,6 +8,7 @@ Generic library targeted mostly for microcontrollers.
 ## Status
 
 Progress happens whenever I have need/time for this library.
+This, in reality, means rarely.
 
 ## Features
 
