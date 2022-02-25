@@ -1,5 +1,5 @@
 # libe
-***work in progress, probably forever***
+***Hobby project, so work in progress, probably forever***
 
 Generic library targeted mostly for microcontrollers.
 
