@@ -6,6 +6,7 @@
 
 #ifndef _LIBE_SPI_H_
 #define _LIBE_SPI_H_
+#ifdef USE_SPI
 
 #include <stdint.h>
 
@@ -143,4 +144,5 @@ struct spi_device {
 }
 #endif
 
+#endif /* USE_SPI */
 #endif /* _LIBE_SPI_H_ */
