@@ -11,6 +11,8 @@ extern "C" {
 
 #include <xc.h>
 
+#define _BV(_PIN) (1 << (_PIN))
+
 int os_init(void);
 #define os_quit()
 #define os_wdt_reset()    \

@@ -118,7 +118,7 @@ struct spi_device {
 
 /* default spi driver if given */
 #if !defined(spi_master_open) && defined(SPI_DRIVER)
-#define SPI_DRIVER_MACRO1(driver, func) driver ## func
+#define SPI_DRIVER_MACRO1(driver, func) driver##func
 #define SPI_DRIVER_MACRO2(driver, func) SPI_DRIVER_MACRO1(driver, func)
 #define spi_master_open SPI_DRIVER_MACRO2(SPI_DRIVER, _master_open)
 #define spi_master_close SPI_DRIVER_MACRO2(SPI_DRIVER, _master_close)
@@ -126,13 +126,6 @@ struct spi_device {
 #define spi_close SPI_DRIVER_MACRO2(SPI_DRIVER, _close)
 #define spi_transfer SPI_DRIVER_MACRO2(SPI_DRIVER, _transfer)
 #endif
-
-// int spi_master_open(struct spi_master *master, void *context, uint32_t frequency, uint8_t miso, uint8_t mosi, uint8_t sclk);
-// void spi_master_close(struct spi_master *master);
-
-// int spi_open(struct spi_device *device, struct spi_master *master, uint8_t ss);
-// void spi_close(struct spi_device *device);
-// int spi_transfer(struct spi_device *device, uint8_t *data, size_t size);
 
 /* drivers */
 #ifdef USE_DRIVER_NRF24L01P

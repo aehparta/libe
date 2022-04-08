@@ -5,9 +5,9 @@
  *  Antti Partanen <aehparta@iki.fi>
  */
 
+#include <sys/attribs.h>
 #include <libe/os.h>
 #include <libe/log.h>
-
 
 int os_init(void)
 {
@@ -38,4 +38,9 @@ void os_sleepi(time_t t)
 
 void os_sleepf(os_time_t t)
 {
+}
+
+void __ISR(_CORE_TIMER_VECTOR, IPL2AUTO) CoreTimerHandler(void)
+{
+	IFS0bits.T2IF = 0;
 }

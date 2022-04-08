@@ -2,8 +2,8 @@
  * pic8 specific gpio.
  */
 
-#ifndef _TARGET_GPIO_H_
-#define _TARGET_GPIO_H_
+#ifndef _TARGET_PIC_GPIO_H_
+#define _TARGET_PIC_GPIO_H_
 
 #ifdef __cplusplus
 extern "C" {
@@ -148,4 +148,4 @@ static inline uint8_t gpio_read(uint8_t pin)
 }
 #endif
 
-#endif /* _TARGET_OS_H_ */
+#endif /* _TARGET_PIC_GPIO_H_ */
