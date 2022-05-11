@@ -19,10 +19,10 @@ else ifeq ($(TARGET),AVR)
 else ifeq ($(TARGET),PIC8)
     # microchip pic 8-bit
     C_ARCH_PREFIX       ?= xc8-
-else ifeq ($(TARGET),pic16)
+else ifeq ($(TARGET),PIC16)
     # microchip pic 16-bit
     C_ARCH_PREFIX       ?= xc16-
-else ifeq ($(TARGET),pic32)
+else ifeq ($(TARGET),PIC32)
     # microchip pic 32-bit
     C_ARCH_PREFIX       ?= xc32-
 else ifeq ($(TARGET),MSP430)
@@ -33,8 +33,10 @@ else ifeq ($(TARGET),MSP430)
     else
         C_ARCH_PREFIX   ?= $(MSP430_GCC_PATH)/bin/msp430-elf-
     endif
+else ifneq ($(TARGET),)
+    $(error libe: target "$(TARGET)" not configured yet for use)
 else
-    $(error libe: unsupported target or target not set)
+    $(error libe: target not set)
 endif
 
 # tools
@@ -68,19 +70,20 @@ else ifeq ($(TARGET),PIC8)
     OBJCOPY  = 
     OBJDUMP  =
     OPTIMIZATION ?= 2
-else ifeq ($(TARGET),pic16)
+else ifeq ($(TARGET),PIC16)
     libe_CFLAGS  += -mcpu=$(MCU)
     libe_CFLAGS  += -ffunction-sections -fdata-sections -fomit-frame-pointer -no-legacy-libc -mpa
     libe_LDFLAGS += -T p$(MCU).gld
     libe_LDFLAGS += -Wl,--gc-sections
     OBJCOPY  = 
     BIN2HEX  = xc16-bin2hex
-else ifeq ($(TARGET),pic32)
+else ifeq ($(TARGET),PIC32)
     libe_CFLAGS  += -mprocessor=$(MCU)
     libe_CFLAGS  += -ffunction-sections -fdata-sections -no-legacy-libc
     libe_LDFLAGS += -mprocessor=$(MCU)
-    libe_LDFLAGS += -Wl,--gc-sections -no-legacy-libc
+    libe_LDFLAGS += -Wl,--gc-sections
     libe_LDFLAGS += -Wl,--defsym=_min_heap_size=0,--gc-sections,--no-code-in-dinit,--no-dinit-in-serial-mem,-Map=$(TARGET).map,--cref
+    OPTIMIZATION ?= 2
 else ifeq ($(TARGET),MSP430)
     libe_CFLAGS  += -mmcu=$(shell echo $(MCU) | tr '[:upper:]' '[:lower:]')
     libe_CFLAGS  += -ffunction-sections -fdata-sections

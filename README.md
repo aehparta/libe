@@ -1,5 +1,5 @@
 # libe
-***work in progress, not stable***
+***Hobby project, so work in progress, probably forever***
 
 Generic library targeted mostly for microcontrollers.
 
@@ -7,16 +7,8 @@ Generic library targeted mostly for microcontrollers.
 
 ## Status
 
-I am starting to feel that the following are well enough designed and can be considered stable soon:
-
-* Build system
-* System setup
-    * Time management side of the system API is not yet properly thought through
-    * os_delay_ms() and os_delay_us() are though
-* GPIO 
-* I2C
-* Generic sensor interface
-    * Temperature&humidity interface
+Progress happens whenever I have need/time for this library.
+This, in reality, means rarely.
 
 ## Features
 
@@ -55,13 +47,6 @@ Generic I2C interface either in bitbang mode or using native hardware.
 
 * MCP3221: Microchip 12-bit ADC
 * HDC1080: Ti temperature and humidity sensor
-
-***Coming but not yet available (already written though, need a bit of porting to new libe)***
-
-* CAP1293: Microchip touch sensor
-* FAN5702: Fairchild LED driver
-* SHT21: Sensirion temperature and humidity sensor
-* MCP39F521: Microchip power monitor
 
 ### Log and debug
 

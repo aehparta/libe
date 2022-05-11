@@ -75,7 +75,7 @@ int8_t rot_enc_opt(struct rot_enc *re, uint8_t opt, void *value)
 		*((float *)value) = re->value;
 		return 0;
 	case ROT_ENC_OPT_SET_VALUE:
-		re->min = *((float *)value);
+		re->value = *((float *)value);
 		return 0;
 	case ROT_ENC_OPT_GET_MIN:
 		*((float *)value) = re->min;

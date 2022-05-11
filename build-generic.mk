@@ -12,7 +12,7 @@ include $(LIBE_PATH)/cc.mk
 BUILDDIR ?= .build.$(shell echo $(TARGET) | tr '[:upper:]' '[:lower:]')
 
 # all targets listed
-TARGETS_ALL = AVR PIC8 ESP32 X86
+TARGETS_ALL = AVR PIC8 PIC16 PIC32 MSP430 ESP32 X86
 
 # cleanup
 CLEAN_TARGETS_ALL = $(addsuffix .clean,$(TARGETS_ALL))
