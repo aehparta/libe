@@ -3,7 +3,7 @@
 TARGET = X86
 
 # enable log and i2c
-USE += I2C LOG
+USE += I2C LOG DRIVER_HDC1080 DRIVER_SHT21 DRIVER_SHT31
 
 # set default clock speed to 1 MHz for this example
 F_CPU=1000000

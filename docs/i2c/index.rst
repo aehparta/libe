@@ -216,7 +216,7 @@ Functions
 	Write register value to I2C device.
 	This is same as writing two bytes to I2C device, in this case ``reg`` followed by ``value``.
 
-.. c:function::  uint8_t i2c_read_reg_byte(struct i2c_device *dev, uint8_t reg)
+.. c:function:: uint8_t i2c_read_reg_byte(struct i2c_device *dev, uint8_t reg)
 
 	:param dev: previously opened i2c device
 	:type dev: struct i2c_device *
