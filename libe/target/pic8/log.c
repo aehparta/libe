@@ -16,6 +16,10 @@
 /* RC6 as default TX pin */
 #if !defined(PIC8_LOG_TX_PPS) && defined(RC6PPS)
 #define PIC8_LOG_TX_PPS RC6PPS
+/* works for some */
+#ifndef PIC8_LOG_TX_PPS_VALUE
+#define PIC8_LOG_TX_PPS_VALUE 0x14
+#endif
 #endif
 
 /* registers */
@@ -58,9 +62,9 @@ void putch(char ch)
 
 int log_init(void)
 {
-	/* if device supports mapping of pins, TX to RC6 as default */
+	/* if device supports mapping of pins */
 #ifdef PIC8_LOG_TX_PPS
-	PIC8_LOG_TX_PPS = 0x14;
+	PIC8_LOG_TX_PPS = PIC8_LOG_TX_PPS_VALUE;
 #endif
 
 	/* enable uart transmit only and calculate baud rate setting */

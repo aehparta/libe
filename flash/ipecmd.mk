@@ -15,5 +15,5 @@ ifneq ($(programmer),)
 endif
 
 program: $(PROGRAM_BIN)
-	$(IPECMD_RUN) -TP$(IPECMD_PROGRAMMER) -P$(MCU) -E -MP -OL -F$^$(TARGET_EXT).hex
+	$(IPECMD_RUN) -TP$(IPECMD_PROGRAMMER) -P$(MCU) -J -E -MP -OL -F$^$(TARGET_EXT).hex
 
