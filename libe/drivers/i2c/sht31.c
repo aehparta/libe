@@ -17,7 +17,7 @@
 
 int8_t sht31_open(struct i2c_device *dev, struct i2c_master *master, int32_t reference, int32_t repeatability)
 {
-	uint8_t addr = reference ? SHT31_ADDR : reference;
+	uint8_t addr = reference ? SHT31_ADDR : (uint8_t)reference;
 	/* try to detect sht31 */
 	error_if(i2c_open(dev, master, addr), -1, "sht31 not detected");
 	/* save repeatability */
@@ -47,10 +47,10 @@ int8_t sht31_read(struct i2c_device *dev, float *t, float *h)
 
 	/* convert result */
 	if (t) {
-		*t = (float)(data[0] << 8 | data[1]) / 65535.0 * 175 - 45;
+		*t = (float)(uint16_t)(data[0] << 8 | data[1]) / 65535.0f * 175.0f - 45.0f;
 	}
 	if (h) {
-		*h = (float)(data[3] << 8 | data[4]) / 65535.0 * 315 - 49;
+		*h = (float)(uint16_t)(data[3] << 8 | data[4]) / 65535.0f * 315.0f - 49.0f;
 	}
 
 	return 0;

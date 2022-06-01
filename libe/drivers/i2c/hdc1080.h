@@ -23,10 +23,11 @@ int8_t hdc1080_open(struct i2c_device *dev, struct i2c_master *master, int32_t r
 #define hdc1080_close(dev) i2c_close(dev)
 int8_t hdc1080_heater(struct i2c_device *dev, bool on);
 int8_t hdc1080_read(struct i2c_device *dev, float *t, float *h);
+int8_t hdc1080_read_raw(struct i2c_device *dev, uint16_t *t, uint16_t *h);
 
 /* hook when compiling i2c tool */
 #ifdef COMPILE_TOOL_I2C
-void tool_i2c_hdc1080_help(void);
+    void tool_i2c_hdc1080_help(void);
 int tool_i2c_hdc1080_exec(struct i2c_master *master, uint8_t address, char *command, int argc, char *argv[]);
 #pragma push_macro("tool_i2c_chips")
 #undef tool_i2c_chips

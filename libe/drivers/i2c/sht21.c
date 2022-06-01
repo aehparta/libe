@@ -85,7 +85,7 @@ static float sht21_read_temperature(struct i2c_device *dev)
 	/* clear status bits */
 	data[1] &= 0xfc;
 
-	return (float)(data[0] << 8 | data[1]) / 65536.0 * 175.72 - 46.85;
+	return (float)(uint16_t)(data[0] << 8 | data[1]) / 65536.0f * 175.72f - 46.85f;
 }
 
 static float sht21_read_humidity(struct i2c_device *dev)
@@ -102,7 +102,7 @@ static float sht21_read_humidity(struct i2c_device *dev)
 	/* clear status bits */
 	data[1] &= 0xfc;
 
-	return (float)(data[0] << 8 | data[1]) / 65536.0 * 125.0 - 6.0;
+	return (float)(uint16_t)(data[0] << 8 | data[1]) / 65536.0f * 125.0f - 6.0f;
 }
 
 int8_t sht21_read(struct i2c_device *dev, float *t, float *h)

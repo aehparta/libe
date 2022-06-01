@@ -90,11 +90,6 @@ endif
 # add i2c and drivers for chips
 ifneq ($(filter $(libe_DEFINES),USE_I2C),)
     libe_SRC += $(LIBE_PATH)/libe/i2c.c
-        # $(LIBE_PATH)/libe/drivers/i2c/fan5702.c
-        # $(LIBE_PATH)/libe/drivers/i2c/cap1293.c
-        # $(LIBE_PATH)/libe/drivers/i2c/act4751.c
-        # $(LIBE_PATH)/libe/drivers/i2c/mcp3221.c
-        # $(LIBE_PATH)/libe/drivers/i2c/mcp4725.c
     ifneq ($(filter $(libe_DEFINES),USE_I2C_BITBANG),)
         libe_SRC += $(LIBE_PATH)/libe/drivers/i2c/bitbang.c
     else ifdef TARGET_LINUX
@@ -114,6 +109,21 @@ ifneq ($(filter $(libe_DEFINES),USE_I2C),)
     endif
     ifneq ($(filter $(libe_DEFINES),USE_DRIVER_SHT31),)
         libe_SRC += $(LIBE_PATH)/libe/drivers/i2c/sht31.c
+    endif
+    ifneq ($(filter $(libe_DEFINES),USE_DRIVER_FAN5702),)
+        libe_SRC += $(LIBE_PATH)/libe/drivers/i2c/fan5702.c
+    endif
+    ifneq ($(filter $(libe_DEFINES),USE_DRIVER_CAP1293),)
+        libe_SRC += $(LIBE_PATH)/libe/drivers/i2c/cap1293.c
+    endif
+    ifneq ($(filter $(libe_DEFINES),USE_DRIVER_ACT4751),)
+        libe_SRC += $(LIBE_PATH)/libe/drivers/i2c/act4751.c
+    endif
+    ifneq ($(filter $(libe_DEFINES),USE_DRIVER_MCP3221),)
+        libe_SRC += $(LIBE_PATH)/libe/drivers/i2c/mcp3221.c
+    endif
+    ifneq ($(filter $(libe_DEFINES),USE_DRIVER_MCP4725),)
+        libe_SRC += $(LIBE_PATH)/libe/drivers/i2c/mcp4725.c
     endif
 endif
 

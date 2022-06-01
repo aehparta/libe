@@ -66,10 +66,10 @@ int8_t hdc1080_read(struct i2c_device *dev, float *t, float *h)
 
 	/* convert result bits to actual temperature */
 	if (t) {
-		*t = (float)(data[0] << 8 | data[1]) / 65536.0 * 165.0 - 40.0;
+		*t = (float)(uint16_t)(data[0] << 8 | data[1]) / 65536.0f * 165.0f - 40.0f;
 	}
 	if (h) {
-		*h = (float)(data[2] << 8 | data[3]) / 65536.0 * 100.0;
+		*h = (float)(uint16_t)(data[2] << 8 | data[3]) / 65536.0f * 100.0f;
 	}
 
 	return 0;
