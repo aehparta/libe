@@ -105,6 +105,6 @@ void log_msg(int level, const char *file, int line, const char *func, const char
 	// va_start(args, msg);
 	// vprintf(NULL, msg, args);
 	// va_end(args);
-	LOG_PRINTF(msg);
+	LOG_PRINTF("%s", msg);
 	LOG_PRINTF("\r\n");
 }

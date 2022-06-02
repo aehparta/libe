@@ -12,39 +12,39 @@
 
 int8_t os_init(void)
 {
-	/* all as digital inputs as default */
+	/* all as digital outputs as default */
 #ifdef TRISA
-	TRISA = 0xff;
+	TRISA = 0x00;
 #endif
 #ifdef ANSELA
 	ANSELA = 0x00;
 #endif
 #ifdef TRISB
-	TRISB = 0xff;
+	TRISB = 0x00;
 #endif
 #ifdef ANSELB
 	ANSELB = 0x00;
 #endif
 #ifdef TRISC
-	TRISC = 0xff;
+	TRISC = 0x00;
 #endif
 #ifdef ANSELC
 	ANSELC = 0x00;
 #endif
 #ifdef TRISD
-	TRISD = 0xff;
+	TRISD = 0x00;
 #endif
 #ifdef ANSELD
 	ANSELD = 0x00;
 #endif
 #ifdef TRISE
-	TRISE = 0xff;
+	TRISE = 0x00;
 #endif
 #ifdef ANSELE
 	ANSELE = 0x00;
 #endif
 #ifdef TRISF
-	TRISF = 0xff;
+	TRISF = 0x00;
 #endif
 #ifdef ANSELF
 	ANSELF = 0x00;
