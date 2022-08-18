@@ -9,6 +9,7 @@
 #include <esp_heap_caps.h>
 #include <libe/libe.h>
 
+#ifdef USE_SPI
 
 int spii_master_open(struct spi_master *master, void *context, uint32_t frequency, uint8_t miso, uint8_t mosi, uint8_t sclk)
 {
@@ -79,3 +80,5 @@ int spii_transfer(struct spi_device *device, uint8_t *data, size_t size)
 
 	return 0;
 }
+
+#endif
