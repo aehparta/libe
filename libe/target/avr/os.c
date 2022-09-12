@@ -16,32 +16,6 @@ static volatile time_t seconds = 0;
 
 int8_t os_init(void)
 {
-	/* disable internal pull-up and set every pin input as default */
-#ifdef DDRA
-	PORTA = 0x00;
-	DDRA = 0x00;
-#endif
-#ifdef DDRB
-	PORTB = 0x00;
-	DDRB = 0x00;
-#endif
-#ifdef DDRC
-	PORTC = 0x00;
-	DDRC = 0x00;
-#endif
-#ifdef DDRD
-	PORTD = 0x00;
-	DDRD = 0x00;
-#endif
-#ifdef DDRE
-	PORTE = 0x00;
-	DDRE = 0x00;
-#endif
-#ifdef DDRF
-	PORTF = 0x00;
-	DDRF = 0x00;
-#endif
-
 #ifdef USE_AVR_CLOCK_DIV_DISABLE
 #ifdef FUSE_CKDIV8
 	/* change clock from default 1MHZ (CKDIV8) to 8MHZ (no CKDIV8) */
