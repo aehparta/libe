@@ -1,5 +1,5 @@
 /*
- * Scan i2c bus for devices.
+ * Display example.
  */
 
 #include <libe/libe.h>
