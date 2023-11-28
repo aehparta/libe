@@ -47,15 +47,11 @@ int main(int argc, char *argv[])
 
 	/* read mcp3221 */
 	while (1) {
-		int32_t v1 = 0, v2 = 0;
-		v1 += mcp3221_rd(&dev1, 0);
-		v2 += mcp3221_rd(&dev2, 0);
-		if (v1 < 0) {
-			ERROR_MSG("failed reading mcp3221-a2");
-		}
-		if (v2 < 0) {
-			ERROR_MSG("failed reading mcp3221-a5");
-		}
+		int32_t v1, v2;
+		v1 = mcp3221_rd(&dev1, 0);
+		v2 = mcp3221_rd(&dev2, 0);
+		ERROR_IF(v1 < 0, "failed reading mcp3221-a2");
+		ERROR_IF(v2 < 0, "failed reading mcp3221-a5");
 
 		INFO_MSG("A2: %.3fV (%04d), A5: %.3fV (%04d)", (float)v1 * vref / 4096.0, (int)v1, (float)v2 * vref / 4096.0, (int)v2);
 		os_sleepf(0.2);
