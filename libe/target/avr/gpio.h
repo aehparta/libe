@@ -14,7 +14,7 @@ extern "C" {
 #include <avr/io.h>
 
 
-inline void gpio_enable_inline(uint8_t pin, bool direction)
+static inline void gpio_enable_inline(uint8_t pin, bool direction)
 {
 	switch (pin >> 3) {
 #ifdef DDRA
@@ -50,7 +50,7 @@ inline void gpio_enable_inline(uint8_t pin, bool direction)
 	}
 }
 
-inline void gpio_set_inline(uint8_t pin, uint8_t state)
+static inline void gpio_set_inline(uint8_t pin, uint8_t state)
 {
 	switch (pin >> 3) {
 #ifdef PORTA
@@ -86,7 +86,7 @@ inline void gpio_set_inline(uint8_t pin, uint8_t state)
 	}
 }
 
-inline uint8_t gpio_read_inline(uint8_t pin)
+static inline uint8_t gpio_read_inline(uint8_t pin)
 {
 	switch (pin >> 3) {
 #ifdef PINA
