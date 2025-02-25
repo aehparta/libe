@@ -102,7 +102,7 @@ endif
 $(BUILD_BINS): $$(patsubst %.c,$(BUILDDIR)/%$(OBJ_EXT),$$($$@_SRC)) $$(patsubst %.cpp,$(BUILDDIR)/%$(OBJ_EXT),$$($$@_CPP_SRC)) $$(patsubst %.S,$(BUILDDIR)/%$(OBJ_EXT),$$($$@_ASRC)) $$(patsubst %$(OBJ_EXT),$(BUILDDIR)/%$(OBJ_EXT),$$(extra_OBJ)) $$(patsubst %,$(BUILDDIR)/%$(OBJ_EXT),$$($$@_RAW_SRC))
 	@echo $(LDC_PURPLEB) "LINK $@$(TARGET_EXT)" $(LDC_DEFAULT)
 ifeq ($(TARGET),PIC8)
-	@xc8 $^ --std=c99 --chip=$(MCU) -O$@$(TARGET_EXT)$(BIN_EXT) -M$@$(TARGET_EXT).map
+	@xc8-cc $^ -std=c99 -mcpu=$(MCU)
 else
 	@$(CC) $^ -o $@$(TARGET_EXT)$(BIN_EXT) $(LDFLAGS)
 endif
