@@ -35,7 +35,9 @@ endif
 
 # add logging
 ifneq ($(filter $(libe_DEFINES),USE_LOG),)
-    ifdef TARGET_LINUX
+    ifneq ($(VARIANT_UART),)
+        libe_SRC += $(T_PATH)/i2c_$(VARIANT_UART).c
+    else ifdef TARGET_LINUX
         libe_SRC += $(LIBE_PATH)/libe/target/linux/log.c
     else
         libe_SRC += $(T_PATH)/log.c
@@ -45,7 +47,9 @@ endif
 # add spi and drivers for chips
 ifneq ($(filter $(libe_DEFINES),USE_SPI),)
     # include native driver(s)
-    ifneq (,$(wildcard $(T_PATH)/spi.c))
+    ifneq ($(VARIANT_SPI),)
+        libe_SRC += $(T_PATH)/i2c_$(VARIANT_SPI).c
+    else ifneq (,$(wildcard $(T_PATH)/spi.c))
         libe_SRC += $(T_PATH)/spi.c
     endif
     # include linux specific drivers
@@ -92,6 +96,8 @@ ifneq ($(filter $(libe_DEFINES),USE_I2C),)
     libe_SRC += $(LIBE_PATH)/libe/i2c.c
     ifneq ($(filter $(libe_DEFINES),USE_I2C_BITBANG),)
         libe_SRC += $(LIBE_PATH)/libe/drivers/i2c/bitbang.c
+    else ifneq ($(VARIANT_I2C),)
+        libe_SRC += $(T_PATH)/i2c_$(VARIANT_I2C).c
     else ifdef TARGET_LINUX
         libe_SRC += $(LIBE_PATH)/libe/target/linux/i2c.c
     else

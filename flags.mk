@@ -1,27 +1,4 @@
 
-# check target specific mcu
-ifneq ($(MCU_$(TARGET)),)
-    MCU = $(shell echo $(MCU_$(TARGET)) | tr '[:lower:]' '[:upper:]')
-endif
-
-# get mcu from environment if set
-ifneq ($(mcu),)
-    MCU = $(shell echo $(mcu) | tr '[:lower:]' '[:upper:]')
-endif
-
-# check target and mcu specific clock frequency
-ifneq ($(F_CPU_$(TARGET)),)
-    F_CPU = $(F_CPU_$(TARGET))
-endif
-ifneq ($(F_CPU_$(MCU)),)
-    F_CPU = $(F_CPU_$(MCU))
-endif
-
-# get clock from environment if set
-ifneq ($(f_cpu),)
-    F_CPU = $(f_cpu)
-endif
-
 # unravel use
 libe_USE += $(foreach use,$(USE),$(shell echo $(use) | tr '[:lower:]' '[:upper:]'))
 libe_USE += $(foreach use,$(USE_$(TARGET)),$(shell echo $(use) | tr '[:lower:]' '[:upper:]'))

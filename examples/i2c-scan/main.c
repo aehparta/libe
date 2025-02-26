@@ -10,9 +10,6 @@
 #endif
 #include "../config.h"
 
-#ifdef TARGET_PIC8
-#pragma config FEXTOSC = OFF
-#endif
 
 #ifdef TARGET_ESP32
 int app_main(int argc, char *argv[])
@@ -44,7 +41,7 @@ int main(int argc, char *argv[])
 		/* scan i2c bus */
 		printf("Scanning I2C bus...\r\n");
 		int found = 0;
-		for (int a = 0; a < 128; a++) {
+		for (uint8_t a = 0; a < 128; a++) {
 			os_wdt_reset();
 			if (i2c_open(&dev, &i2c, a) == 0) {
 				printf("Device found at address %02x\r\n", a);
