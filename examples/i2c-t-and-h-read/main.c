@@ -23,9 +23,9 @@ struct driver {
 };
 
 struct driver drivers[] = {
-    // { "hdc1080", hdc1080_open, hdc1080_read }, /* this must be before sht21, they have same address and only hdc1080 can be detected */
+    { "hdc1080", hdc1080_open, hdc1080_read }, /* this must be before sht21, they have same address and only hdc1080 can be detected */
     { "sht21", sht21_open, sht21_read },
-    // { "sht31", sht31_open, sht31_read },
+    { "sht31", sht31_open, sht31_read },
     { NULL, NULL, NULL }
 };
 
@@ -62,7 +62,8 @@ int main(int argc, char *argv[])
             while (1) {
                 float t, h;
                 drivers[i].read(&dev, &t, &h);
-                printf("temperature: %f, humidity: %f\r\n", t, h);
+                /* use integers for printing, in 8-bit pic printing floats takes HUGE amount of space */
+                printf("temperature: %d, humidity: %d\r\n", (int)t, (int)h);
                 os_delay_ms(3000);
             }
         } else {
