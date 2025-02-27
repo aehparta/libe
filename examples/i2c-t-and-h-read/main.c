@@ -62,8 +62,12 @@ int main(int argc, char *argv[])
             while (1) {
                 float t, h;
                 drivers[i].read(&dev, &t, &h);
-                /* use integers for printing, in 8-bit pic printing floats takes HUGE amount of space */
+                /* in 8-bit pic printing floats takes HUGE amount of space */
+#ifdef TARGET_PIC8
                 printf("temperature: %d, humidity: %d\r\n", (int)t, (int)h);
+#else
+                printf("temperature: %f, humidity: %f\r\n", t, h);
+#endif
                 os_delay_ms(3000);
             }
         } else {

@@ -35,8 +35,8 @@
 /* i2c */
 #define CFG_I2C_CONTEXT     NULL
 #define CFG_I2C_FREQUENCY   100000
-#define CFG_I2C_SCL         GPIOC3
-#define CFG_I2C_SDA         GPIOC4
+#define CFG_I2C_SCL         GPIOD6
+#define CFG_I2C_SDA         GPIOD5
 /* spi */
 #define CFG_SPI_CONTEXT     NULL
 #define CFG_SPI_FREQUENCY   0

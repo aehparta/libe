@@ -22,16 +22,19 @@ ifneq ($(f_cpu),)
     F_CPU = $(f_cpu)
 endif
 
-# detect parse possible variants
+# detect possible variants
 
 # pic8
 ifneq (,$(findstring 16F183,$(MCU))$(findstring 16LF183,$(MCU)))
     VARIANT_UART = 16f183xx
     VARIANT_SPI = 16f183xx
     VARIANT_I2C = 16f183xx
-endif
-ifneq (,$(findstring 16F184,$(MCU))$(findstring 16LF184,$(MCU)))
+else ifneq (,$(findstring 16F184,$(MCU))$(findstring 16LF184,$(MCU)))
     VARIANT_UART = 16f184xx
     VARIANT_SPI = 16f184xx
     VARIANT_I2C = 16f184xx
+else ifneq (,$(findstring 16F8,$(MCU)))
+    VARIANT_I2C = old
+else ifeq ($(TARGET),PIC8)
+    VARIANT_I2C = generic
 endif
