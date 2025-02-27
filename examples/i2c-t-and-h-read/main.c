@@ -11,8 +11,8 @@
 
 #ifndef I2C_CONTEXT
 #define I2C_CONTEXT NULL
-#define I2C_SCL     GPIOD6
-#define I2C_SDA     GPIOD5
+#define I2C_SDA     GPIOC6
+#define I2C_SCL     GPIOC7
 #endif
 
 
@@ -52,11 +52,6 @@ int main(int argc, char *argv[])
     context = argv[1];
 #endif
 
-    gpio_input(GPIOC3);
-    gpio_input(GPIOC4);
-    gpio_input(GPIOD5);
-    gpio_input(GPIOD6);
-
     /* open i2c */
     ERROR_IF_R(i2c_master_open(&master, context, 0, I2C_SCL, I2C_SDA), 1, "unable to open i2c device");
 
@@ -70,7 +65,7 @@ int main(int argc, char *argv[])
                 float t, h;
                 drivers[i].read(&dev, &t, &h);
                 /* in 8-bit pic printing floats takes HUGE amount of space */
-#ifdef TARGET_PIC8
+#ifdef TARGET_PIC82
                 printf("temperature: %d, humidity: %d\r\n", (int)t, (int)h);
 #else
                 printf("temperature: %f, humidity: %f\r\n", t, h);

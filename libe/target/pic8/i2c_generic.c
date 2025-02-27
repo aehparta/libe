@@ -27,6 +27,11 @@
 #define BF          SSP1STATbits.BF
 #define ACKSTAT     SSP1CON2bits.ACKSTAT
 
+#define SSPDATPPS   SSP1DATPPS
+#define SSPCLKPPS   SSP1CLKPPS
+#define PPS_SDA     GPIO_PPS_I2C_1_SDA
+#define PPS_SCL     GPIO_PPS_I2C_1_SCL
+
 #define WAIT_IDLE() while (SSP1STATbits.R_nW | (0x1F & SSP1CON2))
 
 #elif PIC8_I2C_MSSP == 2
@@ -47,6 +52,11 @@
 #define BF          SSP2STATbits.BF
 #define ACKSTAT     SSP2CON2bits.ACKSTAT
 
+#define SSPDATPPS   SSP2DATPPS
+#define SSPCLKPPS   SSP2CLKPPS
+#define PPS_SDA     GPIO_PPS_I2C_2_SDA
+#define PPS_SCL     GPIO_PPS_I2C_2_SCL
+
 #define WAIT_IDLE() while (SSP2STATbits.R_nW | (0x1F & SSP2CON2))
 
 #else
@@ -59,6 +69,13 @@ int8_t i2c_master_open(struct i2c_master *master, void *context, uint32_t freque
     /* i2c pins must be inputs */
     gpio_input(sda);
     gpio_input(scl);
+
+#ifdef GPIO_HAS_PPS
+    SSPDATPPS = sda;
+    SSPCLKPPS = scl;
+    gpio_pps(sda, PPS_SDA);
+    gpio_pps(scl, PPS_SCL);
+#endif
 
     /* calculate clock */
     if (frequency < 1) {
@@ -97,7 +114,8 @@ int8_t i2c_read(struct i2c_device *dev, void *data, uint8_t size)
 {
     WAIT_IDLE();
     SEN = 1;
-    while (SEN);
+    while (SEN)
+        ;
 
     SSPBUF = dev->address | 1;
     WAIT_IDLE();
@@ -118,7 +136,8 @@ int8_t i2c_read(struct i2c_device *dev, void *data, uint8_t size)
         } else {
             ACKDT = 1; /* nack */
             ACKEN = 1;
-            while (ACKEN);
+            while (ACKEN)
+                ;
         }
     }
 
@@ -130,7 +149,8 @@ int8_t i2c_write(struct i2c_device *dev, void *data, uint8_t size)
 {
     WAIT_IDLE();
     SEN = 1;
-    while (SEN);
+    while (SEN)
+        ;
 
     SSPBUF = dev->address;
     WAIT_IDLE();

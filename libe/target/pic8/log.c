@@ -9,11 +9,35 @@
 #include <libe/libe.h>
 
 
+#if defined(PIC8_LOG_USART) && PIC8_LOG_USART == 0
+
+/* leave empty for older defaults */
+
+#elif PIC8_LOG_USART == 1
+
+#define TXSTA       TX1STA
+#define RCSTA       RC1STA
+#define SPBRG       SP1BRG
+#define TXREG       TX1REG
+#define TXIF        TX1IF
+
+#elif PIC8_LOG_USART == 2
+
+#define TXSTA       TX2STA
+#define RCSTA       RC2STA
+#define SPBRG       SP2BRG
+#define TXREG       TX2REG
+#define TXIF        TX2IF
+
+#else
+#error "no log USART module selected, define PIC8_LOG_USART to 1 or 2, or 0 for older devices"
+#endif
+
+
 void putch(char ch)
 {
     /* wait till the transmitter register becomes empty */
-    while (!TXIF)
-        ;
+    while (!TXIF);
     /* clear transmitter flag and send character */
     TXIF = 0;
     TXREG = ch;
@@ -21,6 +45,10 @@ void putch(char ch)
 
 int log_init(void)
 {
+#if defined(GPIO_HAS_PPS) && defined(LOG_TX_PIN)
+    gpio_pps(LOG_TX_PIN, GPIO_PPS_TX);
+#endif
+
     TXSTA = 0x24;
     RCSTA = 0x80;
     SPBRG = F_CPU / (16UL * (LOG_BAUD + 1UL));

@@ -129,6 +129,8 @@ extern "C" {
 #define GPIOH6      62
 #define GPIOH7      63
 
+#define GPIO_NONE      255
+
 #ifdef __cplusplus
 }
 #endif
