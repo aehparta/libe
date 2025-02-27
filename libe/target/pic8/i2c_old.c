@@ -66,6 +66,7 @@ int8_t i2c_read(struct i2c_device *dev, void *data, uint8_t size)
     for (uint8_t *p = data; size > 0; size--, p++) {
         RCEN = 1;
         while (!BF);
+        SSPIF = 0;
         *p = SSPBUF;
         ACKDT = size == 1 ? 1 : 0; /* nack/ack */
         ACKEN = 1;

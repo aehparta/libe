@@ -11,8 +11,8 @@
 
 #ifndef I2C_CONTEXT
 #define I2C_CONTEXT NULL
-#define I2C_SCL     GPIOC3
-#define I2C_SDA     GPIOC4
+#define I2C_SCL     GPIOD6
+#define I2C_SDA     GPIOD5
 #endif
 
 
@@ -52,14 +52,21 @@ int main(int argc, char *argv[])
     context = argv[1];
 #endif
 
+    gpio_input(GPIOC3);
+    gpio_input(GPIOC4);
+    gpio_input(GPIOD5);
+    gpio_input(GPIOD6);
+
     /* open i2c */
     ERROR_IF_R(i2c_master_open(&master, context, 0, I2C_SCL, I2C_SDA), 1, "unable to open i2c device");
 
     /* try to find a temperature and humidity chip */
     for (int i = 0; drivers[i].open; i++) {
+        printf("Trying %s\r\n", drivers[i].name);
         if (!drivers[i].open(&dev, &master, 0, 0)) {
             printf("Found %s\r\n", drivers[i].name);
             while (1) {
+                os_wdt_reset();
                 float t, h;
                 drivers[i].read(&dev, &t, &h);
                 /* in 8-bit pic printing floats takes HUGE amount of space */
@@ -68,7 +75,7 @@ int main(int argc, char *argv[])
 #else
                 printf("temperature: %f, humidity: %f\r\n", t, h);
 #endif
-                os_delay_ms(3000);
+                os_delay_ms(1000);
             }
         } else {
 #ifdef USE_ERROR

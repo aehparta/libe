@@ -26,8 +26,8 @@ int8_t sht21_open(struct i2c_device *dev, struct i2c_master *master, int32_t ref
 	error_if(i2c_write(dev, data, 1), -2, "sht21 user register read failed");
 	error_if(i2c_read(dev, data + 1, 1), -2, "sht21 user register read failed");
 
-	/* clear other than reserved bits */
-	data[1] &= 0xb9;
+	/* clear measurement resolution bits */
+	data[1] &= 0x7e;
 
 	/* setup resolution */
 	switch (resolution) {
