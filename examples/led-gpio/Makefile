@@ -1,4 +1,6 @@
 
+LIBE_PATH ?= ../..
+
 # default target is x86
 TARGET = X86
 

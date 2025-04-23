@@ -96,7 +96,10 @@ else ifeq ($(TARGET),MSP430)
     STDC ?= c99
     STDCXX ?= c++99
 else ifeq ($(TARGET),X86)
-    libe_LDFLAGS += -lftdi1 -lrt -lpthread
+    libe_LDFLAGS += -lrt -lpthread
+    ifneq ($(filter $(libe_DEFINES),USE_FTDI),)
+        libe_LDFLAGS += -lftdi1
+    endif
 else ifeq ($(TARGET),RPI)
     libe_LDFLAGS += -lrt -lpthread
 else ifeq ($(TARGET),OPI)
