@@ -69,6 +69,7 @@ struct display {
 
 /* drivers */
 #include "drivers/display/ssd1306.h"
+#include "drivers/display/pcd8544.h"
 #include "drivers/display/sdl2.h"
 
 

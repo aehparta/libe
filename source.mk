@@ -74,6 +74,9 @@ ifneq ($(filter $(libe_DEFINES),USE_SPI),)
     ifneq ($(filter $(libe_DEFINES),USE_DRIVER_MCP356X),)
         libe_SRC += $(LIBE_PATH)/libe/drivers/spi/mcp356x.c
     endif
+    ifneq ($(filter $(libe_DEFINES),USE_DRIVER_PCD8544),)
+        libe_SRC += $(LIBE_PATH)/libe/drivers/display/pcd8544.c
+    endif
     ifneq ($(filter $(libe_DEFINES),USE_WIZNET),)
         ifeq ($(wildcard ioLibrary_Driver),)
             $(info Fetching WIZNET ioLibrary_Driver sources)
