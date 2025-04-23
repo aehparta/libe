@@ -1,10 +1,12 @@
 
+LIBE_PATH ?= ../..
+
 # default target is x86
 TARGET = X86
 
 # enable log and display
 USE += LOG DISPLAY
-USE_X86 += DRIVER_SDL2
+USE_X86 += I2C DRIVER_SSD1306
 USE_AVR += I2C DRIVER_SSD1306
 USE_ESP32 += I2C DRIVER_SSD1306
 

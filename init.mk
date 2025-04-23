@@ -1,4 +1,6 @@
 
+LIBE_PATH := $(realpath $(LIBE_PATH))
+
 # detect target and do other init stuff
 include $(LIBE_PATH)/target.mk
 include $(LIBE_PATH)/mcu.mk
