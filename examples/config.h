@@ -81,7 +81,7 @@
 #define CFG_SPI_MOSI        1
 #define CFG_SPI_SCLK        0
 /* pcd8544 */
-#define CFG_PCD8544_CE     6
+#define CFG_PCD8544_CE     3
 #define CFG_PCD8544_DC     4
 #define CFG_PCD8544_RESET  5
 /* nrf24l01+ */
