@@ -85,6 +85,9 @@ int8_t ssd1306_i2c_opt(struct display *display, uint8_t opt, void *value)
 
 void ssd1306_i2c_pixel(struct display *display, int16_t x, int16_t y, uint32_t color)
 {
+    if (display->clip_x1 > x || display->clip_x2 < x || display->clip_y1 > y || display->clip_y2 < y) {
+        return;
+    }
     uint8_t *p = display->buffer + (x + 1) + ((display->w + 1) * (y >> 3));
     uint8_t mask = (1 << (y & 0x07));
     if (color) {
