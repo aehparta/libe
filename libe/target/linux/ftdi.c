@@ -109,7 +109,7 @@ int os_ftdi_use(int pin_range, uint16_t vid, uint16_t pid, const char *descripti
 	ftdi_set_bitmode(ftdi, 0, BITMODE_RESET);
 	ftdi_set_bitmode(ftdi, 0, BITMODE_BITBANG);
 	ftdi_set_baudrate(ftdi, 1e6);
-	ftdi_usb_purge_buffers(ftdi);
+	// ftdi_usb_purge_buffers(ftdi);
 	ftdi_write_data(ftdi, &zero, 1);
 	fdevs[pin_range * 4].ftdi = ftdi;
 	fdevs[pin_range * 4].mode = BITMODE_BITBANG;
@@ -127,7 +127,7 @@ int os_ftdi_use(int pin_range, uint16_t vid, uint16_t pid, const char *descripti
 		ftdi_read_data_set_chunksize(ftdi, 256);
 		ftdi_set_bitmode(ftdi, 0, BITMODE_RESET);
 		ftdi_set_bitmode(ftdi, 0, BITMODE_BITBANG);
-		ftdi_usb_purge_buffers(ftdi);
+		// ftdi_usb_purge_buffers(ftdi);
 		ftdi_set_baudrate(ftdi, 1e6);
 		ftdi_write_data(ftdi, &zero, 1);
 		fdevs[pin_range * 4 + i].ftdi = ftdi;
@@ -150,7 +150,7 @@ int os_ftdi_set_mpsse(int pin)
 	/* setup mpsse */
 	ftdi_set_bitmode(fdevs[i].ftdi, 0, BITMODE_RESET);
 	ERROR_IF_R(ftdi_set_bitmode(fdevs[i].ftdi, 0, BITMODE_MPSSE), -1, "unable to enable mpsse bitmode");
-	ftdi_usb_purge_buffers(fdevs[i].ftdi);
+	// ftdi_usb_purge_buffers(fdevs[i].ftdi);
 
 	uint8_t cmd[] = {
 		DIS_DIV_5,
