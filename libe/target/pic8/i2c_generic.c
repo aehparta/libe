@@ -18,15 +18,14 @@
 #define STAT        SSP1STAT
 
 #define SEN         SSP1CON2bits.SEN
-#define RSEN        SSP1CON2bits.RSEN
 #define PEN         SSP1CON2bits.PEN
 #define RCEN        SSP1CON2bits.RCEN
 #define ACKEN       SSP1CON2bits.ACKEN
 #define ACKDT       SSP1CON2bits.ACKDT
 #define SSPBUF      SSP1BUF
-#define BF          SSP1STATbits.BF
 #define ACKSTAT     SSP1CON2bits.ACKSTAT
 
+/* only used with mcus that have pps */
 #define SSPDATPPS   SSP1DATPPS
 #define SSPCLKPPS   SSP1CLKPPS
 #define PPS_SDA     GPIO_PPS_I2C_1_SDA
@@ -43,15 +42,14 @@
 #define STAT        SSP2STAT
 
 #define SEN         SSP2CON2bits.SEN
-#define RSEN        SSP2CON2bits.RSEN
 #define PEN         SSP2CON2bits.PEN
 #define RCEN        SSP2CON2bits.RCEN
 #define ACKEN       SSP2CON2bits.ACKEN
 #define ACKDT       SSP2CON2bits.ACKDT
 #define SSPBUF      SSP2BUF
-#define BF          SSP2STATbits.BF
 #define ACKSTAT     SSP2CON2bits.ACKSTAT
 
+/* only used with mcus that have pps */
 #define SSPDATPPS   SSP2DATPPS
 #define SSPCLKPPS   SSP2CLKPPS
 #define PPS_SDA     GPIO_PPS_I2C_2_SDA

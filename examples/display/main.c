@@ -68,7 +68,7 @@ int main(int argc, char *argv[])
 
     // memset(buffer, 0x00, sizeof(buffer));
 
-    draw_fill(&display, 0, 0, 128, 64, 0x000000);
+    draw_fill(&display, 0, 0, 84, 48, 0x000000);
 
     draw_pixel(&display, 1, 1, 0xffffff);
 
@@ -78,6 +78,7 @@ int main(int argc, char *argv[])
     draw_rect(&display, 15, 5, 40, 40, 0x00ff00);
 
     draw_string(&display, &g_sFontFixed6x8, "Hello world!", -1, 10, 10, true);
+
     draw_string(&display, &g_sFontCm30, "Hello world!", -1, 10, 20, false);
 
     while (1) {

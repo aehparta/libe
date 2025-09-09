@@ -47,7 +47,7 @@ int8_t ssd1306_i2c_open(struct display *display, void *context, uint8_t address,
     display->clip_y2 = display->h - 1;
 
     display->close = NULL;
-    display->opt = ssd1306_i2c_opt;
+    display->opt = draw_generic_opt;
     display->pixel = ssd1306_i2c_pixel;
 
     display->hline = draw_generic_hline;
@@ -55,23 +55,12 @@ int8_t ssd1306_i2c_open(struct display *display, void *context, uint8_t address,
     display->rect = draw_generic_rect;
     display->fill = draw_generic_fill;
 
-    display->update = ssd1306_update;
+    display->update = ssd1306_i2c_update;
 
     /* display init sequence */
     IF_R(i2c_write(&display->i2c, ssd1306_init_commands, sizeof(ssd1306_init_commands)), -1);
 
     return 0;
-}
-
-int8_t ssd1306_i2c_opt(struct display *display, uint8_t opt, void *value)
-{
-    switch (opt) {
-    case DISPLAY_OPT_SET_BUFFER:
-        display->buffer = value;
-        return 0;
-    }
-
-    return -1;
 }
 
 void ssd1306_i2c_pixel(struct display *display, int16_t x, int16_t y, uint32_t color)
@@ -88,7 +77,7 @@ void ssd1306_i2c_pixel(struct display *display, int16_t x, int16_t y, uint32_t c
     }
 }
 
-void ssd1306_update(struct display *display)
+void ssd1306_i2c_update(struct display *display)
 {
     i2c_write_reg_byte(&display->i2c, 0x00, SSD1306_SETLOWCOLUMN);
     i2c_write_reg_byte(&display->i2c, 0x00, SSD1306_SETHIGHCOLUMN);

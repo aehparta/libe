@@ -14,6 +14,8 @@ extern "C" {
 #include "draw_string.h"
 
 
+int8_t draw_generic_opt(struct display *display, uint8_t opt, void *value);
+void draw_generic_pixel_monochrome(struct display *display, int16_t x, int16_t y, uint32_t color);
 void draw_generic_pixel(struct display *display, int16_t x, int16_t y, uint32_t color);
 void draw_generic_hline(struct display *display, int16_t x, int16_t y, int16_t length, uint32_t color);
 void draw_generic_vline(struct display *display, int16_t x, int16_t y, int16_t length, uint32_t color);

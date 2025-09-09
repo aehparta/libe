@@ -68,8 +68,12 @@ struct display {
 #include "draw.h"
 
 /* drivers */
+#ifdef USE_I2C
 #include "drivers/display/ssd1306.h"
+#endif
+#ifdef USE_SPI
 #include "drivers/display/pcd8544.h"
+#endif
 #include "drivers/display/sdl2.h"
 #include "drivers/display/ssd1681.h"
 
