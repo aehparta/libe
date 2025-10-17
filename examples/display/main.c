@@ -13,6 +13,9 @@
 #endif
 #include "../config.h"
 
+#define WIDTH 200
+#define HEIGHT 200
+
 
 #ifdef TARGET_ESP32
 int app_main(int argc, char *argv[])
@@ -26,7 +29,7 @@ int main(int argc, char *argv[])
     os_init();
     log_init();
 
-    /* open display: SSD1306 */
+    /* display: SSD1306 */
 #ifdef USE_DRIVER_SSD1306
     void *context = CFG_I2C_CONTEXT;
     uint8_t buffer[SSD1306_BUFFER_SIZE];
@@ -36,7 +39,7 @@ int main(int argc, char *argv[])
     context = argv[1];
 #endif
     ERROR_IF_R(i2c_master_open(&i2c, context, CFG_I2C_FREQUENCY, CFG_I2C_SCL, CFG_I2C_SDA), 1, "unable to open i2c device");
-    ERROR_IF_R(ssd1306_i2c_open(&display, &i2c, 0, 0, 0), 1, "unable to open ssd1306 display");
+    ERROR_IF_R(ssd1306_i2c_open(&display, &i2c, 0, WIDTH, HEIGHT), 1, "unable to open ssd1306 display");
     optctl(&display, DISPLAY_OPT_SET_BUFFER, buffer);
 #endif
 #if defined(USE_DRIVER_SDL2)
@@ -44,7 +47,7 @@ int main(int argc, char *argv[])
     optwr_float(&display, DISPLAY_OPT_SET_SCALING, 10);
 #endif
 
-    /* open display: PCD8544 */
+    /* display: PCD8544 */
 #ifdef USE_DRIVER_PCD8544
     void *context = CFG_SPI_CONTEXT;
     uint8_t buffer[PCD8544_BUFFER_SIZE];
@@ -62,13 +65,35 @@ int main(int argc, char *argv[])
                    CFG_SPI_SCLK),
                -1,
                "failed to open spi master");
-    ERROR_IF_R(pcd8544_open(&display, &master, CFG_PCD8544_CE, CFG_PCD8544_DC, CFG_PCD8544_RESET, 0, 0), 1, "unable to open pcd8544 display");
+    ERROR_IF_R(pcd8544_open(&display, &master, CFG_PCD8544_CE, CFG_PCD8544_DC, CFG_PCD8544_RESET, WIDTH, HEIGHT), 1, "unable to open pcd8544 display");
+    optctl(&display, DISPLAY_OPT_SET_BUFFER, buffer);
+#endif
+
+    /* display: SSD1681 */
+#ifdef USE_DRIVER_SSD1681
+    void *context = CFG_SPI_CONTEXT;
+    uint8_t buffer[SSD1681_BUFFER_SIZE(WIDTH, HEIGHT)];
+    struct spi_master master;
+#ifdef USE_FTDI
+    ERROR_IF_R(os_ftdi_use(OS_FTDI_GPIO_0_TO_63, 0x0403, 0x6014, NULL, NULL), -1, "unable to open ftdi device for gpio 0-63");
+    os_ftdi_set_mpsse(CFG_SPI_SCLK);
+#endif
+    ERROR_IF_R(spi_master_open(
+                   &master,         /* must give pre-allocated spi master as pointer */
+                   CFG_SPI_CONTEXT, /* context depends on platform */
+                   CFG_SPI_FREQUENCY,
+                   CFG_SPI_MISO,
+                   CFG_SPI_MOSI,
+                   CFG_SPI_SCLK),
+               -1,
+               "failed to open spi master");
+    ERROR_IF_R(ssd1681_open(&display, &master, CFG_SSD1681_CS, CFG_SSD1681_DC, CFG_SSD1681_RESET, CFG_SSD1681_BUSY, WIDTH, HEIGHT), 1, "unable to open pcd8544 display");
     optctl(&display, DISPLAY_OPT_SET_BUFFER, buffer);
 #endif
 
     // memset(buffer, 0x00, sizeof(buffer));
 
-    draw_fill(&display, 0, 0, 84, 48, 0x000000);
+    draw_fill(&display, 0, 0, WIDTH, HEIGHT, 0x000000);
 
     draw_pixel(&display, 1, 1, 0xffffff);
 
@@ -87,7 +112,7 @@ int main(int argc, char *argv[])
         draw_string(&display, &g_sFontFixed6x8, str, -1, 0, 50, true);
 
         display_update(&display);
-        os_sleepf(0.2);
+        os_sleepf(2);
 
 #ifdef USE_DRIVER_SDL2
         SDL_Event event;

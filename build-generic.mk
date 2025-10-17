@@ -9,7 +9,7 @@ ASFLAGS += $(libe_ASFLAGS)
 include $(LIBE_PATH)/cc.mk
 
 # build directory
-BUILDDIR ?= .build.$(shell echo $(TARGET) | tr '[:upper:]' '[:lower:]')
+BUILDDIR ?= .build.$(shell echo $(BOARD) | tr '[:upper:]' '[:lower:]')
 
 # all targets listed
 TARGETS_ALL = AVR PIC8 PIC16 PIC32 MSP430 ESP32 X86
@@ -17,10 +17,13 @@ TARGETS_ALL = AVR PIC8 PIC16 PIC32 MSP430 ESP32 X86
 # cleanup
 CLEAN_TARGETS_ALL = $(addsuffix .clean,$(TARGETS_ALL))
 # pic8 specific
-CLEAN_CUSTOM_FILES += __eeprom.d __eeprom.p1 compiler_support.d compiler_support.p1 startup.lst startup.rlf startup.s startup.o doprnt.d doprnt.p1
+CLEAN_CUSTOM_FILES += config.h config.mk __eeprom.d __eeprom.p1 compiler_support.d compiler_support.p1 startup.lst startup.rlf startup.s startup.o doprnt.d doprnt.p1
 
 # add color definitions
 include $(LIBE_PATH)/colors.mk
+
+# not real targets
+.PHONY: all start build clean program
 
 # actions
 all: start build
@@ -66,6 +69,7 @@ $(BUILDDIR)/%$(OBJ_EXT): %
 clean: $(CLEAN_TARGETS_ALL)
 	@$(REMOVE) -f $(CLEAN_CUSTOM_FILES)
 	@$(REMOVE) -rf .build.*
+	@python3 $(LIBE_PATH)/tools/gen_config.py $(BOARD) --yaml config.yaml --output-dir .
 
 $(CLEAN_TARGETS_ALL):
 ifneq ($(PROGRAM_BIN),)
@@ -93,9 +97,6 @@ ifneq ($(NM),)
 	@echo $(LDC_BLUEB) "USAGE $(PROGRAM_BIN)$(TARGET_EXT).elf" $(LDC_DEFAULT)
 	@$(NM) --radix=dec --print-size --size-sort $(PROGRAM_BIN)$(TARGET_EXT)$(BIN_EXT)
 endif
-
-# not real targets
-.PHONY: all start build clean program
 
 # compile binaries, this must be last because of secondary expansion
 .SECONDEXPANSION:

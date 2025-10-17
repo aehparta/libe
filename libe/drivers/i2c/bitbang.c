@@ -13,11 +13,11 @@
 #endif
 
 #ifndef USE_I2C_BITBANG_DYNAMIC
-#ifndef I2C_BITBANG_SCL
-#error "I2C_BITBANG_SCL pin definition missing, it must be set when using I2C bitbang"
+#ifndef CFG_I2C_BITBANG_SCL
+#error "CFG_I2C_BITBANG_SCL pin definition missing, it must be set when using I2C bitbang"
 #endif
-#ifndef I2C_BITBANG_SDA
-#error "I2C_BITBANG_SDA pin definition missing, it must be set when using I2C bitbang"
+#ifndef CFG_I2C_BITBANG_SDA
+#error "CFG_I2C_BITBANG_SDA pin definition missing, it must be set when using I2C bitbang"
 #endif
 #endif
 
@@ -35,55 +35,55 @@
 
 #define I2C_START() \
 	do { \
-		gpio_output(I2C_BITBANG_SDA); \
-		gpio_high(I2C_BITBANG_SCL); \
-		gpio_low(I2C_BITBANG_SDA); \
+		gpio_output(CFG_I2C_BITBANG_SDA); \
+		gpio_high(CFG_I2C_BITBANG_SCL); \
+		gpio_low(CFG_I2C_BITBANG_SDA); \
 		I2C_BITBANG_DELAY_FUNC; \
-		gpio_low(I2C_BITBANG_SCL); \
+		gpio_low(CFG_I2C_BITBANG_SCL); \
 	} while (0)
 
 #define I2C_STOP() \
 	do { \
-		gpio_output(I2C_BITBANG_SDA); \
-		gpio_low(I2C_BITBANG_SDA); \
+		gpio_output(CFG_I2C_BITBANG_SDA); \
+		gpio_low(CFG_I2C_BITBANG_SDA); \
 		I2C_BITBANG_DELAY_FUNC; \
-		gpio_high(I2C_BITBANG_SCL); \
+		gpio_high(CFG_I2C_BITBANG_SCL); \
 		I2C_BITBANG_DELAY_FUNC; \
-		gpio_input(I2C_BITBANG_SDA); \
+		gpio_input(CFG_I2C_BITBANG_SDA); \
 	} while (0)
 
 #define I2C_WRITE(state) \
 	do { \
-		gpio_set(I2C_BITBANG_SDA, (state)); \
+		gpio_set(CFG_I2C_BITBANG_SDA, (state)); \
 		I2C_BITBANG_DELAY_FUNC; \
-		gpio_high(I2C_BITBANG_SCL); \
+		gpio_high(CFG_I2C_BITBANG_SCL); \
 		I2C_BITBANG_DELAY_FUNC; \
-		gpio_low(I2C_BITBANG_SCL); \
+		gpio_low(CFG_I2C_BITBANG_SCL); \
 	} while (0)
 
 #define I2C_READ(var, mask) \
 	do { \
 		I2C_BITBANG_DELAY_FUNC; \
-		gpio_high(I2C_BITBANG_SCL); \
+		gpio_high(CFG_I2C_BITBANG_SCL); \
 		I2C_BITBANG_DELAY_FUNC; \
-		if (!gpio_read(I2C_BITBANG_SDA)) { \
+		if (!gpio_read(CFG_I2C_BITBANG_SDA)) { \
 			(var) &= mask; \
 		} \
-		gpio_low(I2C_BITBANG_SCL); \
+		gpio_low(CFG_I2C_BITBANG_SCL); \
 	} while (0)
 
 #define I2C_READ_ACK() \
 	do { \
-		gpio_input(I2C_BITBANG_SDA); \
+		gpio_input(CFG_I2C_BITBANG_SDA); \
 		I2C_BITBANG_DELAY_FUNC; \
-		gpio_high(I2C_BITBANG_SCL); \
+		gpio_high(CFG_I2C_BITBANG_SCL); \
 		I2C_BITBANG_DELAY_FUNC; \
-		if (gpio_read(I2C_BITBANG_SDA)) { \
+		if (gpio_read(CFG_I2C_BITBANG_SDA)) { \
 			/* no ack received */ \
 			I2C_STOP(); \
 			return -1; \
 		} \
-		gpio_low(I2C_BITBANG_SCL); \
+		gpio_low(CFG_I2C_BITBANG_SCL); \
 	} while (0)
 
 
@@ -97,13 +97,13 @@ int8_t i2c_master_open(struct i2c_master *master, void *context, uint32_t freque
 #endif
 
 	/* clock is always output */
-	gpio_high(I2C_BITBANG_SCL);
-	gpio_open_drain(I2C_BITBANG_SCL, true);
-	gpio_output(I2C_BITBANG_SCL);
+	gpio_high(CFG_I2C_BITBANG_SCL);
+	gpio_open_drain(CFG_I2C_BITBANG_SCL, true);
+	gpio_output(CFG_I2C_BITBANG_SCL);
 	/* data is input as default, but output at start */
-	gpio_high(I2C_BITBANG_SDA);
-	gpio_open_drain(I2C_BITBANG_SDA, true);
-	gpio_output(I2C_BITBANG_SDA);
+	gpio_high(CFG_I2C_BITBANG_SDA);
+	gpio_open_drain(CFG_I2C_BITBANG_SDA, true);
+	gpio_output(CFG_I2C_BITBANG_SDA);
 
 	/* reset the bus by opening non-existing device */
 	struct i2c_device dev;
@@ -115,8 +115,8 @@ int8_t i2c_master_open(struct i2c_master *master, void *context, uint32_t freque
 
 void i2c_master_close(struct i2c_master *master)
 {
-	gpio_input(I2C_BITBANG_SCL);
-	gpio_input(I2C_BITBANG_SDA);
+	gpio_input(CFG_I2C_BITBANG_SCL);
+	gpio_input(CFG_I2C_BITBANG_SDA);
 }
 
 int8_t i2c_open(struct i2c_device *dev, struct i2c_master *master, uint8_t address)
@@ -154,13 +154,13 @@ int8_t i2c_read(struct i2c_device *dev, void *data, uint8_t size)
 
 	/* read data */
 	for (uint8_t *p = data; size > 0; size--, p++) {
-		gpio_input(I2C_BITBANG_SDA);
+		gpio_input(CFG_I2C_BITBANG_SDA);
 		*p = 0xff;
 		for (uint8_t i = 0x80; i; i = i >> 1) {
 			I2C_READ(*p, ~i);
 		}
 		/* send ack/nack */
-		gpio_output(I2C_BITBANG_SDA);
+		gpio_output(CFG_I2C_BITBANG_SDA);
 		I2C_WRITE(size > 1 ? 0 : 1);
 	}
 
@@ -192,7 +192,7 @@ int8_t i2c_write(struct i2c_device *dev, void *data, uint8_t size)
 
 	/* write data */
 	for (uint8_t *p = data; size > 0; size--, p++) {
-		gpio_output(I2C_BITBANG_SDA);
+		gpio_output(CFG_I2C_BITBANG_SDA);
 		for (uint8_t i = 0x80; i; i = i >> 1) {
 			I2C_WRITE(*p & i);
 		}

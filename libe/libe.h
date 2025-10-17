@@ -13,7 +13,6 @@ extern "C" {
 #endif
 
 #include "os.h"
-#include "sys.h"
 #include "opt.h"
 #include "log.h"
 #include "wifi.h"

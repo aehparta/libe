@@ -1,4 +1,7 @@
 
+# always include config.h
+libe_CFLAGS += --include=config.h
+
 # target path helper
 T_PATH = $(LIBE_PATH)/libe/target/$(shell echo $(TARGET) | tr '[:upper:]' '[:lower:]')
 
@@ -76,6 +79,9 @@ ifneq ($(filter $(libe_DEFINES),USE_SPI),)
     endif
     ifneq ($(filter $(libe_DEFINES),USE_DRIVER_PCD8544),)
         libe_SRC += $(LIBE_PATH)/libe/drivers/display/pcd8544.c
+    endif
+    ifneq ($(filter $(libe_DEFINES),USE_DRIVER_SSD1681),)
+        libe_SRC += $(LIBE_PATH)/libe/drivers/display/ssd1681.c
     endif
     ifneq ($(filter $(libe_DEFINES),USE_WIZNET),)
         ifeq ($(wildcard ioLibrary_Driver),)

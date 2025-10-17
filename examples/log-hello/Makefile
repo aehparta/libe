@@ -1,16 +1,9 @@
 
-# default target is x86
-TARGET = X86
+# default board is x86
+BOARD ?= x86
 
-# enable log
-USE += LOG
-
-# set default clock speed to 1 MHz for this example
-F_CPU=1000000
-
-# target specific settings
-MCU_AVR=atmega8
-MCU_PIC8=16f87
+# default libe path, when in examples
+LIBE_PATH ?= ../..
 
 # init
 include $(LIBE_PATH)/init.mk

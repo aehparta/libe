@@ -73,9 +73,9 @@ struct display {
 #endif
 #ifdef USE_SPI
 #include "drivers/display/pcd8544.h"
+#include "drivers/display/ssd1681.h"
 #endif
 #include "drivers/display/sdl2.h"
-#include "drivers/display/ssd1681.h"
 
 
 #ifdef __cplusplus

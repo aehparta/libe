@@ -36,7 +36,7 @@ int p_init(int argc, char *argv[])
 	           ), -1, "failed to open spi master");
 
 	/* nrf initialization */
-	ERROR_IF_R(nrf24l01p_ble_open(&nrf, &master, CFG_NRF_SS, CFG_NRF_CE, mac), -1, "nrf24l01+ failed to initialize");
+	ERROR_IF_R(nrf24l01p_ble_open(&nrf, &master, CFG_NRF24L01P_SS, CFG_NRF24L01P_CE, mac), -1, "nrf24l01+ failed to initialize");
 
 	return 0;
 }
